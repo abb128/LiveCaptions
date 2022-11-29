@@ -26,9 +26,6 @@
 #include "audiocap.h"
 
 int main (int argc, char *argv[]) {
-    g_thread_init(NULL);
-    gdk_threads_init();
-
     aam_api_init();
 
     pw_init(&argc, &argv);

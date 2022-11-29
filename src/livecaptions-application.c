@@ -43,7 +43,6 @@ static void livecaptions_application_activate(GApplication *app) {
     * by your users.
     */
     g_assert(GTK_IS_APPLICATION(app));
-    g_assert(LIVECAPTIONS_IS_APPLICATION(app));
 
     /* Get the current window or create one if necessary. */
     window = gtk_application_get_active_window(GTK_APPLICATION (app));
@@ -56,15 +55,18 @@ static void livecaptions_application_activate(GApplication *app) {
     gtk_window_present(window);
 
 
+    g_assert(LIVECAPTIONS_IS_APPLICATION(app));
+    LiveCaptionsApplication *app1 = LIVECAPTIONS_APPLICATION(app);
+
     g_assert(LIVECAPTIONS_IS_WINDOW(window));
     LiveCaptionsWindow *wind = LIVECAPTIONS_WINDOW(window);
 
-    LiveCaptionsApplication *app1 = LIVECAPTIONS_APPLICATION(app);
     audio_thread_set_label(app1->audio, wind->label);
     gtk_label_set_text(wind->label, "");
-    //LiveCaptionsWindow *w = LIVECAPTIONS_WINDOW(window);
-    //audio_thread_set_label(self->audio, w->label);
-    //gtk_label_set_text(w->label, "sex");
+
+    gtk_window_set_title(window, "Live Captions");
+
+    //gtk_window_set_decorated(window, false);
 }
 
 
@@ -101,12 +103,6 @@ livecaptions_application_show_about(GSimpleAction *action,
                            "authors", authors,
                            "version", "0.1.0",
                              NULL);
-
-
-    
-    //LiveCaptionsWindow *w = LIVECAPTIONS_WINDOW(window);
-    //audio_thread_set_label(self->audio, w->label);
-    //gtk_label_set_text(w->label, "sex");
 }
 
 

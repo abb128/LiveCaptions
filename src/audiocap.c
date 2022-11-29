@@ -14,6 +14,8 @@
 
 #include "audiocap.h"
 
+#define USE_MARKUP
+
 #define LINE_MAX 256
 #define LINE_COUNT 2
 
@@ -48,6 +50,8 @@ struct audio_thread_i {
     GThread * thread_id;
 
     //struct line_generator line;
+    GMutex text_mutex;
+    char text_buffer[32768];
 
     AprilASRModel model;
     AprilASRSession session;
@@ -61,7 +65,6 @@ struct audio_thread_i {
     struct pw_stream *stream;
 
     struct spa_audio_info format;
-    unsigned move:1;
 };
 
 /* our data processing function is in general:
@@ -93,24 +96,9 @@ static void on_process(void *userdata)
     n_channels = data->format.info.raw.channels;
     n_samples = buf->datas[0].chunk->size / sizeof(short);
 
+    g_assert(n_channels == 1);
+
     aas_feed_pcm16(data->session, samples, n_samples);
-    ///* move cursor up */
-    //if (data->move)
-    //    fprintf(stdout, "%c[%dA", 0x1b, n_channels + 1);
-    //fprintf(stdout, "captured %d samples\n", n_samples / n_channels);
-    //for (c = 0; c < data->format.info.raw.channels; c++) {
-    //    max = 0;
-    //    for (n = c; n < n_samples; n += n_channels) {
-    //        if((samples[n]) > max) max = (samples[n]);
-    //    }
-//
-    //    peak = SPA_CLAMP(((float)max / 16384.0f) * 30, 0, 39);
-//
-    //    fprintf(stdout, "channel %d: |%*s%*s| peak:%f\n",
-    //            c, peak+1, "*", 40 - peak, "", (float)max / 16384.0f);
-    //}
-    //data->move = true;
-    //fflush(stdout);
 
     pw_stream_queue_buffer(data->stream, b);
 }
@@ -226,10 +214,32 @@ void *run_audio_thread(void *userdata) {
     return NULL;
 }
 
-void april_result_handler(void* userdata, AprilResultType result, size_t count, const AprilToken* tokens) {
-    char text[1024];
+gboolean main_thread_update_label(void *userdata){
+    audio_thread data = userdata;
 
+    if(g_mutex_trylock(&data->text_mutex) != 0)
+        return G_SOURCE_CONTINUE;
+
+#ifdef USE_MARKUP
+    gtk_label_set_markup(data->label, data->text_buffer);
+#else
+    gtk_label_set_text(data->label, data->text_buffer);
+#endif
+
+    g_mutex_unlock(&data->text_mutex);
+
+
+    return G_SOURCE_REMOVE;
+}
+
+void april_result_handler(void* userdata, AprilResultType result, size_t count, const AprilToken* tokens) {
+    audio_thread data = userdata;
+
+    g_mutex_lock(&data->text_mutex);
+
+    char *text = data->text_buffer;
     char *txt_head = text;
+
     //switch(result){
     //    case APRIL_RESULT_RECOGNITION_FINAL: 
     //        txt_head += sprintf(txt_head, "@ ");
@@ -249,22 +259,32 @@ void april_result_handler(void* userdata, AprilResultType result, size_t count, 
             txt_head += sprintf(txt_head, "\n");
             line_width = 0;
         }
+
+#ifdef USE_MARKUP
+        int alpha = (int)((tokens[t].logprob + 2.0) / 8.0 * 65536.0);
+        alpha /= 2.0;
+        alpha += 32768;
+        if(alpha < 10000) alpha = 10000;
+        if(alpha > 65535) alpha = 65535;
+        int l = sprintf(txt_head, "<span fgalpha=\"%d\">%s</span>", alpha, text);
+#else
         int l = sprintf(txt_head, "%s", text);
-        line_width += l;
+#endif
+        line_width += strlen(text);
         txt_head += l;
 
         //printf("%s", text);
     }
     //printf("\n");
 
-    audio_thread data = userdata;
 
-    for(int i=0; i<1024; i++){
+    for(int i=0; i<32768; i++){
         if(text[i] == '\0') break;
         text[i] = tolower(text[i]);
     }
 
-    gtk_label_set_text(data->label, text);
+    g_mutex_unlock(&data->text_mutex);
+    g_idle_add(main_thread_update_label, data);
 }
 
 audio_thread create_audio_thread(){
@@ -288,9 +308,10 @@ audio_thread create_audio_thread(){
         return NULL;
     }
 
-
+    g_mutex_init(&data->text_mutex);
 
     data->thread_id = g_thread_new("lcap-audiothread", run_audio_thread, data);
+
 
     return data;
 }
