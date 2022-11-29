@@ -16,40 +16,135 @@
 
 #define USE_MARKUP
 
-#define LINE_MAX 256
-#define LINE_COUNT 2
+#define AC_LINE_MAX 4096
+#define AC_LINE_COUNT 2
+#define REL_LINE_IDX(HEAD, IDX) (4*AC_LINE_COUNT + (HEAD) + (IDX)) % AC_LINE_COUNT
 
-
-// ???????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-/*struct line_generator {
-    struct {
-        char text[LINE_MAX];
-        size_t head;
-    } lines[LINE_COUNT];
-
+struct line {
+    char text[AC_LINE_MAX];
     size_t head;
+    size_t len;
 };
 
-void line_generator_linebreak(struct line_generator *lg) {
-    lg->head = (lg->head + 1) % LINE_COUNT;
+struct line_generator {
+    size_t current_line;
+    struct line lines[AC_LINE_COUNT];
 
-    lg->lines[lg->head].head = 0;
-    lg->lines[lg->head].text[0] = '\0';
-}
+    // Denotes the index within the active token array at which the line starts
+    // If -1, means the active tokens don't reach that line yet
+    ssize_t active_start_of_lines[AC_LINE_COUNT];
 
-void line_generator_push_token(struct line_generator *lg, AprilToken token){
-    if((token.token[0] == ' ') && (lg->lines[lg->head].head > 48)) {
-        line_generator_linebreak(lg);
+    char output[AC_LINE_MAX * AC_LINE_COUNT];
+};
+
+void line_generator_init(struct line_generator *lg) {
+    for(int i=0; i<AC_LINE_COUNT; i++){
+        lg->active_start_of_lines[i] = -1;
     }
 
-    lg->lines[lg->head].head += sprintf(&lg->lines[lg->head].text[lg->lines[lg->head].head], "%s", tokens.token);
+    lg->current_line = 0;
+    lg->active_start_of_lines[0] = 0;
 }
-*/
+
+void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens) {
+    for(int i=0; i<AC_LINE_COUNT; i++){
+        if(lg->active_start_of_lines[i] == -1) continue;
+
+        struct line *curr = &lg->lines[i];
+
+        // reset for writing
+        curr->text[0] = '\0';
+        curr->head = 0;
+        curr->len = 0;
+
+        if(lg->active_start_of_lines[i] >= num_tokens) {
+            printf("%d more tokens than exist %d!\n", lg->active_start_of_lines[i], num_tokens);
+            if(i == lg->current_line) {
+                // oops... turns out our text isn't long enough for the new line
+                // backtrack to the previous line
+                lg->active_start_of_lines[lg->current_line] = -1;
+                lg->current_line = REL_LINE_IDX(lg->current_line, -1);
+                return line_generator_update(lg, num_tokens, tokens); // TODO?
+            } else {
+                continue;
+            }
+        }
+
+
+        int end = lg->active_start_of_lines[REL_LINE_IDX(i, 1)];
+        if((end == -1) || (i == lg->current_line)) end = num_tokens;
+
+        // print line
+        for(int j=lg->active_start_of_lines[i]; j<end; j++) {
+            bool can_break_nicely = (curr->len > 48) && (tokens[j].token[0] == ' ') && (tokens[j].logprob > -1.0f);
+            bool must_break = (curr->head > (AC_LINE_MAX - 256));
+            if((i == lg->current_line) && (can_break_nicely  || must_break)) {
+                // line break
+                lg->current_line = REL_LINE_IDX(lg->current_line, 1);
+                lg->active_start_of_lines[lg->current_line] = j;
+                return line_generator_update(lg, num_tokens, tokens); // TODO?
+            }
+
+            if(must_break){
+                printf("Must linebreak, but not active line. Leaving incomplete line...\n");
+                break;
+            }
+
+            int alpha = (int)((tokens[j].logprob + 2.0) / 8.0 * 65536.0);
+            alpha /= 2.0;
+            alpha += 32768;
+            if(alpha < 10000) alpha = 10000;
+            if(alpha > 65535) alpha = 65535;
+            curr->head += sprintf(&curr->text[curr->head], "<span fgalpha=\"%d\">%s</span>", alpha, tokens[j].token);
+            g_assert(curr->head < AC_LINE_MAX);
+
+            curr->len += strlen(tokens[j].token);
+        }
+    }
+}
+
+void line_generator_finalize(struct line_generator *lg) {
+    // fix when new line contains only like 1 token
+    // ......
+
+    // insert new line
+    lg->current_line = REL_LINE_IDX(lg->current_line, 1);
+
+    // reset active
+    for(int i=0; i<AC_LINE_COUNT; i++) lg->active_start_of_lines[i] = -1;
+
+    // set new line to start at 0
+    lg->active_start_of_lines[lg->current_line] = 0;
+
+    // clear new line
+    lg->lines[lg->current_line].text[0] = '\0';
+    lg->lines[lg->current_line].head = 0;
+}
+
+void line_generator_set_text(struct line_generator *lg, GtkLabel *lbl) {
+    char *head = &lg->output[0];
+    *head = '\0';
+
+    for(int i=AC_LINE_COUNT-1; i>=0; i--) {
+        struct line *curr = &lg->lines[REL_LINE_IDX(lg->current_line, -i)];
+        head += sprintf(head, "%s", curr->text);
+
+        if(i != 0) head += sprintf(head, "\n");
+    }
+
+    for(int i=0; i<(AC_LINE_MAX * AC_LINE_COUNT); i++){
+        if(lg->output[i] == '\0') break;
+        lg->output[i] = tolower(lg->output[i]);
+    }
+
+    gtk_label_set_markup(lbl, lg->output);
+}
 
 struct audio_thread_i {
     GThread * thread_id;
 
-    //struct line_generator line;
+    struct line_generator line;
+
     GMutex text_mutex;
     char text_buffer[32768];
 
@@ -81,8 +176,8 @@ static void on_process(void *userdata)
     audio_thread data = userdata;
     struct pw_buffer *b;
     struct spa_buffer *buf;
-    short *samples, max;
-    uint32_t c, n, n_channels, n_samples, peak;
+    short *samples;
+    uint32_t n_channels, n_samples;
 
     if ((b = pw_stream_dequeue_buffer(data->stream)) == NULL) {
         pw_log_warn("out of buffers: %m");
@@ -217,14 +312,10 @@ void *run_audio_thread(void *userdata) {
 gboolean main_thread_update_label(void *userdata){
     audio_thread data = userdata;
 
-    if(g_mutex_trylock(&data->text_mutex) != 0)
-        return G_SOURCE_CONTINUE;
+    // trylock throws attempt to unlock mutex that's not locked sometimes for osme reason??
+    g_mutex_lock(&data->text_mutex);
 
-#ifdef USE_MARKUP
-    gtk_label_set_markup(data->label, data->text_buffer);
-#else
-    gtk_label_set_text(data->label, data->text_buffer);
-#endif
+    line_generator_set_text(&data->line, data->label);
 
     g_mutex_unlock(&data->text_mutex);
 
@@ -237,8 +328,11 @@ void april_result_handler(void* userdata, AprilResultType result, size_t count, 
 
     g_mutex_lock(&data->text_mutex);
 
-    char *text = data->text_buffer;
-    char *txt_head = text;
+
+    line_generator_update(&data->line, count, tokens);
+    if(result == APRIL_RESULT_RECOGNITION_FINAL) {
+        line_generator_finalize(&data->line);
+    }
 
     //switch(result){
     //    case APRIL_RESULT_RECOGNITION_FINAL: 
@@ -252,6 +346,7 @@ void april_result_handler(void* userdata, AprilResultType result, size_t count, 
     //        break;
     //}
 
+    /*
     int line_width = 0;
     for(int t=0; t<count; t++){
         const char *text = tokens[t].token;
@@ -277,18 +372,15 @@ void april_result_handler(void* userdata, AprilResultType result, size_t count, 
     }
     //printf("\n");
 
-
-    for(int i=0; i<32768; i++){
-        if(text[i] == '\0') break;
-        text[i] = tolower(text[i]);
-    }
-
+    */
     g_mutex_unlock(&data->text_mutex);
     g_idle_add(main_thread_update_label, data);
 }
 
 audio_thread create_audio_thread(){
     audio_thread data = calloc(1, sizeof(struct audio_thread_i));
+
+    line_generator_init(&data->line);
 
     data->model = aam_create_model("/run/media/alex/EncSSD/ASR/own-py/aprilv0_en-us.april");
     if(data->model == NULL) {
