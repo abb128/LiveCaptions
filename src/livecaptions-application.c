@@ -18,7 +18,7 @@
 
 #include "livecaptions-application.h"
 #include "livecaptions-window.h"
-#include "audiocap.h"
+#include "asrproc.h"
 
 G_DEFINE_TYPE (LiveCaptionsApplication, livecaptions_application, ADW_TYPE_APPLICATION)
 
@@ -61,8 +61,8 @@ static void livecaptions_application_activate(GApplication *app) {
     g_assert(LIVECAPTIONS_IS_WINDOW(window));
     LiveCaptionsWindow *wind = LIVECAPTIONS_WINDOW(window);
 
-    audio_thread_set_label(app1->audio, wind->label);
-    gtk_label_set_text(wind->label, "");
+    asr_thread_set_label(app1->asr, wind->label);
+    gtk_label_set_text(wind->label, "...");
 
     gtk_window_set_title(window, "Live Captions");
 

@@ -2,7 +2,9 @@ livecaptions_sources = [
   'main.c',
   'livecaptions-window.c',
   'livecaptions-application.c',
-  'audiocap.c'
+  'audiocap.c',
+  'asrproc.c',
+  'line-gen.c'
 ]
 
 livecaptions_deps = [

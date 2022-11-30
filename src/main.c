@@ -24,6 +24,7 @@
 #include "livecaptions-config.h"
 #include "livecaptions-application.h"
 #include "audiocap.h"
+#include "asrproc.h"
 
 int main (int argc, char *argv[]) {
     aam_api_init();
@@ -36,7 +37,10 @@ int main (int argc, char *argv[]) {
                         pw_get_library_version());
 
 
-    audio_thread audio = create_audio_thread();
+    audio_thread audio = create_audio_thread(16000);
+    asr_thread asr = create_asr_thread();
+
+    audio_thread_set_asr_thread(audio, asr);
 
     g_autoptr(LiveCaptionsApplication) app = NULL;
     int ret;
@@ -54,7 +58,7 @@ int main (int argc, char *argv[]) {
     app = livecaptions_application_new("net.sapples.LiveCaptions", G_APPLICATION_FLAGS_NONE);
 
 
-    app->audio = audio;
+    app->asr = asr;
 
     /*
     * Run the application. This function will block until the application
@@ -69,6 +73,7 @@ int main (int argc, char *argv[]) {
     ret = g_application_run(G_APPLICATION(app), argc, argv);
 
     free_audio_thread(audio);
+    free_asr_thread(asr);
 
     return ret;
 }

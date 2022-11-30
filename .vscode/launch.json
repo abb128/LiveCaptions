@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Launch",
+            "env": {"LD_LIBRARY_PATH": "/home/alex/Downloads/onnxruntime-linux-x64-1.13.1/lib/", "APRIL_LOG_LEVEL": "DEBUG"},
+            "program": "${workspaceFolder}/build/src/livecaptions",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+    ]
+}

@@ -27,7 +27,7 @@ struct _LiveCaptionsApplication {
 
     LiveCaptionsWindow *window;
 
-    audio_thread audio;
+    asr_thread asr;
 };
 
 G_BEGIN_DECLS
