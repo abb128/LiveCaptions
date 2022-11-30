@@ -2,7 +2,7 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="LiveCaptionsWindow" parent="GtkApplicationWindow">
-    <property name="default-width">800</property>
+    <property name="default-width">70</property>
     <property name="default-height">70</property>
     <property name="resizable">False</property>
 
@@ -15,26 +15,30 @@
 
             <child>
               <object class="GtkBox">
-                <property name="orientation">vertical</property>
-                <property name="margin-start">8</property>
-                <property name="margin-end">0</property>
+                <property name="margin-start">4</property>
+                <property name="orientation">vertical</property> <!-- TODO: if label height is small enough, make this horizontal -->
                 <property name="valign">center</property>
 
                 <child>
                   <object class="GtkButton">
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
+                    <property name="margin-start">4</property>
+                    <property name="margin-end">4</property>
+                    <property name="margin-top">4</property>
+                    <property name="margin-bottom">4</property>
                     <property name="valign">center</property>
                     <property name="icon-name">audio-input-microphone-symbolic</property>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkMenuButton">
-                    <property name="margin-top">3</property>
-                    <property name="margin-bottom">3</property>
+                  <object class="GtkButton">
+                    <property name="margin-start">4</property>
+                    <property name="margin-end">4</property>
+                    <property name="margin-top">4</property>
+                    <property name="margin-bottom">4</property>
                     <property name="valign">center</property>
                     <property name="icon-name">preferences-system-symbolic</property>
-                    <property name="menu-model">primary_menu</property>
+                    <property name="action-name">app.preferences</property>
+                    <!--<property name="menu-model">primary_menu</property>-->
                   </object>
                 </child>
               </object>
@@ -48,10 +52,12 @@
                     <property name="label">Text will appear here</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
+                    <property name="xalign">0.0</property>
                     <property name="halign">start</property>
                     <property name="valign">start</property>
+                    <property name="width-chars">80</property>
 
-                    <property name="margin-start">6</property>
+                    <property name="margin-start">2</property>
                     <property name="margin-end">12</property>
                     <property name="margin-top">12</property>
                     <property name="margin-bottom">12</property>

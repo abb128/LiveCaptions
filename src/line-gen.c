@@ -55,7 +55,7 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
 
         // print line
         for(int j=lg->active_start_of_lines[i]; j<end; j++) {
-            bool can_break_nicely = (curr->len > 48) && (tokens[j].token[0] == ' ') && (tokens[j].logprob > -1.0f);
+            bool can_break_nicely = ((curr->len > 48) && (tokens[j].token[0] == ' ') && (tokens[j].logprob > -1.0f)) || (curr->len >= 68);
             bool must_break = (curr->head > (AC_LINE_MAX - 256));
             if((i == lg->current_line) && (can_break_nicely  || must_break)) {
                 // line break

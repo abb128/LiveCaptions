@@ -17,6 +17,7 @@
  */
 
 #include "livecaptions-application.h"
+#include "livecaptions-settings.h"
 #include "livecaptions-window.h"
 #include "asrproc.h"
 
@@ -106,6 +107,20 @@ livecaptions_application_show_about(GSimpleAction *action,
 }
 
 
+static void
+livecaptions_application_show_preferences(GSimpleAction *action,
+                                     GVariant      *parameter,
+                                     gpointer       user_data)
+{
+    GtkApplication *app = GTK_APPLICATION(user_data);
+    GtkWindow *window = gtk_application_get_active_window (app);
+    LiveCaptionsSettings *preferences = g_object_new(LIVECAPTIONS_TYPE_SETTINGS, NULL);
+
+    gtk_window_set_transient_for (GTK_WINDOW (preferences), window);
+    gtk_window_present (GTK_WINDOW (preferences));
+
+}
+
 static void livecaptions_application_init(LiveCaptionsApplication *self) {
     g_autoptr(GSimpleAction) quit_action = g_simple_action_new("quit", NULL);
     g_signal_connect_swapped(quit_action, "activate", G_CALLBACK(g_application_quit), self);
@@ -114,6 +129,10 @@ static void livecaptions_application_init(LiveCaptionsApplication *self) {
     g_autoptr(GSimpleAction) about_action = g_simple_action_new("about", NULL);
     g_signal_connect(about_action, "activate", G_CALLBACK(livecaptions_application_show_about), self);
     g_action_map_add_action(G_ACTION_MAP(self), G_ACTION(about_action));
+
+    g_autoptr(GSimpleAction) prefs_action = g_simple_action_new("preferences", NULL);
+    g_signal_connect(prefs_action, "activate", G_CALLBACK(livecaptions_application_show_preferences), self);
+    g_action_map_add_action(G_ACTION_MAP(self), G_ACTION(prefs_action));
 
     gtk_application_set_accels_for_action(GTK_APPLICATION(self),
                                            "app.quit",

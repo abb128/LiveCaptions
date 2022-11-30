@@ -2,6 +2,7 @@
 <gresources>
   <gresource prefix="/net/sapples/LiveCaptions">
     <file>livecaptions-window.ui</file>
+    <file>livecaptions-settings.ui</file>
     <file>gtk/help-overlay.ui</file>
   </gresource>
 </gresources>

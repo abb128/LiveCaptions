@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.0"/>
+  <template class="LiveCaptionsSettings" parent="AdwPreferencesWindow">
+    <property name="can-navigate-back">True</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="icon_name">preferences-window-layout-symbolic</property>
+        <property name="title">L_ayout</property>
+        <property name="use-underline">True</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="description" translatable="yes"></property>
+            <property name="title" translatable="yes">Text Settings</property>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Change Font</property>
+                <property name="activatable">True</property>
+                <!--<signal name="activated" handler="change_font" swapped="yes"/>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon_name">go-next-symbolic</property>
+                  </object>
+                </child>
+                -->
+
+                <child>
+                  <object class="GtkFontButton">
+
+                  </object>
+                </child>
+              </object>
+            </child>
+
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Show Text in Uppercase</property>
+                <property name="activatable">True</property>
+
+                <child type="suffix">
+                  <object class="GtkSwitch">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <!--<signal name="notify::active" handler="subpage1_activated_cb" swapped="yes"/>-->
+                  </object>
+                </child>
+              </object>
+            </child>
+
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Fade Text based on Confidence</property>
+                <property name="activatable">True</property>
+
+                <child type="suffix">
+                  <object class="GtkSwitch">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <!--<signal name="notify::active" handler="subpage1_activated_cb" swapped="yes"/>-->
+                  </object>
+                </child>
+              </object>
+            </child>
+
+
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="description" translatable="yes">Preferences are grouped together, a group can have a title and a description. Descriptions will be wrapped if they are too long. This page has the following groups:</property>
+            <property name="title" translatable="yes">Groups</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">An Untitled Group</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Pages</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Groups</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Preferences</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Preferences</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Preferences rows are appended to the list box</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="ellipsize">end</property>
+                <property name="label" translatable="yes">Other widgets are appended after the list box</property>
+                <property name="margin-top">12</property>
+                <property name="margin-bottom">12</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Toasts</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Show a Toast</property>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Show</property>
+                    <property name="action-name">toast.show</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="description" translatable="yes">Preferences windows can have subpages.</property>
+            <property name="title" translatable="yes">Subpages</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Go to a Subpage</property>
+                <property name="activatable">True</property>
+                <signal name="activated" handler="subpage1_activated_cb" swapped="yes"/>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon_name">go-next-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Go to Another Subpage</property>
+                <property name="activatable">True</property>
+                <signal name="activated" handler="subpage2_activated_cb" swapped="yes"/>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon_name">go-next-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Credits</property>
+
+            <child>
+              <object class="GtkLabel">
+                <property name="ellipsize">end</property>
+                <property name="label" translatable="yes">LiveCaptions and libaprilasr (c) abb128, 2022</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkLabel">
+                <property name="ellipsize">end</property>
+                <property name="label" translatable="yes">Based on the work of csukuangfj and the k2-fsa/icefall contributors</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
+
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="icon_name">preferences-window-search-symbolic</property>
+        <property name="title">_Search</property>
+        <property name="use-underline">True</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="description">Preferences can be searched, do so using one of the following ways:</property>
+            <property name="title">Searching</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Activate the Search Button</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesRow">
+                <property name="title" translatable="yes">Ctrl + F</property>
+                <child>
+                  <object class="GtkShortcutLabel">
+                    <property name="accelerator">&lt;ctrl&gt;f</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Directly Type Your Search</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+  <object class="AdwStatusPage" id="subpage1">
+    <property name="title" translatable="yes">This is a Subpage</property>
+    <property name="child">
+      <object class="GtkButton">
+        <property name="label" translatable="yes">Return to Preferences</property>
+        <property name="halign">center</property>
+        <signal name="clicked" handler="return_to_preferences_cb" swapped="yes"/>
+        <style>
+          <class name="suggested-action"/>
+          <class name="pill"/>
+        </style>
+      </object>
+    </property>
+  </object>
+  <object class="AdwStatusPage" id="subpage2">
+    <property name="title" translatable="yes">This is Another Subpage</property>
+    <property name="child">
+      <object class="GtkButton">
+        <property name="label" translatable="yes">Return to Preferences</property>
+        <property name="halign">center</property>
+        <signal name="clicked" handler="return_to_preferences_cb" swapped="yes"/>
+        <style>
+          <class name="suggested-action"/>
+          <class name="pill"/>
+        </style>
+      </object>
+    </property>
+  </object>
+</interface>
