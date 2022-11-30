@@ -140,13 +140,17 @@ void line_generator_set_text(struct line_generator *lg, GtkLabel *lbl) {
     gtk_label_set_markup(lbl, lg->output);
 }
 
+#define MAX_AUDIO 16384
 struct audio_thread_i {
+    FILE *fd;
+
     GThread * thread_id;
 
     struct line_generator line;
 
     GMutex text_mutex;
     char text_buffer[32768];
+    short audio_buffer[MAX_AUDIO];
 
     AprilASRModel model;
     AprilASRSession session;
@@ -185,17 +189,28 @@ static void on_process(void *userdata)
     }
 
     buf = b->buffer;
-    if ((samples = buf->datas[0].data) == NULL)
+    if ((samples = buf->datas[0].data) == NULL) {
+        printf("null buff\n");
         return;
+    }
 
     n_channels = data->format.info.raw.channels;
     n_samples = buf->datas[0].chunk->size / sizeof(short);
 
     g_assert(n_channels == 1);
+    g_assert(sizeof(short) == 2);
 
-    aas_feed_pcm16(data->session, samples, n_samples);
-
+    // for some reason, pipewire doesn't like it when feed is called before queue
+    g_assert(n_samples < MAX_AUDIO);
+    memcpy(data->audio_buffer, samples, n_samples * sizeof(short));
     pw_stream_queue_buffer(data->stream, b);
+
+    aas_feed_pcm16(data->session, data->audio_buffer, n_samples);
+
+    fwrite(data->audio_buffer, sizeof(short), n_samples, data->fd);
+    fflush(data->fd);
+
+
 }
 
 /* Be notified when the stream param changes. We're only looking at the
@@ -263,14 +278,20 @@ void *run_audio_thread(void *userdata) {
      * you need to listen to is the process event where you need to produce
      * the data->
      */
-    props = pw_properties_new(PW_KEY_MEDIA_TYPE, "Audio",
-            PW_KEY_MEDIA_CATEGORY, "Monitor",
-            PW_KEY_MEDIA_ROLE, "Accessibility",
-            PW_KEY_STREAM_CAPTURE_SINK, "true",
-            PW_KEY_NODE_NAME, "LiveCaptions",
-            //PW_KEY_NODE_LATENCY, "1/1000",
-            NULL);
+    unsigned int latency_ms = 100;
+    unsigned int rate = aam_get_sample_rate(data->model);
+    unsigned int nom = latency_ms * rate / 1000;
 
+    props = pw_properties_new(
+            PW_KEY_MEDIA_TYPE,     "Audio",
+            PW_KEY_MEDIA_CATEGORY, "Capture",
+            PW_KEY_MEDIA_ROLE,     "Accessibility",
+            PW_KEY_NODE_NAME,      "LiveCaptions",
+            NULL);
+    
+    pw_properties_setf(props, PW_KEY_NODE_RATE, "1/%u", rate);
+    pw_properties_setf(props, PW_KEY_NODE_LATENCY, "%u/%u", nom, rate);
+    pw_properties_set(props, PW_KEY_AUDIO_FORMAT, "S16");
     pw_properties_set(props, PW_KEY_STREAM_CAPTURE_SINK, "true");
 
     data->stream = pw_stream_new_simple(
@@ -287,7 +308,7 @@ void *run_audio_thread(void *userdata) {
     params[0] = spa_format_audio_raw_build(&b, SPA_PARAM_EnumFormat,
             &SPA_AUDIO_INFO_RAW_INIT(
                 .format = SPA_AUDIO_FORMAT_S16,
-                .rate = aam_get_sample_rate(data->model),
+                .rate = rate,
                 .channels = 1 ));
 
     /* Now connect this stream. We ask that our process function is
@@ -296,12 +317,14 @@ void *run_audio_thread(void *userdata) {
               PW_DIRECTION_INPUT,
               PW_ID_ANY,
               PW_STREAM_FLAG_AUTOCONNECT |
-              PW_STREAM_FLAG_MAP_BUFFERS |
-              PW_STREAM_FLAG_RT_PROCESS,
+              PW_STREAM_FLAG_MAP_BUFFERS | PW_STREAM_FLAG_RT_PROCESS,
+              //|
+              //PW_STREAM_FLAG_RT_PROCESS,
               params, 1);
 
     /* and wait while we let things run */
     pw_main_loop_run(data->loop);
+    printf("loop exit!\n");
 
     pw_stream_destroy(data->stream);
     pw_main_loop_destroy(data->loop);
@@ -380,6 +403,7 @@ void april_result_handler(void* userdata, AprilResultType result, size_t count, 
 audio_thread create_audio_thread(){
     audio_thread data = calloc(1, sizeof(struct audio_thread_i));
 
+    data->fd = fopen("/tmp/debug.bin", "w");
     line_generator_init(&data->line);
 
     data->model = aam_create_model("/run/media/alex/EncSSD/ASR/own-py/aprilv0_en-us.april");
@@ -403,6 +427,7 @@ audio_thread create_audio_thread(){
     g_mutex_init(&data->text_mutex);
 
     data->thread_id = g_thread_new("lcap-audiothread", run_audio_thread, data);
+    //run_audio_thread(data);
 
 
     return data;
@@ -413,12 +438,15 @@ void audio_thread_set_label(audio_thread thread, GtkLabel *label) {
 }
 
 void free_audio_thread(audio_thread thread) {
+    pw_main_loop_quit(thread->loop);
+    g_thread_join(thread->thread_id);
+
     aas_free(thread->session);
     aam_free(thread->model);
 
-    /// TODO
-    //pthread_kill(thread->thread_id, SIGINT);
-    //pthread_join(thread->thread_id, NULL);
+    fclose(thread->fd);
+
+    g_thread_unref(thread->thread_id); // ?
 
     free(thread);
 }
