@@ -17,3 +17,8 @@ struct line_generator {
 
     char output[AC_LINE_MAX * AC_LINE_COUNT];
 };
+
+void line_generator_init(struct line_generator *lg);
+void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens);
+void line_generator_finalize(struct line_generator *lg);
+void line_generator_set_text(struct line_generator *lg, GtkLabel *lbl);

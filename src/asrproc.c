@@ -84,8 +84,7 @@ asr_thread create_asr_thread(){
 
     AprilConfig config = {
         .handler = april_result_handler,
-        .userdata = data,
-        .realtime = true
+        .userdata = data
     };
 
     data->session = aas_create_session(data->model, config);
