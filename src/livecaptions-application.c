@@ -62,7 +62,7 @@ static void livecaptions_application_activate(GApplication *app) {
     LiveCaptionsWindow *wind = LIVECAPTIONS_WINDOW(window);
 
     asr_thread_set_label(app1->asr, wind->label);
-    gtk_label_set_text(wind->label, "...");
+    gtk_label_set_text(wind->label, " \n ");
 
     gtk_window_set_title(window, "Live Captions");
 

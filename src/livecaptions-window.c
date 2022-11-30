@@ -28,10 +28,12 @@ static void livecaptions_window_class_init (LiveCaptionsWindowClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
     gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-window.ui");
-    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, header_bar);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, main);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, label);
 }
 
 static void livecaptions_window_init (LiveCaptionsWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
+
+    gtk_window_set_titlebar(GTK_WINDOW(self), GTK_WIDGET(self->main));
 }

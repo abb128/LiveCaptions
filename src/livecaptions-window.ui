@@ -2,38 +2,86 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="LiveCaptionsWindow" parent="GtkApplicationWindow">
-    <property name="default-width">600</property>
-    <property name="default-height">300</property>
+    <property name="default-width">800</property>
+    <property name="default-height">70</property>
+    <property name="resizable">False</property>
+
     <child type="titlebar">
-      <object class="GtkHeaderBar" id="header_bar">
-        <child type="end">
-          <object class="GtkMenuButton">
-            <property name="icon-name">open-menu-symbolic</property>
-            <property name="menu-model">primary_menu</property>
+      <object class="GtkWindowHandle" id="main">
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+
+
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="margin-start">8</property>
+                <property name="margin-end">0</property>
+                <property name="valign">center</property>
+
+                <child>
+                  <object class="GtkButton">
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="valign">center</property>
+                    <property name="icon-name">audio-input-microphone-symbolic</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuButton">
+                    <property name="margin-top">3</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="valign">center</property>
+                    <property name="icon-name">preferences-system-symbolic</property>
+                    <property name="menu-model">primary_menu</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+
+            <child>
+              <object class="GtkOverlay">
+                <child>
+                  <object class="GtkLabel" id="label">
+                    <property name="label">Text will appear here</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="halign">start</property>
+                    <property name="valign">start</property>
+
+                    <property name="margin-start">6</property>
+                    <property name="margin-end">12</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
+
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                      <attribute name="scale" value="2"/>
+                    </attributes>
+                  </object>
+                </child>
+
+                <child type="overlay">
+                  <object class="GtkWindowControls">
+                    <property name="halign">start</property>
+                    <property name="valign">start</property>
+                    <property name="side">start</property>
+                  </object>
+                </child>
+
+                <child type="overlay">
+                  <object class="GtkWindowControls">
+                    <property name="halign">end</property>
+                    <property name="valign">start</property>
+                    <property name="side">end</property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
-        <child type="end">
-          <object class="GtkButton">
-            <property name="icon-name">audio-input-microphone-symbolic</property>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkLabel" id="label">
-        <property name="label">Hello, World!</property>
-        <property name="halign">start</property>
-        <property name="valign">start</property>
-
-        <property name="margin-start">12</property>
-        <property name="margin-end">12</property>
-        <property name="margin-top">12</property>
-        <property name="margin-bottom">12</property>
-
-        <attributes>
-          <attribute name="weight" value="bold"/>
-          <attribute name="scale" value="2"/>
-        </attributes>
       </object>
     </child>
   </template>

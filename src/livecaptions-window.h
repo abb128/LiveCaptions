@@ -24,8 +24,9 @@ struct _LiveCaptionsWindow {
     GtkApplicationWindow  parent_instance;
 
     /* Template widgets */
-    GtkHeaderBar        *header_bar;
-    GtkLabel            *label;
+    GtkWidget        *main;
+    GtkLabel         *label;
+
 };
 
 G_BEGIN_DECLS
