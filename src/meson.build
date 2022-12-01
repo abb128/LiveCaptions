@@ -8,12 +8,16 @@ livecaptions_sources = [
   'line-gen.c'
 ]
 
+cc = meson.get_compiler('c')
+
 livecaptions_deps = [
   dependency('libadwaita-1', version: '>= 1.0'),
   dependency('libpipewire-0.3', version: '>=0.3.41'),
 
-  dependency('/run/media/alex/EncSSD/ASR/own-cmake/build/libaprilasr.pc'),
-  dependency('/run/media/alex/EncSSD/ASR/own-cmake/lib/libonnxruntime.pc')
+  cc.find_library('m', required: false),
+  april_lib
+  #dependency(meson.project_source_root() / 'april-asr' / 'build' /  'libaprilasr.pc'),
+  #dependency(meson.project_source_root() / 'april-asr' / 'lib' /  'libonnxruntime.pc')
 ]
 
 gnome = import('gnome')

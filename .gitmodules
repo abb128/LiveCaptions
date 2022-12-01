@@ -1,0 +1,3 @@
+[submodule "subprojects/april-asr"]
+	path = subprojects/april-asr
+	url = git@github.com:abb128/april-asr.git

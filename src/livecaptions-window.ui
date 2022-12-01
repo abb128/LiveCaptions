@@ -8,6 +8,9 @@
 
     <child type="titlebar">
       <object class="GtkWindowHandle" id="main">
+        <style>
+          <class name="osd"/>
+        </style>
         <child>
           <object class="GtkBox">
             <property name="orientation">horizontal</property>
@@ -27,6 +30,9 @@
                     <property name="margin-bottom">4</property>
                     <property name="valign">center</property>
                     <property name="icon-name">audio-input-microphone-symbolic</property>
+                    <style>
+                      <class name="flat"/>
+                    </style>
                   </object>
                 </child>
                 <child>
@@ -39,6 +45,9 @@
                     <property name="icon-name">preferences-system-symbolic</property>
                     <property name="action-name">app.preferences</property>
                     <!--<property name="menu-model">primary_menu</property>-->
+                    <style>
+                      <class name="flat"/>
+                    </style>
                   </object>
                 </child>
               </object>

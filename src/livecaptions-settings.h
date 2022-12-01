@@ -23,6 +23,13 @@
 struct _LiveCaptionsSettings {
     AdwPreferencesWindow  parent_instance;
 
+    GSettings *settings;
+
+    GtkFontButton *font_button;
+    GtkSwitch *text_upper_switch;
+    GtkSwitch *fade_text_switch;
+    GtkSwitch *filter_profanity_switch;
+
     GtkWidget *subpage1;
     GtkWidget *subpage2;
 

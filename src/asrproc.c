@@ -15,6 +15,8 @@
 #include "line-gen.h"
 
 struct asr_thread_i {
+    size_t silence_counter;
+
     FILE *fd;
 
     GThread * thread_id;
@@ -66,6 +68,21 @@ void april_result_handler(void* userdata, AprilResultType result, size_t count, 
 }
 
 void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts) {
+    bool found_nonzero = false;
+    for(int i=0; i<num_shorts; i++){
+        if((data[i] > 8) || (data[i] < -8)){
+            found_nonzero = true;
+            break;
+        }
+    }
+
+    thread->silence_counter = found_nonzero ? 0 : (thread->silence_counter + num_shorts);
+
+    if(thread->silence_counter >= 24000){
+        thread->silence_counter = 24000;
+        return aas_flush(thread->session);
+    }
+    
     fwrite(data, num_shorts, 2, thread->fd);
     aas_feed_pcm16(thread->session, data, num_shorts); // TODO?
 }

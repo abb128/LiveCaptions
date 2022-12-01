@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.0"/>
+  <template class="LiveCaptionsSettings" parent="AdwPreferencesWindow">
+    <property name="can-navigate-back">True</property>
+    <child>
+      <object class="AdwApplicationWindow">
+        <property name="icon_name">preferences-system-symbolic</property>
+        <property name="title">Setup</property>
+
+        <child>
+          <object class="GtkStack" id="stack">
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">page1</property>
+                <property name="title">In the beginning…</property>
+                <property name="child">
+                  <object class="GtkLabel">
+                    <property name="label">It was dark</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+    </child>
+  </template>
+</interface>

@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="livecaptions">
-	<schema id="net.sapples.LiveCaptions" path="/net/sapples/LiveCaptions/">
-	</schema>
+    <schema id='net.sapples.LiveCaptions' path='/net/sapples/LiveCaptions/'>
+        <key name="font-name" type="s">
+            <default>'Sans Regular'</default>
+            <summary>The font of the captions</summary>
+        </key>
+
+        <key name="font-size" type="i">
+            <range min="1" max="144" />
+            <default>12</default>
+            <summary>The font size of the captions</summary>
+        </key>
+        
+        <key name="text-uppercase" type="b">
+            <default>false</default>
+            <summary>Display letters in uppercase instead of lowercase</summary>
+        </key>
+        
+        <key name="fade-text" type="b">
+            <default>true</default>
+            <summary>Fade text based on confidence</summary>
+        </key>
+        
+        <key name="filter-profanity" type="b">
+            <default>true</default>
+            <summary>Filter swear words and slurs</summary>
+        </key>
+
+        <key name="microphone" type="b">
+            <default>false</default>
+            <summary>Caption microphone input instead of desktop audio</summary>
+        </key>
+
+        <key name="benchmark" type="d">
+            <default>-1.0</default>
+        </key>
+    </schema>
 </schemalist>
