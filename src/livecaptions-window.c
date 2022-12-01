@@ -64,6 +64,9 @@ static void update_font(LiveCaptionsWindow *self) {
 
     // pango_attr_list_unref(attr); // ?
     pango_font_description_free(desc);
+
+
+    gtk_label_set_width_chars(self->label, 100 * font_size / 24);
 }
 
 static void on_settings_change(GSettings *settings,

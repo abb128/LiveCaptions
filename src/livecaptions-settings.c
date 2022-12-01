@@ -81,8 +81,6 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
     gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-settings.ui");
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, subpage1);
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, subpage2);
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, font_button);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, text_upper_switch);
