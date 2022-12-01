@@ -23,7 +23,7 @@
 #include "livecaptions-window.h"
 
 struct _LiveCaptionsApplication {
-    GtkApplication parent_instance;
+    AdwApplication parent_instance;
 
     GSettings *settings;
     LiveCaptionsWindow *window;

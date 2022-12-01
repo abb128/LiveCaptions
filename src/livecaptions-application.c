@@ -25,12 +25,15 @@
 
 G_DEFINE_TYPE (LiveCaptionsApplication, livecaptions_application, ADW_TYPE_APPLICATION)
 
-
-static void init_audio(LiveCaptionsApplication *self) {
+static void deinit_audio(LiveCaptionsApplication *self){
     if(self->audio != NULL) {
         free_audio_thread(self->audio);
         self->audio = NULL;
     }
+}
+
+static void init_audio(LiveCaptionsApplication *self) {
+    deinit_audio(self);
 
     self->audio = create_audio_thread(g_settings_get_boolean(self->settings, "microphone"), self->asr);
 
@@ -47,7 +50,11 @@ LiveCaptionsApplication *livecaptions_application_new (gchar *application_id, GA
 static void livecaptions_application_finalize(GObject *object) {
     LiveCaptionsApplication *self = (LiveCaptionsApplication *)object;
 
+    audio_thread audio = self->audio;
+
     G_OBJECT_CLASS(livecaptions_application_parent_class)->finalize(object);
+
+    if(audio != NULL) free_audio_thread(audio);
 }
 
 
