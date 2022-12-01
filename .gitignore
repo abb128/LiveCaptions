@@ -2,3 +2,4 @@ build
 build/*
 _build
 _build/*
+build-dir

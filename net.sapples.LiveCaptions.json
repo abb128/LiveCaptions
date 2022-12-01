@@ -74,7 +74,8 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "file:///home/alex/Projects/LiveCaptions"
+                    "url" : "file:///home/alex/Projects/LiveCaptions",
+                    "branch" : "main"
                 }
             ]
         }

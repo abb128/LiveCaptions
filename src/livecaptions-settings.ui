@@ -174,32 +174,4 @@
       </object>
     </child>
   </template>
-  <object class="AdwStatusPage" id="subpage1">
-    <property name="title" translatable="yes">This is a Subpage</property>
-    <property name="child">
-      <object class="GtkButton">
-        <property name="label" translatable="yes">Return to Preferences</property>
-        <property name="halign">center</property>
-        <signal name="clicked" handler="return_to_preferences_cb" swapped="yes"/>
-        <style>
-          <class name="suggested-action"/>
-          <class name="pill"/>
-        </style>
-      </object>
-    </property>
-  </object>
-  <object class="AdwStatusPage" id="subpage2">
-    <property name="title" translatable="yes">This is Another Subpage</property>
-    <property name="child">
-      <object class="GtkButton">
-        <property name="label" translatable="yes">Return to Preferences</property>
-        <property name="halign">center</property>
-        <signal name="clicked" handler="return_to_preferences_cb" swapped="yes"/>
-        <style>
-          <class name="suggested-action"/>
-          <class name="pill"/>
-        </style>
-      </object>
-    </property>
-  </object>
 </interface>
