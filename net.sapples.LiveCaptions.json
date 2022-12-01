@@ -1,7 +1,7 @@
 {
     "app-id" : "net.sapples.LiveCaptions",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "master",
+    "runtime-version" : "43",
     "sdk" : "org.gnome.Sdk",
     "command" : "livecaptions",
     "finish-args" : [
