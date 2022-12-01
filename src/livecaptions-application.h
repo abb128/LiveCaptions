@@ -25,9 +25,13 @@
 struct _LiveCaptionsApplication {
     GtkApplication parent_instance;
 
+    GSettings *settings;
     LiveCaptionsWindow *window;
+    GtkWindow *welcome;
 
     asr_thread asr;
+
+    audio_thread audio;
 };
 
 G_BEGIN_DECLS
@@ -35,6 +39,9 @@ G_BEGIN_DECLS
 #define LIVECAPTIONS_TYPE_APPLICATION (livecaptions_application_get_type())
 
 G_DECLARE_FINAL_TYPE (LiveCaptionsApplication, livecaptions_application, LIVECAPTIONS, APPLICATION, AdwApplication)
+
+
+void livecaptions_application_finish_setup(LiveCaptionsApplication *self, gdouble result);
 
 LiveCaptionsApplication *livecaptions_application_new (gchar *application_id,
                                                        GApplicationFlags  flags);

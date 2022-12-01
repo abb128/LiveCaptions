@@ -2,14 +2,8 @@
 <schemalist gettext-domain="livecaptions">
     <schema id='net.sapples.LiveCaptions' path='/net/sapples/LiveCaptions/'>
         <key name="font-name" type="s">
-            <default>'Sans Regular'</default>
+            <default>'Sans Regular 24'</default>
             <summary>The font of the captions</summary>
-        </key>
-
-        <key name="font-size" type="i">
-            <range min="1" max="144" />
-            <default>12</default>
-            <summary>The font size of the captions</summary>
         </key>
         
         <key name="text-uppercase" type="b">
@@ -21,10 +15,15 @@
             <default>true</default>
             <summary>Fade text based on confidence</summary>
         </key>
-        
+
+        <key name="filter-slurs" type="b">
+            <default>true</default>
+            <summary>Filter slurs</summary>
+        </key>
+
         <key name="filter-profanity" type="b">
             <default>true</default>
-            <summary>Filter swear words and slurs</summary>
+            <summary>Filter swear words</summary>
         </key>
 
         <key name="microphone" type="b">

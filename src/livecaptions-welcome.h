@@ -18,25 +18,36 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
+#include <adwaita.h>
+#include "livecaptions-application.h"
 
-struct _LiveCaptionsWindow {
-    GtkApplicationWindow  parent_instance;
+struct _LiveCaptionsWelcome {
+    AdwApplicationWindow  parent_instance;
+
+    LiveCaptionsApplication *application;
 
     GSettings *settings;
 
-    /* Template widgets */
-    GtkWidget        *main;
-    GtkBox           *side_box;
-    GtkToggleButton  *mic_button;
-    GtkLabel         *label;
+    GtkStack *stack;
 
+    GtkStackPage *initial_page;
+    GtkStackPage *benching_page;
+    GtkStackPage *benchmark_result_good;
+    GtkStackPage *accuracy_page;
+    GtkStackPage *benchmark_result_bad;
+
+    GtkProgressBar *benchmark_progress;
+
+    GThread *benchmark_thread;
+
+    volatile gdouble benchmark_progress_v;
+    volatile gdouble benchmark_result_v;
 };
 
 G_BEGIN_DECLS
 
-#define LIVECAPTIONS_TYPE_WINDOW (livecaptions_window_get_type())
+#define LIVECAPTIONS_TYPE_WELCOME (livecaptions_welcome_get_type())
 
-G_DECLARE_FINAL_TYPE (LiveCaptionsWindow, livecaptions_window, LIVECAPTIONS, WINDOW, GtkApplicationWindow)
+G_DECLARE_FINAL_TYPE (LiveCaptionsWelcome, livecaptions_welcome, LIVECAPTIONS, WELCOME, AdwApplicationWindow)
 
 G_END_DECLS

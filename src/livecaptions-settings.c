@@ -43,19 +43,18 @@ subpage2_activated_cb (LiveCaptionsSettings *self)
   adw_preferences_window_present_subpage (ADW_PREFERENCES_WINDOW (self), self->subpage2);
 }
 
+static void rerun_benchmark_cb (LiveCaptionsSettings *self) {
+    gtk_window_close(self);
+
+    gtk_widget_activate_action(self, "app.setup", NULL);
+    
+    gtk_window_destroy(self);
+}
+
 static void
 toast_show_cb (AdwPreferencesWindow *window)
 {
   adw_preferences_window_add_toast (window, adw_toast_new ("Example Toast"));
-}
-
-
-static void issue_tracker_cb(LiveCaptionsSettings *self){
-    system("xdg-open https://github.com/abb128/LiveCaptions/issues");
-}
-
-static void git_cb(LiveCaptionsSettings *self){
-    system("xdg-open https://github.com/abb128/LiveCaptions");
 }
 
 static void about_cb(LiveCaptionsSettings *self) {
@@ -72,19 +71,6 @@ static void about_cb(LiveCaptionsSettings *self) {
         NULL
     };
 
-    //const char *release_notes = "\
-    //    <p>\
-    //    This release adds the following features:\
-    //    </p>\
-    //    <ul>\
-    //    <li>Added a way to export fonts.</li>\
-    //    <li>Better support for <code>monospace</code> fonts.</li>\
-    //    <li>Added a way to preview <em>italic</em> text.</li>\
-    //    <li>Bug fixes and performance improvements.</li>\
-    //    <li>Translation updates.</li>\
-    //    </ul>\
-    //";
-
     about =
         g_object_new (ADW_TYPE_ABOUT_WINDOW,
                     "transient-for", root,
@@ -92,22 +78,14 @@ static void about_cb(LiveCaptionsSettings *self) {
                     "application-name", _("Live Captions"),
                     "developer-name", _("abb128"),
                     "version", "0.0.1",
-                    //"release-notes-version", "1.2.0",
-                    //"release-notes", release_notes,
                     "comments", _("Live Captions is an application for the Linux Desktop that captions desktop audio."),
                     "website", "https://github.com/abb128/LiveCaptions",
                     "issue-url", "https://github.com/abb128/LiveCaptions/issues",
-                    //"support-url", "https://example.org",
                     "copyright", "© 2022 abb128",
                     "license-type", GTK_LICENSE_GPL_3_0,
                     "developers", developers,
-                    //"artists", artists,
                     "translator-credits", _("translator-credits"),
                     NULL);
-
-    //adw_about_window_add_link (ADW_ABOUT_WINDOW (about),
-    //                            _("_Documentation"),
-    //                            "https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/class.AboutWindow.html");
 
     adw_about_window_add_legal_section (ADW_ABOUT_WINDOW (about),
                                         _("Model"),
@@ -123,9 +101,6 @@ static void about_cb(LiveCaptionsSettings *self) {
 }
 
 
-static void change_font(LiveCaptionsSettings *self) {
-
-}
 
 static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
@@ -138,15 +113,16 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, text_upper_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, fade_text_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_profanity_switch);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch);
+
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, benchmark_label);
 
 
-    gtk_widget_class_bind_template_callback (widget_class, change_font);
     gtk_widget_class_bind_template_callback (widget_class, return_to_preferences_cb);
-    gtk_widget_class_bind_template_callback (widget_class, issue_tracker_cb);
-    gtk_widget_class_bind_template_callback (widget_class, git_cb);
     gtk_widget_class_bind_template_callback (widget_class, about_cb);
     gtk_widget_class_bind_template_callback (widget_class, subpage1_activated_cb);
     gtk_widget_class_bind_template_callback (widget_class, subpage2_activated_cb);
+    gtk_widget_class_bind_template_callback (widget_class, rerun_benchmark_cb);
 
     gtk_widget_class_install_action (widget_class, "toast.show", NULL, (GtkWidgetActionActivateFunc) toast_show_cb);
 }
@@ -159,5 +135,13 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     g_settings_bind(self->settings, "text-uppercase", self->text_upper_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "fade-text", self->fade_text_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "filter-profanity", self->filter_profanity_switch, "state", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "filter-slurs", self->filter_slurs_switch, "state", G_SETTINGS_BIND_DEFAULT);
 
+    g_settings_bind(self->settings, "font-name", self->font_button, "font", G_SETTINGS_BIND_DEFAULT);
+
+    char benchmark_result[32];
+    double benchmark_result_v = g_settings_get_double(self->settings, "benchmark");
+    sprintf(benchmark_result, "%.2f", (float)benchmark_result_v);
+    gtk_label_set_text(self->benchmark_label, benchmark_result);
+    //g_settings_bind(self->settings, "benchmark", self->benchmark_label, "label", G_SETTINGS_BIND_GET);
 }

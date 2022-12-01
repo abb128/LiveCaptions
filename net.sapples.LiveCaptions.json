@@ -12,6 +12,7 @@
         "--socket=pulseaudio",
         "--socket=wayland",
         "--filesystem=xdg-run/pipewire-0:ro",
+        "--filesystem=/tmp/aas_debug.bin",
         "--env=LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/lib/pipewire-0.3/jack:/app/lib"
     ],
     "cleanup" : [
@@ -48,20 +49,9 @@
             ]
         },
 
-        {
-            "name" : "livecaptions",
-            "builddir" : true,
-            "buildsystem" : "meson",
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "file:///home/alex/Projects/LiveCaptions"
-                }
-            ]
-        },
 
         {
-            "name": "april-model-v0",
+            "name": "aprilmodel",
             "buildsystem" : "simple",
             "sources" : [
                 {
@@ -72,8 +62,20 @@
                 }
             ],
             "build-commands" : [
-                "mkdir -p ${XDG_DATA_HOME}/LiveCaptions/models",
-                "install -Dm644 aprilv0_en-us.april ${XDG_DATA_HOME}/LiveCaptions/models"
+                "mkdir -p ${FLATPAK_DEST}/LiveCaptions/models",
+                "install -Dm644 aprilv0_en-us.april -t ${FLATPAK_DEST}/LiveCaptions/models"
+            ]
+        },
+
+        {
+            "name" : "livecaptions",
+            "builddir" : true,
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "file:///home/alex/Projects/LiveCaptions"
+                }
             ]
         }
     ]

@@ -29,6 +29,9 @@ struct _LiveCaptionsSettings {
     GtkSwitch *text_upper_switch;
     GtkSwitch *fade_text_switch;
     GtkSwitch *filter_profanity_switch;
+    GtkSwitch *filter_slurs_switch;
+
+    GtkLabel *benchmark_label;
 
     GtkWidget *subpage1;
     GtkWidget *subpage2;

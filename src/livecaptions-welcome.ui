@@ -2,29 +2,358 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <requires lib="libadwaita" version="1.0"/>
-  <template class="LiveCaptionsSettings" parent="AdwPreferencesWindow">
-    <property name="can-navigate-back">True</property>
+  <template class="LiveCaptionsWelcome" parent="AdwApplicationWindow">
+    <property name="modal">True</property>
+    <property name="default-width">480</property>
+    <property name="default-height">480</property>
+    <property name="resizable">False</property>
     <child>
-      <object class="AdwApplicationWindow">
-        <property name="icon_name">preferences-system-symbolic</property>
-        <property name="title">Setup</property>
-
+      <object class="GtkWindowHandle">
         <child>
           <object class="GtkStack" id="stack">
+
+
+<!--
             <child>
-              <object class="GtkStackPage">
-                <property name="name">page1</property>
-                <property name="title">In the beginning…</property>
+              <object class="GtkStackPage" id="pipewire_error_page">
                 <property name="child">
-                  <object class="GtkLabel">
-                    <property name="label">It was dark</property>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="valign">center</property>
+                    <property name="halign">center</property>
+                    <property name="margin-start">48</property>
+                    <property name="margin-end">48</property>
+                    
+                    <child>
+                      <object class="GtkImage">
+                        <property name="name">logo</property>
+                        <property name="icon-name">net.sapples.LiveCaptions</property>
+                        <property name="pixel-size">196</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="icon-dropshadow"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Welcome to Live Captions</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">PipeWire could not be initialized. This likely means your system doesn't have PipeWire installed. Unfortunately, this application currently cannot run without PipeWire.</property>
+                        <property name="wrap">True</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="justify">center</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label">Quit</property>
+                        <property name="halign">center</property>
+                        <property name="action-name">app.quit</property>
+                        <style>
+                          <class name="pill"/>
+                          <class name="destructive-action"/>
+                        </style>
+                      </object>
+                    </child>
+
                   </object>
                 </property>
               </object>
             </child>
+-->
+
+            <child>
+              <object class="GtkStackPage">
+                <property name="child">
+                  <object class="GtkBox" id="initial_page">
+                    <property name="orientation">vertical</property>
+                    <property name="valign">center</property>
+                    <property name="halign">center</property>
+                    <property name="margin-start">48</property>
+                    <property name="margin-end">48</property>
+                    
+                    <child>
+                      <object class="GtkImage">
+                        <property name="name">logo</property>
+                        <property name="icon-name">net.sapples.LiveCaptions</property>
+                        <property name="pixel-size">196</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="icon-dropshadow"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Welcome to Live Captions</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">To get started, a benchmark needs to be performed to check if your system can handle live captioning.</property>
+                        <property name="wrap">True</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="justify">center</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label">Perform Benchmark</property>
+                        <property name="halign">center</property>
+                        <signal name="clicked" handler="do_benchmark" swapped="yes"/>
+                        <style>
+                          <class name="pill"/>
+                          <class name="suggested-action"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkStackPage">
+                <property name="child">
+                  <object class="GtkBox" id="benching_page">
+                    <property name="orientation">vertical</property>
+                    <property name="valign">center</property>
+                    <property name="halign">center</property>
+                    <property name="margin-start">48</property>
+                    <property name="margin-end">48</property>
+                    
+                    <child>
+                      <object class="GtkImage">
+                        <property name="name">logo</property>
+                        <property name="icon-name">net.sapples.LiveCaptions</property>
+                        <property name="pixel-size">196</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="icon-dropshadow"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Performing benchmark...</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkProgressBar" id="benchmark_progress">
+                        <property name="margin-bottom">24</property>
+                        <property name="fraction">0.0</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkStackPage">
+                <property name="child">
+                  <object class="GtkBox" id="benchmark_result_good">
+                    <property name="orientation">vertical</property>
+                    <property name="valign">center</property>
+                    <property name="halign">center</property>
+                    <property name="margin-start">48</property>
+                    <property name="margin-end">48</property>
+                    
+                    <child>
+                      <object class="GtkImage">
+                        <property name="name">logo</property>
+                        <property name="icon-name">net.sapples.LiveCaptions</property>
+                        <property name="pixel-size">196</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="icon-dropshadow"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Benchmark Success</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Success! Your computer can handle live captioning.</property>
+                        <property name="wrap">True</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="justify">center</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label">Continue</property>
+                        <property name="halign">center</property>
+                        <signal name="clicked" handler="continue_to_notice" swapped="yes"/>
+                        <style>
+                          <class name="pill"/>
+                          <class name="suggested-action"/>
+                        </style>
+                      </object>
+                    </child>
+
+                  </object>
+                </property>
+              </object>
+            </child>
+
+
+
+            <child>
+              <object class="GtkStackPage">
+                <property name="child">
+                  <object class="GtkBox" id="accuracy_page">
+                    <property name="orientation">vertical</property>
+                    <property name="valign">center</property>
+                    <property name="halign">center</property>
+                    <property name="margin-start">48</property>
+                    <property name="margin-end">48</property>
+                    
+                    <child>
+                      <object class="GtkImage">
+                        <property name="name">logo</property>
+                        <property name="icon-name">net.sapples.LiveCaptions</property>
+                        <property name="pixel-size">196</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="icon-dropshadow"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Notice</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">The live captions may not be accurate. It may make mistakes, including when it comes to numbers. Please do not rely on the results for anything critical or important.</property>
+                        <property name="wrap">True</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="justify">center</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label">I understand</property>
+                        <property name="halign">center</property>
+                        <signal name="clicked" handler="complete" swapped="yes"/>
+                        <style>
+                          <class name="pill"/>
+                          <class name="suggested-action"/>
+                        </style>
+                      </object>
+                    </child>
+
+                  </object>
+                </property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkStackPage">
+                <property name="child">
+                  <object class="GtkBox" id="benchmark_result_bad">
+                    <property name="orientation">vertical</property>
+                    <property name="valign">center</property>
+                    <property name="halign">center</property>
+                    <property name="margin-start">48</property>
+                    <property name="margin-end">48</property>
+                    
+                    <child>
+                      <object class="GtkImage">
+                        <property name="name">logo</property>
+                        <property name="icon-name">net.sapples.LiveCaptions</property>
+                        <property name="pixel-size">196</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="icon-dropshadow"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Benchmark Fail</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Unfortunately, your system is not powerful enough to perform live captioning in real-time.</property>
+                        <property name="wrap">True</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="justify">center</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label">Quit</property>
+                        <property name="halign">center</property>
+                        <property name="action-name">app.quit</property>
+                        <style>
+                          <class name="pill"/>
+                          <class name="destructive-action"/>
+                        </style>
+                      </object>
+                    </child>
+
+                  </object>
+                </property>
+              </object>
+            </child>
+
+
+
           </object>
         </child>
-
+      </object>
     </child>
   </template>
 </interface>

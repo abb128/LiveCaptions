@@ -19,9 +19,23 @@
 #include "livecaptions-application.h"
 #include "livecaptions-settings.h"
 #include "livecaptions-window.h"
+#include "livecaptions-welcome.h"
 #include "asrproc.h"
+#include "common.h"
 
 G_DEFINE_TYPE (LiveCaptionsApplication, livecaptions_application, ADW_TYPE_APPLICATION)
+
+
+static void init_audio(LiveCaptionsApplication *self) {
+    if(self->audio != NULL) {
+        free_audio_thread(self->audio);
+        self->audio = NULL;
+    }
+
+    self->audio = create_audio_thread(g_settings_get_boolean(self->settings, "microphone"), self->asr);
+
+    asr_thread_flush(self->asr);
+}
 
 LiveCaptionsApplication *livecaptions_application_new (gchar *application_id, GApplicationFlags flags) {
     return g_object_new(LIVECAPTIONS_TYPE_APPLICATION,
@@ -36,38 +50,47 @@ static void livecaptions_application_finalize(GObject *object) {
     G_OBJECT_CLASS(livecaptions_application_parent_class)->finalize(object);
 }
 
+
+static void
+livecaptions_application_show_welcome(LiveCaptionsApplication *self){
+    asr_thread_pause(self->asr, true);
+    GtkApplication *app = GTK_APPLICATION(self);
+    GtkWindow *window = gtk_application_get_active_window(app);
+
+    LiveCaptionsWelcome *welcome = g_object_new(LIVECAPTIONS_TYPE_WELCOME, "application", app, NULL);
+    welcome->application = self;
+
+    gtk_window_set_transient_for (GTK_WINDOW (welcome), window);
+    gtk_window_present (GTK_WINDOW (welcome));
+
+    self->welcome = GTK_WINDOW(welcome);
+}
+
 static void livecaptions_application_activate(GApplication *app) {
     GtkWindow *window;
 
-    /* It's good practice to check your parameters at the beginning of the
-    * function. It helps catch errors early and in development instead of
-    * by your users.
-    */
-    g_assert(GTK_IS_APPLICATION(app));
+    g_assert(LIVECAPTIONS_IS_APPLICATION(app));
+    LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(app);
 
-    /* Get the current window or create one if necessary. */
-    window = gtk_application_get_active_window(GTK_APPLICATION (app));
-    if (window == NULL)
-        window = g_object_new(LIVECAPTIONS_TYPE_WINDOW,
-                              "application", app,
-                              NULL);
+    window = gtk_application_get_active_window(GTK_APPLICATION(app));
+    if(window == NULL) {
+        window = g_object_new(LIVECAPTIONS_TYPE_WINDOW, "application", app, NULL);
 
-    /* Ask the window manager/compositor to present the window. */
+        LiveCaptionsWindow *lc_window = LIVECAPTIONS_WINDOW(window);
+        asr_thread_set_label(self->asr, lc_window->label);
+        gtk_label_set_text(lc_window->label, " \n ");
+    }
+    
     gtk_window_present(window);
 
 
-    g_assert(LIVECAPTIONS_IS_APPLICATION(app));
-    LiveCaptionsApplication *app1 = LIVECAPTIONS_APPLICATION(app);
+    gdouble benchmark_result = g_settings_get_double(self->settings, "benchmark");
 
-    g_assert(LIVECAPTIONS_IS_WINDOW(window));
-    LiveCaptionsWindow *wind = LIVECAPTIONS_WINDOW(window);
+    if(benchmark_result < MINIMUM_BENCHMARK_RESULT) {
+        livecaptions_application_show_welcome(self);
+    }
 
-    asr_thread_set_label(app1->asr, wind->label);
-    gtk_label_set_text(wind->label, " \n ");
-
-    gtk_window_set_title(window, "Live Captions");
-
-    //gtk_window_set_decorated(window, false);
+    init_audio(self);
 }
 
 
@@ -84,6 +107,16 @@ static void livecaptions_application_class_init(LiveCaptionsApplicationClass *kl
     * to do that, we'll just present any existing window.
     */
     app_class->activate = livecaptions_application_activate;
+}
+
+
+static void
+livecaptions_application_show_setup(GSimpleAction *action,
+                                     GVariant      *parameter,
+                                     gpointer       user_data)
+{
+    LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
+    livecaptions_application_show_welcome(self);
 }
 
 static void
@@ -112,13 +145,28 @@ livecaptions_application_show_preferences(GSimpleAction *action,
                                      GVariant      *parameter,
                                      gpointer       user_data)
 {
+    LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
+    if(self->welcome != NULL) return;
+
     GtkApplication *app = GTK_APPLICATION(user_data);
     GtkWindow *window = gtk_application_get_active_window (app);
-    LiveCaptionsSettings *preferences = g_object_new(LIVECAPTIONS_TYPE_SETTINGS, NULL);
+    LiveCaptionsSettings *preferences = g_object_new(LIVECAPTIONS_TYPE_SETTINGS, "application", app, NULL);
 
     gtk_window_set_transient_for (GTK_WINDOW (preferences), window);
     gtk_window_present (GTK_WINDOW (preferences));
 
+}
+
+
+static void on_settings_change(GSettings *settings,
+                               char      *key,
+                               gpointer   user_data){
+
+    LiveCaptionsApplication *self = user_data;
+
+    if(g_str_equal(key, "microphone")) {
+        init_audio(self);
+    }
 }
 
 static void livecaptions_application_init(LiveCaptionsApplication *self) {
@@ -130,6 +178,10 @@ static void livecaptions_application_init(LiveCaptionsApplication *self) {
     g_signal_connect(about_action, "activate", G_CALLBACK(livecaptions_application_show_about), self);
     g_action_map_add_action(G_ACTION_MAP(self), G_ACTION(about_action));
 
+    g_autoptr(GSimpleAction) setup_action = g_simple_action_new("setup", NULL);
+    g_signal_connect(setup_action, "activate", G_CALLBACK(livecaptions_application_show_setup), self);
+    g_action_map_add_action(G_ACTION_MAP(self), G_ACTION(setup_action));
+
     g_autoptr(GSimpleAction) prefs_action = g_simple_action_new("preferences", NULL);
     g_signal_connect(prefs_action, "activate", G_CALLBACK(livecaptions_application_show_preferences), self);
     g_action_map_add_action(G_ACTION_MAP(self), G_ACTION(prefs_action));
@@ -140,4 +192,28 @@ static void livecaptions_application_init(LiveCaptionsApplication *self) {
                                              "<primary>q",
                                              NULL,
                                            });
+
+    gtk_application_set_accels_for_action(GTK_APPLICATION(self),
+                                           "app.preferences",
+                                           (const char *[]) {
+                                             "<primary>p",
+                                             NULL,
+                                           });
+
+    self->settings = g_settings_new("net.sapples.LiveCaptions");
+
+    g_signal_connect(self->settings, "changed", G_CALLBACK(on_settings_change), self);
+    
+}
+
+
+void livecaptions_application_finish_setup(LiveCaptionsApplication *self, gdouble result) {
+    gtk_window_close(self->welcome);
+    gtk_window_destroy(self->welcome);
+    self->welcome = NULL;
+
+    g_settings_set_double(self->settings, "benchmark", result);
+
+    livecaptions_application_show_preferences(NULL, NULL, self);
+    asr_thread_pause(self->asr, false);
 }

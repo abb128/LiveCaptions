@@ -19,6 +19,7 @@ struct audio_thread_i {
 
     asr_thread asr;
 
+    bool microphone;
     size_t sample_rate;
     size_t channels;
 
@@ -126,14 +127,20 @@ void *run_audio_thread(void *userdata) {
     props = pw_properties_new(
             PW_KEY_MEDIA_TYPE,     "Audio",
             PW_KEY_MEDIA_CATEGORY, "Capture",
-            PW_KEY_MEDIA_ROLE,     "Accessibility",
             PW_KEY_NODE_NAME,      "LiveCaptions",
             NULL);
     
     pw_properties_setf(props, PW_KEY_NODE_RATE, "1/%u", rate);
     pw_properties_setf(props, PW_KEY_NODE_LATENCY, "%u/%u", nom, rate);
     pw_properties_set(props, PW_KEY_AUDIO_FORMAT, "S16");
-    pw_properties_set(props, PW_KEY_STREAM_CAPTURE_SINK, "true");
+
+    if(!data->microphone) {
+        pw_properties_set(props, PW_KEY_MEDIA_ROLE, "Accessibility");
+        pw_properties_set(props, PW_KEY_STREAM_CAPTURE_SINK, "true");
+    } else {
+        pw_properties_set(props, PW_KEY_MEDIA_ROLE, "Communication");
+        pw_properties_set(props, PW_KEY_STREAM_CAPTURE_SINK, "false");
+    }
 
     data->stream = pw_stream_new_simple(
             pw_main_loop_get_loop(data->loop),
@@ -172,18 +179,16 @@ void *run_audio_thread(void *userdata) {
     return NULL;
 }
 
-audio_thread create_audio_thread(int sample_rate){
+audio_thread create_audio_thread(bool microphone, asr_thread asr){
     audio_thread data = calloc(1, sizeof(struct audio_thread_i));
     
-    data->sample_rate = sample_rate;
+    data->microphone = microphone;
+    data->asr = asr;
+    data->sample_rate = asr_thread_samplerate(asr);
 
     data->thread_id = g_thread_new("lcap-audiothread", run_audio_thread, data);
 
     return data;
-}
-
-void audio_thread_set_asr_thread(audio_thread thread, asr_thread asr) {
-    thread->asr = asr;
 }
 
 void free_audio_thread(audio_thread thread) {

@@ -16,6 +16,8 @@
 
 #define REL_LINE_IDX(HEAD, IDX) (4*AC_LINE_COUNT + (HEAD) + (IDX)) % AC_LINE_COUNT
 
+static GSettings *settings = NULL;
+
 void line_generator_init(struct line_generator *lg) {
     for(int i=0; i<AC_LINE_COUNT; i++){
         lg->active_start_of_lines[i] = -1;
@@ -23,9 +25,16 @@ void line_generator_init(struct line_generator *lg) {
 
     lg->current_line = 0;
     lg->active_start_of_lines[0] = 0;
+
+    if(settings == NULL) settings = g_settings_new("net.sapples.LiveCaptions");
 }
 
 void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens) {
+    bool use_fade = g_settings_get_boolean(settings, "fade-text");
+    bool use_uppercase = g_settings_get_boolean(settings, "text-uppercase");
+
+    int base_chars = 45;// use_uppercase ? 30 : 45;
+
     for(int i=0; i<AC_LINE_COUNT; i++){
         if(lg->active_start_of_lines[i] == -1) continue;
 
@@ -55,7 +64,9 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
 
         // print line
         for(int j=lg->active_start_of_lines[i]; j<end; j++) {
-            bool can_break_nicely = ((curr->len > 48) && (tokens[j].token[0] == ' ') && (tokens[j].logprob > -1.0f)) || (curr->len >= 68);
+            bool can_break_nicely = ((curr->len > (base_chars)) && (tokens[j].token[0] == ' ') && (tokens[j].logprob > -1.0f))
+                                 || ((curr->len > (base_chars+10)) && (tokens[j].token[0] == ' '))
+                                 || (curr->len >= (base_chars+20));
             bool must_break = (curr->head > (AC_LINE_MAX - 256));
             if((i == lg->current_line) && (can_break_nicely  || must_break)) {
                 // line break
@@ -74,7 +85,12 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
             alpha += 32768;
             if(alpha < 10000) alpha = 10000;
             if(alpha > 65535) alpha = 65535;
-            curr->head += sprintf(&curr->text[curr->head], "<span fgalpha=\"%d\">%s</span>", alpha, tokens[j].token);
+
+            if(use_fade)
+                curr->head += sprintf(&curr->text[curr->head], "<span fgalpha=\"%d\">%s</span>", alpha, tokens[j].token);
+            else
+                curr->head += sprintf(&curr->text[curr->head], "%s", tokens[j].token);
+            
             g_assert(curr->head < AC_LINE_MAX);
 
             curr->len += strlen(tokens[j].token);
@@ -111,9 +127,12 @@ void line_generator_set_text(struct line_generator *lg, GtkLabel *lbl) {
         if(i != 0) head += sprintf(head, "\n");
     }
 
-    for(int i=0; i<(AC_LINE_MAX * AC_LINE_COUNT); i++){
-        if(lg->output[i] == '\0') break;
-        lg->output[i] = tolower(lg->output[i]);
+    bool use_lowercase = !g_settings_get_boolean(settings, "text-uppercase");
+    if(use_lowercase){
+        for(int i=0; i<(AC_LINE_MAX * AC_LINE_COUNT); i++){
+            if(lg->output[i] == '\0') break;
+            lg->output[i] = tolower(lg->output[i]);
+        }
     }
 
     gtk_label_set_markup(lbl, lg->output);

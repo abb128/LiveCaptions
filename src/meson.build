@@ -1,6 +1,7 @@
 livecaptions_sources = [
   'main.c',
   'livecaptions-window.c',
+  'livecaptions-welcome.c',
   'livecaptions-settings.c',
   'livecaptions-application.c',
   'audiocap.c',

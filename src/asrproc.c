@@ -30,6 +30,8 @@ struct asr_thread_i {
     AprilASRSession session;
 
     GtkLabel *label;
+
+    bool pause;
 };
 
 
@@ -41,6 +43,8 @@ void *run_asr_thread(void *userdata) {
 
 gboolean main_thread_update_label(void *userdata){
     asr_thread data = userdata;
+
+    if((data->label == NULL) || (data->pause)) return G_SOURCE_REMOVE;
 
     // trylock throws attempt to unlock mutex that's not locked sometimes for osme reason??
     g_mutex_lock(&data->text_mutex);
@@ -68,6 +72,8 @@ void april_result_handler(void* userdata, AprilResultType result, size_t count, 
 }
 
 void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts) {
+    if((thread->label == NULL) || thread->pause) return;
+
     bool found_nonzero = false;
     for(int i=0; i<num_shorts; i++){
         if((data[i] > 8) || (data[i] < -8)){
@@ -87,13 +93,25 @@ void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts)
     aas_feed_pcm16(thread->session, data, num_shorts); // TODO?
 }
 
-asr_thread create_asr_thread(){
+gpointer asr_thread_get_model(asr_thread thread) {
+    return thread->model;
+}
+
+void asr_thread_pause(asr_thread thread, bool pause) {
+    thread->pause = pause;
+}
+
+int asr_thread_samplerate(asr_thread thread) {
+    return aam_get_sample_rate(thread->model);
+}
+
+asr_thread create_asr_thread(const char *model_path){
     asr_thread data = calloc(1, sizeof(struct asr_thread_i));
 
     data->fd = fopen("/tmp/debug.bin", "w");
     line_generator_init(&data->line);
 
-    data->model = aam_create_model("/run/media/alex/EncSSD/ASR/own-py/aprilv0_en-us.april");
+    data->model = aam_create_model(model_path);
     if(data->model == NULL) {
         printf("Failed to create model\n");
         return NULL;
@@ -120,6 +138,10 @@ asr_thread create_asr_thread(){
 
 void asr_thread_set_label(asr_thread thread, GtkLabel *label) {
     thread->label = label;
+}
+
+void asr_thread_flush(asr_thread thread) {
+    aas_flush(thread->session);
 }
 
 void free_asr_thread(asr_thread thread) {

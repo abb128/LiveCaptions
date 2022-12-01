@@ -9,6 +9,14 @@
         <property name="icon_name">preferences-system-symbolic</property>
         <property name="title">Options</property>
 
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Tip</property>
+            <property name="description" translatable="yes">Right-click the captions window and enable "Always on Top" to keep the captions on top.</property>
+          </object>
+        </child>
+        
         <child>
           <object class="AdwPreferencesGroup">
             <property name="description" translatable="yes"></property>
@@ -29,6 +37,8 @@
                 <child>
                   <object class="GtkFontButton" id="font_button">
                     <property name="valign">center</property>
+                    <property name="use-font">True</property>
+                    <property name="use-size">True</property>
                   </object>
                 </child>
               </object>
@@ -65,10 +75,34 @@
                 </child>
               </object>
             </child>
+          </object>
+        </child>
+
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="description" translatable="yes">Please keep in mind that even if the source audio is clean, the model may sometimes make mistakes and include profanity where there isn't.</property>
+            <property name="title" translatable="yes">Filtering</property>
+
 
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="yes">Filter Profanity</property>
+                <property name="title" translatable="yes">Filter Slurs</property>
+                <property name="activatable">True</property>
+
+                <child type="suffix">
+                  <object class="GtkSwitch" id="filter_slurs_switch">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <!--<signal name="notify::active" handler="subpage1_activated_cb" swapped="yes"/>-->
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Filter Swears</property>
                 <property name="activatable">True</property>
 
                 <child type="suffix">
@@ -93,8 +127,8 @@
                 <property name="subtitle" translatable="yes">Higher is better. Must be higher than 1.0 to keep up with live captioning</property>
 
                 <child>
-                  <object class="GtkLabel">
-                    <property name="label" translatable="yes">69.0</property>
+                  <object class="GtkLabel" id="benchmark_label">
+                    <property name="label" translatable="yes">?</property>
                   </object>
                 </child>
               </object>
@@ -103,7 +137,9 @@
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Re-run Benchmark</property>
                 <property name="activatable">True</property>
-                <signal name="activated" handler="subpage1_activated_cb" swapped="yes"/>
+                <signal name="activated" handler="rerun_benchmark_cb" swapped="yes"/>
+                <!--<property name="action-name">app.setup</property>-->
+
                 <child>
                   <object class="GtkImage">
                     <property name="icon_name">go-next-symbolic</property>

@@ -29,11 +29,66 @@ static void livecaptions_window_class_init (LiveCaptionsWindowClass *klass) {
 
     gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-window.ui");
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, main);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, side_box);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, mic_button);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, label);
 }
+
+static void change_orientable_orientation(LiveCaptionsWindow *self, gint font_height){
+    int text_height = 2 * font_height + 2;
+    int button_height = 16;
+
+    if(text_height > 2 * button_height) {
+        gtk_orientable_set_orientation(GTK_ORIENTABLE(self->side_box), GTK_ORIENTATION_VERTICAL);
+    } else {
+        gtk_orientable_set_orientation(GTK_ORIENTABLE(self->side_box), GTK_ORIENTATION_HORIZONTAL);
+    }
+}
+
+
+static void update_font(LiveCaptionsWindow *self) {
+    PangoFontDescription *desc = pango_font_description_from_string(g_settings_get_string(self->settings, "font-name"));
+    gint font_size = pango_font_description_get_size(desc) / PANGO_SCALE;
+
+    PangoAttribute *attr_font = pango_attr_font_desc_new(desc);
+
+    PangoAttrList *attr = gtk_label_get_attributes(self->label);
+    if(attr == NULL){
+        attr = pango_attr_list_new();
+    }
+    pango_attr_list_change(attr, attr_font);
+
+    gtk_label_set_attributes(self->label, attr);
+
+    change_orientable_orientation(self, font_size);
+
+    // pango_attr_list_unref(attr); // ?
+    pango_font_description_free(desc);
+}
+
+static void on_settings_change(GSettings *settings,
+                               char      *key,
+                               gpointer   user_data){
+
+    if(!g_str_equal(key, "font-name")) return;
+
+    LiveCaptionsWindow *self = user_data;
+
+    update_font(self);
+}
+
 
 static void livecaptions_window_init (LiveCaptionsWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
+    self->settings = g_settings_new("net.sapples.LiveCaptions");
+
     gtk_window_set_titlebar(GTK_WINDOW(self), GTK_WIDGET(self->main));
+
+    g_signal_connect(self->settings, "changed", G_CALLBACK(on_settings_change), self);
+    
+    g_settings_bind(self->settings, "microphone", self->mic_button, "active", G_SETTINGS_BIND_DEFAULT);
+
+
+    update_font(self);
 }

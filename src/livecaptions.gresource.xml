@@ -6,4 +6,9 @@
     <file>livecaptions-settings.ui</file>
     <file>gtk/help-overlay.ui</file>
   </gresource>
+
+  <gresource prefix="/net/sapples/LiveCaptions/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks">microphone2-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">settings-symbolic.svg</file>
+  </gresource>
 </gresources>

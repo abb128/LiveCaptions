@@ -25,6 +25,7 @@
 #include "livecaptions-application.h"
 #include "audiocap.h"
 #include "asrproc.h"
+#include "common.h"
 
 int main (int argc, char *argv[]) {
     aam_api_init();
@@ -37,10 +38,9 @@ int main (int argc, char *argv[]) {
                         pw_get_library_version());
 
 
-    audio_thread audio = create_audio_thread(16000);
-    asr_thread asr = create_asr_thread();
+    char *model_path = GET_MODEL_PATH();
 
-    audio_thread_set_asr_thread(audio, asr);
+    asr_thread asr = create_asr_thread(model_path);
 
     g_autoptr(LiveCaptionsApplication) app = NULL;
     int ret;
@@ -72,7 +72,6 @@ int main (int argc, char *argv[]) {
     */
     ret = g_application_run(G_APPLICATION(app), argc, argv);
 
-    free_audio_thread(audio);
     free_asr_thread(asr);
 
     return ret;
