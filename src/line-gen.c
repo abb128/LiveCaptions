@@ -31,11 +31,10 @@ void line_generator_init(struct line_generator *lg) {
 
 void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens) {
     bool use_fade = g_settings_get_boolean(settings, "fade-text");
-    bool use_uppercase = g_settings_get_boolean(settings, "text-uppercase");
 
-    int base_chars = 45;// use_uppercase ? 30 : 45;
+    size_t base_chars = 45;
 
-    for(int i=0; i<AC_LINE_COUNT; i++){
+    for(size_t i=0; i<AC_LINE_COUNT; i++){
         if(lg->active_start_of_lines[i] == -1) continue;
 
         struct line *curr = &lg->lines[i];

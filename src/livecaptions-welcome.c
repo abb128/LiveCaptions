@@ -24,7 +24,7 @@
 
 #include <april_api.h>
 
-void benchmark_dummy_handler(void* userdata, AprilResultType result, size_t count, const AprilToken* tokens){}
+void benchmark_dummy_handler(void* _userdata, AprilResultType _result, size_t _count, const AprilToken* _tokens){}
 
 
 gboolean update_progress(gpointer userdata){
@@ -41,9 +41,9 @@ gboolean benchmark_finish(gpointer userdata){
     printf("Result: %.2f\n", self->benchmark_result_v);
 
     if(self->benchmark_result_v < MINIMUM_BENCHMARK_RESULT) {
-        gtk_stack_set_visible_child(self->stack, self->benchmark_result_bad);
+        gtk_stack_set_visible_child(self->stack, GTK_WIDGET(self->benchmark_result_bad));
     } else {
-        gtk_stack_set_visible_child(self->stack, self->benchmark_result_good);
+        gtk_stack_set_visible_child(self->stack, GTK_WIDGET(self->benchmark_result_good));
     }
 
     return G_SOURCE_REMOVE;
@@ -120,12 +120,12 @@ void start_benchmark(LiveCaptionsWelcome *self){
 G_DEFINE_TYPE(LiveCaptionsWelcome, livecaptions_welcome, ADW_TYPE_APPLICATION_WINDOW)
 
 static void do_benchmark(LiveCaptionsWelcome *self) {
-    gtk_stack_set_visible_child(self->stack, self->benching_page);
+    gtk_stack_set_visible_child(self->stack, GTK_WIDGET(self->benching_page));
     start_benchmark(self);
 }
 
 static void continue_to_notice(LiveCaptionsWelcome *self) {
-    gtk_stack_set_visible_child(self->stack, self->accuracy_page);
+    gtk_stack_set_visible_child(self->stack, GTK_WIDGET(self->accuracy_page));
 }
 
 static void complete(LiveCaptionsWelcome *self) {

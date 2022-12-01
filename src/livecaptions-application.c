@@ -118,8 +118,8 @@ static void livecaptions_application_class_init(LiveCaptionsApplicationClass *kl
 
 
 static void
-livecaptions_application_show_setup(GSimpleAction *action,
-                                     GVariant      *parameter,
+livecaptions_application_show_setup(GSimpleAction *_action,
+                                     GVariant      *_parameter,
                                      gpointer       user_data)
 {
     LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
@@ -127,8 +127,8 @@ livecaptions_application_show_setup(GSimpleAction *action,
 }
 
 static void
-livecaptions_application_show_about(GSimpleAction *action,
-                                     GVariant      *parameter,
+livecaptions_application_show_about(GSimpleAction *_action,
+                                     GVariant      *_parameter,
                                      gpointer       user_data)
 {
     LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
@@ -148,8 +148,8 @@ livecaptions_application_show_about(GSimpleAction *action,
 
 
 static void
-livecaptions_application_show_preferences(GSimpleAction *action,
-                                     GVariant      *parameter,
+livecaptions_application_show_preferences(GSimpleAction *_action,
+                                     GVariant      *_parameter,
                                      gpointer       user_data)
 {
     LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
