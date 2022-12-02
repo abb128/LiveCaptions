@@ -92,6 +92,7 @@ static void livecaptions_window_init (LiveCaptionsWindow *self) {
     
     g_settings_bind(self->settings, "microphone", self->mic_button, "active", G_SETTINGS_BIND_DEFAULT);
 
+    gtk_window_set_title(GTK_WINDOW(self), "Live Captions");
 
     update_font(self);
 }

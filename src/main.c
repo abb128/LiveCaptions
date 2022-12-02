@@ -56,7 +56,7 @@ int main (int argc, char *argv[]) {
         * application windows, integration with the window manager/compositor, and
         * desktop features such as file opening and single-instance applications.
         */
-        app = livecaptions_application_new("net.sapples.LiveCaptions", G_APPLICATION_DEFAULT_FLAGS);
+        app = livecaptions_application_new("net.sapples.LiveCaptions", G_APPLICATION_FLAGS_NONE);
 
 
         app->asr = asr;
