@@ -32,10 +32,6 @@ struct _LiveCaptionsSettings {
     GtkSwitch *filter_slurs_switch;
 
     GtkLabel *benchmark_label;
-
-    GtkWidget *subpage1;
-    GtkWidget *subpage2;
-
 };
 
 G_BEGIN_DECLS

@@ -3,3 +3,4 @@ build/*
 _build
 _build/*
 build-dir
+.flatpak-builder

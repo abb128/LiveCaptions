@@ -1,8 +1,11 @@
 [Desktop Entry]
-Name=livecaptions
-Exec=livecaptions
-Icon=net.sapples.LiveCaptions
-Terminal=false
 Type=Application
-Categories=GTK;
+Version=0.0.1
+Name=Live Captions
+Comment=Provides live captioning for desktop and microphone audio
+Icon=net.sapples.LiveCaptions
+Exec=livecaptions
+Terminal=false
+Categories=GTK;Utility;Audio;Accessibility;
+Keywords=Closed Captions;Speech to text;Subtitles;Deaf;
 StartupNotify=true

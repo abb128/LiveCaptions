@@ -63,6 +63,7 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
 
         // print line
         for(int j=lg->active_start_of_lines[i]; j<end; j++) {
+            // TODO: More accurate line width calculation and line breaking
             bool can_break_nicely = ((curr->len > (base_chars)) && (tokens[j].token[0] == ' ') && (tokens[j].logprob > -1.0f))
                                  || ((curr->len > (base_chars+10)) && (tokens[j].token[0] == ' '))
                                  || (curr->len >= (base_chars+20));
