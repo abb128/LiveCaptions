@@ -68,6 +68,24 @@ static void about_cb(LiveCaptionsSettings *self) {
                                         GTK_LICENSE_CUSTOM,
                                         "The ASR model was originally trained by Fangjun Kuang (@csukuangfj), and has been finetuned on extra data.");
 
+    adw_about_window_add_legal_section (ADW_ABOUT_WINDOW (about),
+                                        _("april-asr"),
+                                        "Copyright (c) abb128, 2022",
+                                        GTK_LICENSE_UNKNOWN,
+                                        NULL);
+
+    adw_about_window_add_legal_section (ADW_ABOUT_WINDOW (about),
+                                        _("ONNXRuntime"),
+                                        "Copyright (c) Microsoft Corporation",
+                                        GTK_LICENSE_MIT_X11,
+                                        NULL);
+
+    adw_about_window_add_legal_section (ADW_ABOUT_WINDOW (about),
+                                        _("pocketfft"),
+                                        "Copyright (C) 2010-2019 Max-Planck-Society",
+                                        GTK_LICENSE_BSD_3,
+                                        NULL);
+
     adw_about_window_add_acknowledgement_section (ADW_ABOUT_WINDOW (about),
                                                     _("Special thanks to"),
                                                     special_thanks);

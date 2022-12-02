@@ -24,7 +24,13 @@
 
 #include <april_api.h>
 
-void benchmark_dummy_handler(void* _userdata, AprilResultType _result, size_t _count, const AprilToken* _tokens){}
+void benchmark_dummy_handler(G_GNUC_UNUSED void* _userdata,
+                             G_GNUC_UNUSED AprilResultType _result,
+                             G_GNUC_UNUSED size_t _count,
+                             G_GNUC_UNUSED const AprilToken* _tokens)
+{
+    // do nothing with result, we don't need it'
+}
 
 
 gboolean update_progress(gpointer userdata){
@@ -51,8 +57,6 @@ gboolean benchmark_finish(gpointer userdata){
 
 void *run_benchmark_thread(void *userdata) {
     LiveCaptionsWelcome *self = userdata;
-
-    const char *model_path = GET_MODEL_PATH();
 
     AprilASRModel model = asr_thread_get_model(self->application->asr);
     g_assert(model != NULL);
@@ -86,7 +90,7 @@ void *run_benchmark_thread(void *userdata) {
 
 
         time_t current = time(NULL);
-        if(difftime(current, begin) > 40.0) { // if taking over 40 seconds, no chance
+        if(difftime(current, begin) > 40.0) { // if taking over 40 seconds, no chance the benchmark would succeed
             double speed = ((double)sec) / difftime(current, begin);
             self->benchmark_result_v = speed;
             

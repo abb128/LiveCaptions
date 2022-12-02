@@ -102,7 +102,7 @@ static const struct pw_stream_events stream_events = {
     .process = on_process,
 };
 
-static void do_quit(void *userdata, int signal_number) {
+static void do_quit(void *userdata, G_GNUC_UNUSED int signal_number) {
     audio_thread data = userdata;
     pw_main_loop_quit(data->loop);
 }

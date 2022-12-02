@@ -36,6 +36,7 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
 
     for(size_t i=0; i<AC_LINE_COUNT; i++){
         if(lg->active_start_of_lines[i] == -1) continue;
+        size_t start_of_line = lg->active_start_of_lines[i];
 
         struct line *curr = &lg->lines[i];
 
@@ -44,8 +45,8 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
         curr->head = 0;
         curr->len = 0;
 
-        if(lg->active_start_of_lines[i] >= num_tokens) {
-            printf("%d more tokens than exist %d!\n", lg->active_start_of_lines[i], num_tokens);
+        if(start_of_line >= num_tokens) {
+            printf("%ld more tokens than exist %ld!\n", start_of_line, num_tokens);
             if(i == lg->current_line) {
                 // oops... turns out our text isn't long enough for the new line
                 // backtrack to the previous line
@@ -58,11 +59,11 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
         }
 
 
-        int end = lg->active_start_of_lines[REL_LINE_IDX(i, 1)];
+        ssize_t end = lg->active_start_of_lines[REL_LINE_IDX(i, 1)];
         if((end == -1) || (i == lg->current_line)) end = num_tokens;
 
         // print line
-        for(int j=lg->active_start_of_lines[i]; j<end; j++) {
+        for(size_t j=start_of_line; j<((size_t)end); j++) {
             // TODO: More accurate line width calculation and line breaking
             bool can_break_nicely = ((curr->len > (base_chars)) && (tokens[j].token[0] == ' ') && (tokens[j].logprob > -1.0f))
                                  || ((curr->len > (base_chars+10)) && (tokens[j].token[0] == ' '))

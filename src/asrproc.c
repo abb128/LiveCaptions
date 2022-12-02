@@ -33,8 +33,8 @@ struct asr_thread_i {
 };
 
 
-void *run_asr_thread(void *userdata) {
-    asr_thread data = (asr_thread)userdata;
+void *run_asr_thread(G_GNUC_UNUSED void *userdata) {
+    //asr_thread data = (asr_thread)userdata;
 
     return NULL;
 }
@@ -73,7 +73,7 @@ void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts)
     if((thread->label == NULL) || thread->pause) return;
 
     bool found_nonzero = false;
-    for(int i=0; i<num_shorts; i++){
+    for(size_t i=0; i<num_shorts; i++){
         if((data[i] > 8) || (data[i] < -8)){
             found_nonzero = true;
             break;

@@ -1,3 +1,11 @@
+#pragma once
+
+#include <stddef.h>
+#include <stdint.h>
+#include <sys/types.h>
+#include <april_api.h>
+#include <adwaita.h>
+
 #define AC_LINE_MAX 4096
 #define AC_LINE_COUNT 2
 
