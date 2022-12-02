@@ -1,11 +1,10 @@
 [Desktop Entry]
 Type=Application
-Version=0.0.1
 Name=Live Captions
 Comment=Provides live captioning for desktop and microphone audio
 Icon=net.sapples.LiveCaptions
 Exec=livecaptions
 Terminal=false
 Categories=GTK;Utility;Accessibility;
-Keywords=Closed Captions;Speech to text;Subtitles;Deaf;
+Keywords=Closed Captions;Speech to text;Subtitles;Deaf;livecaptions;closedcaptions;stt;asr;
 StartupNotify=true

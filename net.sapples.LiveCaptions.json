@@ -5,14 +5,12 @@
     "sdk" : "org.gnome.Sdk",
     "command" : "livecaptions",
     "finish-args" : [
-        "--share=network",
         "--share=ipc",
         "--socket=fallback-x11",
         "--device=dri",
         "--socket=pulseaudio",
         "--socket=wayland",
         "--filesystem=xdg-run/pipewire-0:ro",
-        "--filesystem=/tmp/aas_debug.bin",
         "--env=LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/lib/pipewire-0.3/jack:/app/lib"
     ],
     "cleanup" : [

@@ -17,8 +17,6 @@
 struct asr_thread_i {
     size_t silence_counter;
 
-    FILE *fd;
-
     GThread * thread_id;
 
     struct line_generator line;
@@ -89,7 +87,6 @@ void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts)
         return aas_flush(thread->session);
     }
     
-    fwrite(data, num_shorts, 2, thread->fd);
     aas_feed_pcm16(thread->session, data, num_shorts); // TODO?
 }
 
@@ -108,7 +105,6 @@ int asr_thread_samplerate(asr_thread thread) {
 asr_thread create_asr_thread(const char *model_path){
     asr_thread data = calloc(1, sizeof(struct asr_thread_i));
 
-    data->fd = fopen("/tmp/debug.bin", "w");
     line_generator_init(&data->line);
 
     data->model = aam_create_model(model_path);
@@ -149,8 +145,6 @@ void free_asr_thread(asr_thread thread) {
 
     aas_free(thread->session);
     aam_free(thread->model);
-
-    fclose(thread->fd);
 
     g_thread_unref(thread->thread_id); // ?
 
