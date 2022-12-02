@@ -1,0 +1,107 @@
+{
+    "app-id" : "net.sapples.LiveCaptions",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "master",
+    "sdk" : "org.gnome.Sdk",
+    "command" : "livecaptions",
+    "finish-args" : [
+        "--device=dri",
+        "--socket=wayland",
+        "--socket=fallback-x11",
+        "--filesystem=xdg-run/pipewire-0:ro",
+        "--env=LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/lib"
+    ],
+    "cleanup" : [
+        "/include",
+        "/lib/pkgconfig",
+        "/man",
+        "/share/doc",
+        "/share/gtk-doc",
+        "/share/man",
+        "/share/pkgconfig",
+        "/onnx_root",
+        "*.la",
+        "*.a"
+    ],
+    "build-options" : {
+        "env" : {
+            "ONNX_ROOT" : "/app/onnx_root"
+        }
+    },
+    "modules" : [
+        {
+            "name" : "onnxruntime-x64",
+            "only-arches" : ["x86_64"],
+            "buildsystem" : "simple",
+            "sources" : [
+                {
+                    "type" : "file",
+                    "dest-filename" : "onnxruntime-linux-x64-1.13.1.tgz",
+                    "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz",
+                    "sha256" : "2c7fdcfa8131b52167b1870747758cb24265952eba975318a67cc840c04ca73e"
+            	}
+            ],
+            "build-commands" : [
+                "tar -xvzf onnxruntime-linux-x64-1.13.1.tgz",
+                "mkdir -p $ONNX_ROOT",
+                "mv onnxruntime-linux-x64-1.13.1/* $ONNX_ROOT",
+
+                "mkdir -p $FLATPAK_DEST/lib",
+                "cp $ONNX_ROOT/lib/* $FLATPAK_DEST/lib"
+            ]
+        },
+
+        {
+            "name" : "onnxruntime-aarch64",
+            "only-arches" : ["aarch64"],
+            "buildsystem" : "simple",
+            "sources" : [
+                {
+                    "type" : "file",
+                    "dest-filename" : "onnxruntime-linux-aarch64-1.13.1.tgz",
+                    "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-aarch64-1.13.1.tgz",
+                    "sha256" : "18e441585de69ef8aab263e2e96f0325729537ebfbd17cdcee78b2eabf0594d2"
+            	}
+            ],
+            "build-commands" : [
+                "tar -xvzf onnxruntime-linux-aarch64-1.13.1.tgz",
+                "mkdir -p $ONNX_ROOT",
+                "mv onnxruntime-linux-aarch64-1.13.1/* $ONNX_ROOT",
+
+                "mkdir -p $FLATPAK_DEST/lib",
+                "cp $ONNX_ROOT/lib/* $FLATPAK_DEST/lib"
+            ]
+        },
+
+
+        {
+            "name": "aprilmodel",
+            "buildsystem" : "simple",
+            "sources" : [
+                {
+                    "type" : "file",
+                    "dest-filename" : "aprilv0_en-us.april",
+                    "url" : "https://april.sapples.net/aprilv0_en-us.april",
+                    "sha256" : "f5a30f888e797769b1b7de143c05d2c92a1702c263b5b71d62fd2028cede5627"
+                }
+            ],
+            "build-commands" : [
+                "mkdir -p ${FLATPAK_DEST}/LiveCaptions/models",
+                "install -Dm644 aprilv0_en-us.april -t ${FLATPAK_DEST}/LiveCaptions/models"
+            ]
+        },
+
+        {
+            "name" : "livecaptions",
+            "builddir" : true,
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/abb128/LiveCaptions",
+                    "branch" : "main"
+                }
+            ]
+        }
+    ]
+}

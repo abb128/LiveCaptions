@@ -19,6 +19,7 @@
 #include <pipewire/pipewire.h>
 #include <glib/gi18n.h>
 #include <stdio.h>
+#include <adwaita.h>
 #include <april_api.h>
 
 #include "livecaptions-config.h"
@@ -41,6 +42,11 @@ int main (int argc, char *argv[]) {
     char *model_path = GET_MODEL_PATH();
 
     asr_thread asr = create_asr_thread(model_path);
+    if(asr == NULL){
+        printf("Loading model failed!\n");
+        // Show GUI error?
+        return 1;
+    }
 
     int ret;
     {
@@ -75,8 +81,6 @@ int main (int argc, char *argv[]) {
     }
 
     free_asr_thread(asr);
-
-    printf("bye :)\n");
 
     return ret;
 }

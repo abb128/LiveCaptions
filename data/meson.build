@@ -29,6 +29,11 @@ if appstream_util.found()
   )
 endif
 
+gnome.compile_schemas(build_by_default: true, depend_files: 'net.sapples.LiveCaptions.gschema.xml')
+devenv = environment()
+devenv.set('GSETTINGS_SCHEMA_DIR', meson.current_build_dir() / 'data')
+meson.add_devenv(devenv)
+
 install_data('net.sapples.LiveCaptions.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
 )
