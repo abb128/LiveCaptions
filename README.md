@@ -1,10 +1,22 @@
 # Live Captions
 
+Linux application that provides live captioning (currently English-only)
 
+![Screenshot of the application](https://github.com/abb128/LiveCaptions/screenshot.png?raw=true)
+
+Features:
+* Simple interface
+* Caption desktop/mic audio locally, audio is never sent anywhere
+* Does not rely on any proprietary services/libraries
+* Adjust font, font size, and text casing
+* Optional token-level confidence text fading
+
+Currently only PipeWire is supported because it seemed to be the only consistent way to capture desktop audio.
+
+This application is built using [aprilasr](https://github.com/abb128/april-asr), a new library for realtime speech recognition.
 
 ## Building with GNOME Builder
 You can build this easily with GNOME Builder. Make sure to download the SDK if it asks you, and click the play button to start the build.
-
 
 ## Building from the terminal
 First you must [download ONNXRuntime v1.13.1](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz), extract it somewhere, and set the environment variables to point to it:
