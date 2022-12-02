@@ -6,6 +6,6 @@ Comment=Provides live captioning for desktop and microphone audio
 Icon=net.sapples.LiveCaptions
 Exec=livecaptions
 Terminal=false
-Categories=GTK;Utility;Audio;Accessibility;
+Categories=GTK;Utility;Accessibility;
 Keywords=Closed Captions;Speech to text;Subtitles;Deaf;
 StartupNotify=true
