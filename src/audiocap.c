@@ -134,12 +134,14 @@ void *run_audio_thread(void *userdata) {
     pw_properties_setf(props, PW_KEY_NODE_LATENCY, "%u/%u", nom, rate);
     pw_properties_set(props, PW_KEY_AUDIO_FORMAT, "S16");
 
-    if(!data->microphone) {
-        pw_properties_set(props, PW_KEY_MEDIA_ROLE, "Accessibility");
-        pw_properties_set(props, PW_KEY_STREAM_CAPTURE_SINK, "true");
-    } else {
+    if(data->microphone) {
+        // Ask pipewire to capture microphone input
         pw_properties_set(props, PW_KEY_MEDIA_ROLE, "Communication");
         pw_properties_set(props, PW_KEY_STREAM_CAPTURE_SINK, "false");
+    } else {
+        // Ask pipewire to capture desktop audio
+        pw_properties_set(props, PW_KEY_MEDIA_ROLE, "Accessibility");
+        pw_properties_set(props, PW_KEY_STREAM_CAPTURE_SINK, "true");
     }
 
     data->stream = pw_stream_new_simple(
@@ -164,10 +166,10 @@ void *run_audio_thread(void *userdata) {
     pw_stream_connect(data->stream,
               PW_DIRECTION_INPUT,
               PW_ID_ANY,
-              PW_STREAM_FLAG_AUTOCONNECT |
-              PW_STREAM_FLAG_MAP_BUFFERS | PW_STREAM_FLAG_RT_PROCESS,
-              //|
-              //PW_STREAM_FLAG_RT_PROCESS,
+              PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_MAP_BUFFERS | PW_STREAM_FLAG_RT_PROCESS,
+                      // TODO: RT_PROCESS may not be correct here, but omitting
+                      // it causes on_process to stop getting called sometimes
+                      // for some reason
               params, 1);
 
     /* and wait while we let things run */

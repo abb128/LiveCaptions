@@ -1,8 +1,8 @@
 # Live Captions
 
-Linux application that provides live captioning (currently English-only)
-
 ![Screenshot of the application](https://github.com/abb128/LiveCaptions/blob/main/screenshot.png?raw=true)
+
+Linux application that provides live captioning (currently English-only)
 
 Features:
 * Simple interface
@@ -14,6 +14,11 @@ Features:
 Currently only PipeWire is supported because it seemed to be the only consistent way to capture desktop audio.
 
 This application is built using [aprilasr](https://github.com/abb128/april-asr), a new library for realtime speech recognition.
+
+## Accuracy
+
+The live captions may not be accurate. It may make mistakes, including when it comes to numbers. Please do not rely on the results for anything critical or important.
+
 
 ## Building with GNOME Builder
 You can build this easily with GNOME Builder. Make sure to download the SDK if it asks you, and click the play button to start the build.

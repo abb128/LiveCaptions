@@ -13,7 +13,7 @@
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Tip</property>
-            <property name="description" translatable="yes">Right-click the captions window and enable "Always on Top" to keep the captions on top.</property>
+            <property name="description" translatable="yes">Right-click the captions window and enable "Always on Top" or "Keep Above Others" to keep the captions on top.</property>
           </object>
         </child>
         
@@ -25,7 +25,7 @@
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Change Font</property>
-                <property name="activatable">True</property>
+                <!--<property name="activatable">True</property>-->
                 <!--<signal name="activated" handler="change_font" swapped="yes"/>
                 <child>
                   <object class="GtkImage">
@@ -48,7 +48,7 @@
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Show Text in Uppercase</property>
-                <property name="activatable">True</property>
+                <!--<property name="activatable">True</property>-->
 
                 <child type="suffix">
                   <object class="GtkSwitch" id="text_upper_switch">
@@ -64,7 +64,7 @@
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Fade Text based on Confidence</property>
-                <property name="activatable">True</property>
+                <!--<property name="activatable">True</property>-->
 
                 <child type="suffix">
                   <object class="GtkSwitch" id="fade_text_switch">
@@ -78,7 +78,7 @@
           </object>
         </child>
 
-
+<!-- TODO
         <child>
           <object class="AdwPreferencesGroup">
             <property name="description" translatable="yes">Please keep in mind that even if the source audio is clean, the model may sometimes make mistakes and include profanity where there isn't.</property>
@@ -94,7 +94,6 @@
                   <object class="GtkSwitch" id="filter_slurs_switch">
                     <property name="visible">True</property>
                     <property name="valign">center</property>
-                    <!--<signal name="notify::active" handler="subpage1_activated_cb" swapped="yes"/>-->
                   </object>
                 </child>
               </object>
@@ -109,14 +108,14 @@
                   <object class="GtkSwitch" id="filter_profanity_switch">
                     <property name="visible">True</property>
                     <property name="valign">center</property>
-                    <!--<signal name="notify::active" handler="subpage1_activated_cb" swapped="yes"/>-->
+
                   </object>
                 </child>
               </object>
             </child>
           </object>
         </child>
-        
+-->
         <child>
           <object class="AdwPreferencesGroup">
             <property name="description" translatable="yes"></property>

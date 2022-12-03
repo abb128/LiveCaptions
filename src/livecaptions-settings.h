@@ -28,8 +28,8 @@ struct _LiveCaptionsSettings {
     GtkFontButton *font_button;
     GtkSwitch *text_upper_switch;
     GtkSwitch *fade_text_switch;
-    GtkSwitch *filter_profanity_switch;
-    GtkSwitch *filter_slurs_switch;
+    //GtkSwitch *filter_profanity_switch;
+    //GtkSwitch *filter_slurs_switch;
 
     GtkLabel *benchmark_label;
 };

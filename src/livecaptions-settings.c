@@ -47,7 +47,7 @@ static void about_cb(LiveCaptionsSettings *self) {
     };
 
     about =
-        g_object_new (ADW_TYPE_ABOUT_WINDOW,
+        g_object_new(ADW_TYPE_ABOUT_WINDOW,
                     "transient-for", root,
                     "application-icon", "net.sapples.LiveCaptions",
                     "application-name", _("Live Captions"),
@@ -62,35 +62,39 @@ static void about_cb(LiveCaptionsSettings *self) {
                     "translator-credits", _("translator-credits"),
                     NULL);
 
-    adw_about_window_add_legal_section (ADW_ABOUT_WINDOW (about),
-                                        _("Model"),
-                                        NULL,
-                                        GTK_LICENSE_CUSTOM,
-                                        "The ASR model was originally trained by Fangjun Kuang (@csukuangfj), and has been finetuned on extra data.");
+    adw_about_window_add_link(ADW_ABOUT_WINDOW(about),
+                              "Discord Chat",
+                              "https://discord.gg/Umdwd9gNDy");
 
-    adw_about_window_add_legal_section (ADW_ABOUT_WINDOW (about),
-                                        _("april-asr"),
-                                        "Copyright (c) abb128, 2022",
-                                        GTK_LICENSE_UNKNOWN,
-                                        NULL);
+    adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
+                                       _("Model"),
+                                       NULL,
+                                       GTK_LICENSE_CUSTOM,
+                                       "The ASR model was originally trained by Fangjun Kuang (@csukuangfj), and has been finetuned on extra data.");
 
-    adw_about_window_add_legal_section (ADW_ABOUT_WINDOW (about),
-                                        _("ONNXRuntime"),
-                                        "Copyright (c) Microsoft Corporation",
-                                        GTK_LICENSE_MIT_X11,
-                                        NULL);
+    adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
+                                       _("april-asr"),
+                                       "Copyright (c) abb128, 2022",
+                                       GTK_LICENSE_UNKNOWN,
+                                       NULL);
 
-    adw_about_window_add_legal_section (ADW_ABOUT_WINDOW (about),
-                                        _("pocketfft"),
-                                        "Copyright (C) 2010-2019 Max-Planck-Society",
-                                        GTK_LICENSE_BSD_3,
-                                        NULL);
+    adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
+                                       _("ONNXRuntime"),
+                                       "Copyright (c) Microsoft Corporation",
+                                       GTK_LICENSE_MIT_X11,
+                                       NULL);
 
-    adw_about_window_add_acknowledgement_section (ADW_ABOUT_WINDOW (about),
-                                                    _("Special thanks to"),
-                                                    special_thanks);
+    adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
+                                       _("pocketfft"),
+                                       "Copyright (C) 2010-2019 Max-Planck-Society",
+                                       GTK_LICENSE_BSD_3,
+                                       NULL);
 
-    gtk_window_present (GTK_WINDOW (about));
+    adw_about_window_add_acknowledgement_section(ADW_ABOUT_WINDOW(about),
+                                                 _("Special thanks to"),
+                                                 special_thanks);
+
+    gtk_window_present(GTK_WINDOW(about));
 }
 
 
@@ -103,8 +107,8 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, font_button);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, text_upper_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, fade_text_switch);
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_profanity_switch);
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch);
+    //gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_profanity_switch);
+    //gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch);
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, benchmark_label);
 
@@ -119,8 +123,8 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
 
     g_settings_bind(self->settings, "text-uppercase", self->text_upper_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "fade-text", self->fade_text_switch, "state", G_SETTINGS_BIND_DEFAULT);
-    g_settings_bind(self->settings, "filter-profanity", self->filter_profanity_switch, "state", G_SETTINGS_BIND_DEFAULT);
-    g_settings_bind(self->settings, "filter-slurs", self->filter_slurs_switch, "state", G_SETTINGS_BIND_DEFAULT);
+    //g_settings_bind(self->settings, "filter-profanity", self->filter_profanity_switch, "state", G_SETTINGS_BIND_DEFAULT);
+    //g_settings_bind(self->settings, "filter-slurs", self->filter_slurs_switch, "state", G_SETTINGS_BIND_DEFAULT);
 
     g_settings_bind(self->settings, "font-name", self->font_button, "font", G_SETTINGS_BIND_DEFAULT);
 
