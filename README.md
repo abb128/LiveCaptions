@@ -13,12 +13,17 @@ Features:
 * Adjust font, font size, and text casing
 * Optional token-level confidence text fading
 
-Unfortunately, not all systems will be compatible. Your system must:
-* be using PipeWire sound server;
-* have a CPU powerful enough to perform live captioning faster than realtime (tested working on i7-2670QM, i5-8265U, Ryzen 5 1600)
+Running this requires a somewhat-decent CPU that can perform realtime captioning, especially if you want to be doing other tasks (such as video decode) while running Live Captions. It has been tested working on:
+* Intel i7-2670QM (2011)
+* Intel i5-8265U (2018)
+* AMD Ryzen 5 1600 (2017)
+
+GPU is not required or used.
 
 ## Accuracy
 The live captions may not be accurate. It may make mistakes, including when it comes to numbers. Please do not rely on the results for anything critical or important.
+
+More models may be trained and released in the future with better and more robust accuracy.
 
 ## Library
 This application is built using [aprilasr](https://github.com/abb128/april-asr), a new library for realtime speech recognition.

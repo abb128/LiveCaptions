@@ -6,21 +6,28 @@
   <summary>Desktop Live Captioning for PipeWire</summary>
 
   <description>
-    <p>
-      Live Captions is an application that provides live captioning for the Linux desktop.
-    </p>
-    <p>
-      Only the English language is supported currently. Other languages may produce gibberish or a bad phonetic translation.
-    </p>
-    <p>
-      Features: <em> Simple interface </em> Caption desktop/mic audio locally, audio is never sent anywhere <em> Does not rely on any proprietary services/libraries </em> Adjust font, font size, and text casing * Optional token-level confidence text fading
-    </p>
-    <p>
-      Unfortunately, not all systems will be compatible. Your system must: <em> be using PipeWire sound server; </em> have a CPU powerful enough to perform live captioning faster than realtime (tested working on i7-2670QM, i5-8265U, Ryzen 5 1600)
-    </p>
-    <p>
-      The live captions may not be accurate. It may make mistakes, including when it comes to numbers. Please do not rely on the results for anything critical or important.
-    </p>
+    <p>Live Captions is an application that provides live captioning for the Linux desktop.</p>
+    <p>Only the English language is supported currently. Other languages may produce gibberish or a bad phonetic translation.</p>
+    <p>Features:</p>
+    <ul>
+      <li>Simple interface</li>
+      <li>Caption desktop/mic audio locally, audio is never sent anywhere</li>
+      <li>Does not rely on any proprietary services/libraries</li>
+      <li>Adjust font, font size, and text casing</li>
+      <li>Optional token-level confidence text fading</li>
+    </ul>
+
+    <p>Running this requires a somewhat-decent CPU that can perform realtime captioning, especially if you want to be doing other tasks (such as video decode) while running Live Captions. It has been tested working on:</p>
+    <ul>
+      </li>Intel i7-2670QM (2011)</li>
+      </li>Intel i5-8265U (2018)</li>
+      </li>AMD Ryzen 5 1600 (2017)</li>
+    </ul>
+
+    <p>GPU is not required or used.</p>
+
+    <p>The live captions may not be accurate. It may make mistakes, including when it comes to numbers. Please do not rely on the results for anything critical or important.</p>
+    <p>More models may be trained and released in the future with better and more robust accuracy.</p>
   </description>
 
 	<metadata_license>CC0-1.0</metadata_license>
