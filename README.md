@@ -29,11 +29,20 @@ More models may be trained and released in the future with better and more robus
 This application is built using [aprilasr](https://github.com/abb128/april-asr), a new library for realtime speech recognition.
 
 # Building
+You must make sure to do a recursive clone to get dependencies:
+```
+$ git clone --recursive https://github.com/abb128/LiveCaptions.git
+```
 
-## Building with GNOME Builder
-You can build this easily with GNOME Builder. Make sure to download the SDK if it asks you, and click the play button to start the build.
+If you forgot, you can initialize submodules like so:
+```
+$ git submodule update --init --recursive
+```
 
-## Building from the terminal
+## Option 1: Building with GNOME Builder (easy)
+You can build this easily with GNOME Builder. After cloning, open the project directory in GNOME Builder, download the SDK if it asks you, and click the play button to build and run.
+
+## Option 2: Building from the terminal (not as easy)
 First you must [download ONNXRuntime v1.13.1](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz), extract it somewhere, and set the environment variables to point to it:
 ```
 $ export ONNX_ROOT=/path/to/onnxruntime-linux-x64-1.13.1/
