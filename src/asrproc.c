@@ -15,6 +15,7 @@
 #include "line-gen.h"
 
 struct asr_thread_i {
+    volatile size_t sound_counter;
     size_t silence_counter;
 
     GThread * thread_id;
@@ -33,8 +34,14 @@ struct asr_thread_i {
 };
 
 
-void *run_asr_thread(G_GNUC_UNUSED void *userdata) {
-    //asr_thread data = (asr_thread)userdata;
+void *run_asr_thread(void *userdata) {
+    asr_thread data = (asr_thread)userdata;
+
+    sleep(5);
+
+    if(data->sound_counter < 512) {
+        gtk_label_set_text(data->label, "[No audio is being received. If you are playing audio,\nmost likely the audio recording isn't working]");
+    }
 
     return NULL;
 }
@@ -74,7 +81,7 @@ void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts)
 
     bool found_nonzero = false;
     for(size_t i=0; i<num_shorts; i++){
-        if((data[i] > 8) || (data[i] < -8)){
+        if((data[i] > 16) || (data[i] < -16)){
             found_nonzero = true;
             break;
         }
@@ -87,6 +94,7 @@ void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts)
         return aas_flush(thread->session);
     }
     
+    thread->sound_counter += num_shorts;
     aas_feed_pcm16(thread->session, data, num_shorts); // TODO?
 }
 

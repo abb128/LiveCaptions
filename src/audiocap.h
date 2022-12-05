@@ -1,6 +1,5 @@
 #pragma once
 
-#include <adwaita.h>
 #include "asrproc.h"
 
 struct audio_thread_i;

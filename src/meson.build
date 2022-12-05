@@ -5,6 +5,8 @@ livecaptions_sources = [
   'livecaptions-settings.c',
   'livecaptions-application.c',
   'audiocap.c',
+  'audiocap-pa.c',
+  'audiocap-pw.c',
   'asrproc.c',
   'line-gen.c'
 ]
@@ -14,6 +16,7 @@ cc = meson.get_compiler('c')
 livecaptions_deps = [
   dependency('libadwaita-1', version: '>= 1.0'),
   dependency('libpipewire-0.3', version: '>=0.3.41'),
+  dependency('libpulse'),
 
   cc.find_library('m', required: false),
   april_lib
