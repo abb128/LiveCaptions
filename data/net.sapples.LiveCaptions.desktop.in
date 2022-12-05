@@ -6,5 +6,5 @@ Icon=net.sapples.LiveCaptions
 Exec=livecaptions
 Terminal=false
 Categories=GTK;Utility;Accessibility;
-Keywords=Closed Captions;Speech to text;Subtitles;Deaf;livecaptions;closedcaptions;stt;asr;
+Keywords=Closed Captions;Speech to text;Subtitles;Deaf;livecaptions;closedcaptions;stt;asr;microphone;
 StartupNotify=true

@@ -3,7 +3,7 @@
 	<id>net.sapples.LiveCaptions</id>
 
   <name>Live Captions</name>
-  <summary>Desktop Live Captioning for PipeWire</summary>
+  <summary>Live Captioning for the desktop</summary>
 
   <description>
     <p>Live Captions is an application that provides live captioning for the Linux desktop.</p>
@@ -19,9 +19,9 @@
 
     <p>Running this requires a somewhat-decent CPU that can perform realtime captioning, especially if you want to be doing other tasks (such as video decode) while running Live Captions. It has been tested working on:</p>
     <ul>
-      </li>Intel i7-2670QM (2011)</li>
-      </li>Intel i5-8265U (2018)</li>
-      </li>AMD Ryzen 5 1600 (2017)</li>
+      <li>Intel i7-2670QM (2011)</li>
+      <li>Intel i5-8265U (2018)</li>
+      <li>AMD Ryzen 5 1600 (2017)</li>
     </ul>
 
     <p>GPU is not required or used.</p>
