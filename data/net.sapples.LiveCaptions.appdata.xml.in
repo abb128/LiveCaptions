@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
 	<id>net.sapples.LiveCaptions</id>
+
   <name>Live Captions</name>
-  <summary>Provides live captioning for the desktop</summary>
+  <summary>Desktop Live Captioning for PipeWire</summary>
+
+  <description>
+    <p>
+      Live Captions is an application that provides live captioning for the Linux desktop.
+    </p>
+    <p>
+      Only the English language is supported currently. Other languages may produce gibberish or a bad phonetic translation.
+    </p>
+    <p>
+      Features: <em> Simple interface </em> Caption desktop/mic audio locally, audio is never sent anywhere <em> Does not rely on any proprietary services/libraries </em> Adjust font, font size, and text casing * Optional token-level confidence text fading
+    </p>
+    <p>
+      Unfortunately, not all systems will be compatible. Your system must: <em> be using PipeWire sound server; </em> have a CPU powerful enough to perform live captioning faster than realtime (tested working on i7-2670QM, i5-8265U, Ryzen 5 1600)
+    </p>
+    <p>
+      The live captions may not be accurate. It may make mistakes, including when it comes to numbers. Please do not rely on the results for anything critical or important.
+    </p>
+  </description>
 
 	<metadata_license>CC0-1.0</metadata_license>
+
+  <launchable type="desktop-id">net.sapples.LiveCaptions.desktop</launchable>
 	<project_license>GPL-3.0-or-later</project_license>
-	<description>
-	  <p>TODO</p>
-	</description>
+  <content_rating type="oars-1.1" />
 </component>
