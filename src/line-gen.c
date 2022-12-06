@@ -45,6 +45,8 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
         curr->head = 0;
         curr->len = 0;
 
+        if(num_tokens == 0) continue;
+
         if(start_of_line >= num_tokens) {
             printf("%ld more tokens than exist %ld!\n", start_of_line, num_tokens);
             if(i == lg->current_line) {
