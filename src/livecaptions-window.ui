@@ -81,17 +81,10 @@
 
                 <child type="overlay">
                   <object class="GtkWindowControls">
-                    <property name="halign">start</property>
-                    <property name="valign">start</property>
-                    <property name="side">start</property>
-                  </object>
-                </child>
-
-                <child type="overlay">
-                  <object class="GtkWindowControls">
                     <property name="halign">end</property>
                     <property name="valign">start</property>
                     <property name="side">end</property>
+                    <property name="decoration-layout">:close</property>
                   </object>
                 </child>
               </object>
