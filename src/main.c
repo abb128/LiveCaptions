@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef LIVE_CAPTIONS_PIPEWIRE
 #include <pipewire/pipewire.h>
+#endif
+
 #include <glib/gi18n.h>
 #include <stdio.h>
 #include <adwaita.h>
@@ -31,13 +34,14 @@
 int main (int argc, char *argv[]) {
     aam_api_init();
 
+#ifdef LIVE_CAPTIONS_PIPEWIRE
     pw_init(&argc, &argv);
 
     fprintf(stdout, "Compiled with libpipewire %s\n"
                     "Linked with libpipewire %s\n",
                         pw_get_headers_version(),
                         pw_get_library_version());
-
+#endif
 
     char *model_path = GET_MODEL_PATH();
 

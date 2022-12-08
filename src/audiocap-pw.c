@@ -1,3 +1,4 @@
+#ifdef LIVE_CAPTIONS_PIPEWIRE
 #include <stdio.h>
 #include <errno.h>
 #include <signal.h>
@@ -193,3 +194,4 @@ audio_thread_pw create_audio_thread_pw(bool microphone, asr_thread asr){
 void free_audio_thread_pw(audio_thread_pw thread) {
     pw_main_loop_quit(thread->loop);
 }
+#endif

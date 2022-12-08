@@ -9,7 +9,6 @@
         "--socket=wayland",
         "--socket=pulseaudio",
         "--socket=fallback-x11",
-        "--filesystem=xdg-run/pipewire-0:ro",
         "--env=LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/lib"
     ],
     "cleanup" : [

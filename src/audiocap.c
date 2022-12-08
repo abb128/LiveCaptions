@@ -12,7 +12,9 @@ struct audio_thread_i {
     bool using_pulse;
     union {
         audio_thread_pa pulse;
+#ifdef LIVE_CAPTIONS_PIPEWIRE
         audio_thread_pw pipewire;
+#endif
     } thread;
 };
 
@@ -26,16 +28,18 @@ void *run_audio_thread(void *userdata) {
 audio_thread create_audio_thread(bool microphone, asr_thread asr){
     audio_thread data = calloc(1, sizeof(struct audio_thread_i));
     
-    //const char *pulse_server_name = pa_get_server()
     data->using_pulse = USE_PULSEAUDIO;
 
     if(data->using_pulse) {
         data->thread.pulse = create_audio_thread_pa(microphone, asr);
         data->thread_id = g_thread_new("lcap-audiothread", run_audio_thread_pa, data->thread.pulse);
-    } else {
+    }
+#ifdef LIVE_CAPTIONS_PIPEWIRE
+      else {
         data->thread.pipewire = create_audio_thread_pw(microphone, asr);
         data->thread_id = g_thread_new("lcap-audiothread", run_audio_thread_pw, data->thread.pipewire);
     }
+#endif
 
     return data;
 }
@@ -43,9 +47,12 @@ audio_thread create_audio_thread(bool microphone, asr_thread asr){
 void free_audio_thread(audio_thread thread) {
     if(thread->using_pulse){
         free_audio_thread_pa(thread->thread.pulse);
-    } else {
+    }
+#ifdef LIVE_CAPTIONS_PIPEWIRE
+      else {
         free_audio_thread_pw(thread->thread.pipewire);
     }
+#endif
 
     g_thread_join(thread->thread_id);
 
@@ -54,9 +61,12 @@ void free_audio_thread(audio_thread thread) {
 
     if(thread->using_pulse){
         free(thread->thread.pulse);
-    }else{
+    }
+#ifdef LIVE_CAPTIONS_PIPEWIRE
+      else {
         free(thread->thread.pipewire);
     }
+#endif
 
     free(thread);
 }

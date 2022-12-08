@@ -157,6 +157,18 @@
 
             <child>
               <object class="AdwActionRow">
+                <property name="title" translatable="yes">Report Accuracy Issue</property>
+                <property name="activatable">True</property>
+                <signal name="activated" handler="report_cb" swapped="yes"/>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon_name">go-next-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">About</property>
                 <property name="activatable">True</property>
                 <signal name="activated" handler="about_cb" swapped="yes"/>

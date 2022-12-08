@@ -15,13 +15,11 @@ cc = meson.get_compiler('c')
 
 livecaptions_deps = [
   dependency('libadwaita-1', version: '>= 1.0'),
-  dependency('libpipewire-0.3', version: '>=0.3.41'),
+  #dependency('libpipewire-0.3', version: '>=0.3.41'),
   dependency('libpulse'),
 
   cc.find_library('m', required: false),
   april_lib
-  #dependency(meson.project_source_root() / 'april-asr' / 'build' /  'libaprilasr.pc'),
-  #dependency(meson.project_source_root() / 'april-asr' / 'lib' /  'libonnxruntime.pc')
 ]
 
 gnome = import('gnome')

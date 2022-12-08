@@ -98,6 +98,13 @@ static void about_cb(LiveCaptionsSettings *self) {
 }
 
 
+static void report_cb(LiveCaptionsSettings *self) {
+    gtk_show_uri(
+        GTK_WINDOW(self),
+        "https://github.com/abb128/LiveCaptions/issues/1",
+        GDK_CURRENT_TIME
+    );
+}
 
 static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
@@ -112,6 +119,7 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, benchmark_label);
 
+    gtk_widget_class_bind_template_callback (widget_class, report_cb);
     gtk_widget_class_bind_template_callback (widget_class, about_cb);
     gtk_widget_class_bind_template_callback (widget_class, rerun_benchmark_cb);
 }
