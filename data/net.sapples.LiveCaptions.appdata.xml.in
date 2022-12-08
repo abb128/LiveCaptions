@@ -11,10 +11,10 @@
     <p>Features:</p>
     <ul>
       <li>Simple interface</li>
-      <li>Caption desktop/mic audio locally, audio is never sent anywhere</li>
-      <li>Does not rely on any proprietary services/libraries</li>
-      <li>Adjust font, font size, and text casing</li>
-      <li>Optional token-level confidence text fading</li>
+      <li>Caption desktop/mic audio locally, powered by deep learning</li>
+      <li>No API keys, no proprietary services/libraries, no telemetry, no spying, no data collection, does not use network permission</li>
+      <li>Adjust font, font size, and toggle uppercase/lowercase</li>
+      <li>Less confident text is faded (darkened), this feature can be disabled</li>
     </ul>
 
     <p>Running this requires a somewhat-decent CPU that can perform realtime captioning, especially if you want to be doing other tasks (such as video decode) while running Live Captions. It has been tested working on:</p>

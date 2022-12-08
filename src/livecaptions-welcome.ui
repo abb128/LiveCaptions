@@ -334,9 +334,9 @@
 
                     <child>
                       <object class="GtkButton">
-                        <property name="label">Quit</property>
+                        <property name="label">Quit and Report</property>
                         <property name="halign">center</property>
-                        <property name="action-name">app.quit</property>
+                        <signal name="clicked" handler="report_perf_cb" swapped="yes"/>
                         <style>
                           <class name="pill"/>
                           <class name="destructive-action"/>

@@ -19,6 +19,7 @@
 #pragma once
 
 #include <adwaita.h>
+#include <time.h>
 #include "livecaptions-application.h"
 
 struct _LiveCaptionsWelcome {
@@ -42,6 +43,8 @@ struct _LiveCaptionsWelcome {
 
     volatile gdouble benchmark_progress_v;
     volatile gdouble benchmark_result_v;
+
+    time_t quit_time;
 };
 
 G_BEGIN_DECLS

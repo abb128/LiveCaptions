@@ -23,13 +23,15 @@
 #include "common.h"
 
 #include <april_api.h>
+#include <stdio.h>
+#include <time.h>
 
 void benchmark_dummy_handler(G_GNUC_UNUSED void* _userdata,
                              G_GNUC_UNUSED AprilResultType _result,
                              G_GNUC_UNUSED size_t _count,
                              G_GNUC_UNUSED const AprilToken* _tokens)
 {
-    // do nothing with result, we don't need it'
+    // do nothing with result, we don't need it
 }
 
 
@@ -136,6 +138,37 @@ static void complete(LiveCaptionsWelcome *self) {
     livecaptions_application_finish_setup(self->application, self->benchmark_result_v);
 }
 
+
+static gboolean quit_after_1s(G_GNUC_UNUSED gpointer user_data) {
+    LiveCaptionsWelcome *self = user_data;
+
+    time_t current_time = time(NULL);
+
+    if(difftime(current_time, self->quit_time) > 2.0) {
+        g_action_group_activate_action(G_ACTION_GROUP(self->application), "quit", NULL);
+        return G_SOURCE_REMOVE;
+    }
+
+    return G_SOURCE_CONTINUE;
+}
+
+const char perf_url[] = "https://github.com/abb128/LiveCaptions/issues/new?title=aprilv0+Benchmark+Fail&body=Hardware%3A+%28please+provide+your+system+specifications+and+hardware+information%29%0D%0A%0D%0ABenchmark+result%3A+";
+static void report_perf_cb(LiveCaptionsWelcome *self){
+    char url_buffer[1024] = { 0 };
+
+    snprintf(url_buffer, 1024, "%s%.2f", perf_url, self->benchmark_result_v);
+
+    gtk_show_uri(
+        GTK_WINDOW(self),
+        url_buffer,
+        GDK_CURRENT_TIME
+    );
+
+    // Quitting here quits before uri is shown, need to wait a moment
+    self->quit_time = time(NULL);
+    g_idle_add(quit_after_1s, self);
+}
+
 static void livecaptions_welcome_class_init (LiveCaptionsWelcomeClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
@@ -151,6 +184,8 @@ static void livecaptions_welcome_class_init (LiveCaptionsWelcomeClass *klass) {
     gtk_widget_class_bind_template_callback (widget_class, do_benchmark);
     gtk_widget_class_bind_template_callback (widget_class, complete);
     gtk_widget_class_bind_template_callback (widget_class, continue_to_notice);
+    gtk_widget_class_bind_template_callback (widget_class, report_perf_cb);
+
 }
 
 
