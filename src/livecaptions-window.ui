@@ -32,6 +32,7 @@
                     <property name="margin-bottom">4</property>
                     <property name="valign">center</property>
                     <property name="icon-name">microphone2-symbolic</property>
+                    <property name="tooltip-text">Caption microphone instead of desktop audio</property>
                     <style>
                       <class name="flat"/>
                     </style>
@@ -46,7 +47,7 @@
                     <property name="valign">center</property>
                     <property name="icon-name">settings-symbolic</property>
                     <property name="action-name">app.preferences</property>
-                    <!--<property name="menu-model">primary_menu</property>-->
+                    <property name="tooltip-text">Adjust preferences</property>
                     <style>
                       <class name="flat"/>
                     </style>

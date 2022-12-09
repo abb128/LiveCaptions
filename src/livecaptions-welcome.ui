@@ -125,6 +125,19 @@
                         </style>
                       </object>
                     </child>
+
+                    <child>
+                      <object class="GtkButton" id="cancel_button">
+                        <property name="margin-top">8</property>
+                        <property name="label">Cancel</property>
+                        <property name="visible">False</property>
+                        <property name="halign">center</property>
+                        <signal name="clicked" handler="cancel_cb" swapped="yes"/>
+                        <style>
+                          <class name="pill"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </property>
               </object>

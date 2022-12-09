@@ -4,6 +4,8 @@
   <requires lib="libadwaita" version="1.0"/>
   <template class="LiveCaptionsSettings" parent="AdwPreferencesWindow">
     <property name="can-navigate-back">True</property>
+    <property name="search-enabled">False</property>
+
     <child>
       <object class="AdwPreferencesPage">
         <property name="icon_name">preferences-system-symbolic</property>
@@ -158,11 +160,12 @@
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Report Accuracy Issue</property>
+                <property name="subtitle" translatable="no">https://github.com/abb128/LiveCaptions/issues/1</property>
                 <property name="activatable">True</property>
                 <signal name="activated" handler="report_cb" swapped="yes"/>
                 <child>
                   <object class="GtkImage">
-                    <property name="icon_name">go-next-symbolic</property>
+                    <property name="icon_name">adw-external-link-symbolic</property>
                   </object>
                 </child>
               </object>

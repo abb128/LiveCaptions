@@ -37,6 +37,8 @@ struct _LiveCaptionsWelcome {
     GtkStackPage *accuracy_page;
     GtkStackPage *benchmark_result_bad;
 
+    GtkButton *cancel_button;
+
     GtkProgressBar *benchmark_progress;
 
     GThread *benchmark_thread;
@@ -52,5 +54,7 @@ G_BEGIN_DECLS
 #define LIVECAPTIONS_TYPE_WELCOME (livecaptions_welcome_get_type())
 
 G_DECLARE_FINAL_TYPE (LiveCaptionsWelcome, livecaptions_welcome, LIVECAPTIONS, WELCOME, AdwApplicationWindow)
+
+void livecaptions_set_cancel_enabled(LiveCaptionsWelcome *self, bool enabled);
 
 G_END_DECLS

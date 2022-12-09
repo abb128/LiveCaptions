@@ -67,6 +67,9 @@ livecaptions_application_show_welcome(LiveCaptionsApplication *self){
     LiveCaptionsWelcome *welcome = g_object_new(LIVECAPTIONS_TYPE_WELCOME, "application", app, NULL);
     welcome->application = self;
 
+    gdouble benchmark_result = g_settings_get_double(self->settings, "benchmark");
+    livecaptions_set_cancel_enabled(welcome, (benchmark_result >= MINIMUM_BENCHMARK_RESULT));
+
     gtk_window_set_transient_for (GTK_WINDOW (welcome), window);
     gtk_window_present (GTK_WINDOW (welcome));
 
@@ -220,7 +223,8 @@ void livecaptions_application_finish_setup(LiveCaptionsApplication *self, gdoubl
     gtk_window_destroy(self->welcome);
     self->welcome = NULL;
 
-    g_settings_set_double(self->settings, "benchmark", result);
+    if(result > 0.0)
+        g_settings_set_double(self->settings, "benchmark", result);
 
     livecaptions_application_show_preferences(NULL, NULL, self);
     asr_thread_pause(self->asr, false);

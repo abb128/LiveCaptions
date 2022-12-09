@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <time.h>
 
-void benchmark_dummy_handler(G_GNUC_UNUSED void* _userdata,
+static void benchmark_dummy_handler(G_GNUC_UNUSED void* _userdata,
                              G_GNUC_UNUSED AprilResultType _result,
                              G_GNUC_UNUSED size_t _count,
                              G_GNUC_UNUSED const AprilToken* _tokens)
@@ -35,7 +35,7 @@ void benchmark_dummy_handler(G_GNUC_UNUSED void* _userdata,
 }
 
 
-gboolean update_progress(gpointer userdata){
+static gboolean update_progress(gpointer userdata){
     LiveCaptionsWelcome *self = userdata;
 
     gtk_progress_bar_set_fraction(self->benchmark_progress, self->benchmark_progress_v);
@@ -44,7 +44,7 @@ gboolean update_progress(gpointer userdata){
 }
 
 
-gboolean benchmark_finish(gpointer userdata){
+static gboolean benchmark_finish(gpointer userdata){
     LiveCaptionsWelcome *self = userdata;
     printf("Result: %.2f\n", self->benchmark_result_v);
 
@@ -57,7 +57,7 @@ gboolean benchmark_finish(gpointer userdata){
     return G_SOURCE_REMOVE;
 }
 
-void *run_benchmark_thread(void *userdata) {
+static void *run_benchmark_thread(void *userdata) {
     LiveCaptionsWelcome *self = userdata;
 
     AprilASRModel model = asr_thread_get_model(self->application->asr);
@@ -115,7 +115,7 @@ end:
     return NULL;
 }
 
-void start_benchmark(LiveCaptionsWelcome *self){
+static void start_benchmark(LiveCaptionsWelcome *self){
     self->benchmark_thread = g_thread_new("initial-benchmark", run_benchmark_thread, self);
 
     g_assert(self->benchmark_thread != NULL);
@@ -169,6 +169,10 @@ static void report_perf_cb(LiveCaptionsWelcome *self){
     g_idle_add(quit_after_1s, self);
 }
 
+static void cancel_cb(LiveCaptionsWelcome *self){
+    livecaptions_application_finish_setup(self->application, -1.0);
+}
+
 static void livecaptions_welcome_class_init (LiveCaptionsWelcomeClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
@@ -181,16 +185,20 @@ static void livecaptions_welcome_class_init (LiveCaptionsWelcomeClass *klass) {
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_result_bad);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_progress);
 
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, cancel_button);
+
     gtk_widget_class_bind_template_callback (widget_class, do_benchmark);
     gtk_widget_class_bind_template_callback (widget_class, complete);
     gtk_widget_class_bind_template_callback (widget_class, continue_to_notice);
     gtk_widget_class_bind_template_callback (widget_class, report_perf_cb);
+    gtk_widget_class_bind_template_callback (widget_class, cancel_cb);
 
 }
 
+void livecaptions_set_cancel_enabled(LiveCaptionsWelcome *self, bool enabled) {
+    gtk_widget_set_visible(GTK_WIDGET(self->cancel_button), enabled);
+}
 
 static void livecaptions_welcome_init (LiveCaptionsWelcome *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
-
-
 }
