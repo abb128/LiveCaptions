@@ -349,6 +349,7 @@
                       <object class="GtkButton">
                         <property name="label">Quit and Report</property>
                         <property name="halign">center</property>
+                        <property name="tooltip-text">Will open https://github.com/abb128/LiveCaptions/issues/new</property>
                         <signal name="clicked" handler="report_perf_cb" swapped="yes"/>
                         <style>
                           <class name="pill"/>

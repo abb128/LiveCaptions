@@ -30,18 +30,18 @@ struct asr_thread_i {
 
     GtkLabel *label;
 
-    bool pause;
+    volatile bool pause;
 };
 
 
 void *run_asr_thread(void *userdata) {
     asr_thread data = (asr_thread)userdata;
 
-    sleep(5);
+    //sleep(40);
 
-    if(data->sound_counter < 512) {
-        gtk_label_set_text(data->label, "[No audio is being received. If you are playing audio,\nmost likely the audio recording isn't working]");
-    }
+    //if(data->sound_counter < 512) {
+    //    gtk_label_set_text(data->label, "[No audio is being received. If you are playing audio,\nmost likely the audio recording isn't working]");
+    //}
 
     return NULL;
 }
