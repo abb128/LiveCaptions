@@ -39,7 +39,7 @@
                     "dest-filename" : "onnxruntime-linux-x64-1.13.1.tgz",
                     "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz",
                     "sha256" : "2c7fdcfa8131b52167b1870747758cb24265952eba975318a67cc840c04ca73e"
-            	}
+                }
             ],
             "build-commands" : [
                 "tar -xvzf onnxruntime-linux-x64-1.13.1.tgz",
@@ -61,7 +61,7 @@
                     "dest-filename" : "onnxruntime-linux-aarch64-1.13.1.tgz",
                     "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-aarch64-1.13.1.tgz",
                     "sha256" : "18e441585de69ef8aab263e2e96f0325729537ebfbd17cdcee78b2eabf0594d2"
-            	}
+                }
             ],
             "build-commands" : [
                 "tar -xvzf onnxruntime-linux-aarch64-1.13.1.tgz",

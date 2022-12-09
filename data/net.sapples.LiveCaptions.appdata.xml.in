@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-	<id>net.sapples.LiveCaptions</id>
+  <id>net.sapples.LiveCaptions</id>
 
   <name>Live Captions</name>
   <summary>Live Captioning for the desktop</summary>
@@ -30,9 +30,9 @@
     <p>More models may be trained and released in the future with better and more robust accuracy.</p>
   </description>
 
-	<metadata_license>CC0-1.0</metadata_license>
+  <metadata_license>CC0-1.0</metadata_license>
 
   <launchable type="desktop-id">net.sapples.LiveCaptions.desktop</launchable>
-	<project_license>GPL-3.0-or-later</project_license>
+  <project_license>GPL-3.0-or-later</project_license>
   <content_rating type="oars-1.1" />
 </component>
