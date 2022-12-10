@@ -11,68 +11,6 @@
       <object class="GtkWindowHandle">
         <child>
           <object class="GtkStack" id="stack">
-
-
-<!--
-            <child>
-              <object class="GtkStackPage" id="pipewire_error_page">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
-                    <property name="valign">center</property>
-                    <property name="halign">center</property>
-                    <property name="margin-start">48</property>
-                    <property name="margin-end">48</property>
-                    
-                    <child>
-                      <object class="GtkImage">
-                        <property name="name">logo</property>
-                        <property name="icon-name">net.sapples.LiveCaptions</property>
-                        <property name="pixel-size">196</property>
-                        <property name="margin-bottom">24</property>
-                        <style>
-                          <class name="icon-dropshadow"/>
-                        </style>
-                      </object>
-                    </child>
-
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="label">Welcome to Live Captions</property>
-                        <property name="margin-bottom">24</property>
-                        <style>
-                          <class name="title-1"/>
-                        </style>
-                      </object>
-                    </child>
-
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="label">PipeWire could not be initialized. This likely means your system doesn't have PipeWire installed. Unfortunately, this application currently cannot run without PipeWire.</property>
-                        <property name="wrap">True</property>
-                        <property name="margin-bottom">24</property>
-                        <property name="justify">center</property>
-                      </object>
-                    </child>
-
-                    <child>
-                      <object class="GtkButton">
-                        <property name="label">Quit</property>
-                        <property name="halign">center</property>
-                        <property name="action-name">app.quit</property>
-                        <style>
-                          <class name="pill"/>
-                          <class name="destructive-action"/>
-                        </style>
-                      </object>
-                    </child>
-
-                  </object>
-                </property>
-              </object>
-            </child>
--->
-
             <child>
               <object class="GtkStackPage">
                 <property name="child">

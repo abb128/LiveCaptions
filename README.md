@@ -28,6 +28,9 @@ More models may be trained and released in the future with better and more robus
 ## Library
 This application is built using [aprilasr](https://github.com/abb128/april-asr), a new library for realtime speech recognition.
 
+## Model credit
+Thanks to Fangjun Kuang for the [pretrained model](https://huggingface.co/csukuangfj/icefall-asr-librispeech-lstm-transducer-stateless2-2022-09-03/tree/main), and thanks to the [icefall](https://github.com/k2-fsa/icefall) contributors for creating the model recipes.
+
 # Building
 You must make sure to do a recursive clone to get dependencies:
 ```
@@ -41,6 +44,8 @@ $ git submodule update --init --recursive
 
 ## Option 1: Building with GNOME Builder (easy)
 You can build this easily with GNOME Builder. After cloning, open the project directory in GNOME Builder, download the SDK if it asks you, and click the play button to build and run.
+
+The Clone Repository feature in GNOME Builder appears to have issues with submodules that prevents building (you will get `ERROR: Subproject exists but has no CMakeLists.txt file`). For now, please follow the above commands to clone the project outside of Builder, then open the folder in Builder. Don't clone it directly within Builder.
 
 Warning: You may experience issues building/running this with the Flatpak version of GNOME Builder (for example, some cryptic X Window System error). If possible, please use your distro's native packaged version of GNOME Builder instead (e.g. `sudo apt install gnome-builder`).
 
