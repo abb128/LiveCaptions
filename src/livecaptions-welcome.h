@@ -38,6 +38,7 @@ struct _LiveCaptionsWelcome {
     GtkStackPage *benchmark_result_bad;
 
     GtkButton *cancel_button;
+    GtkButton *quit_button;
 
     GtkProgressBar *benchmark_progress;
 

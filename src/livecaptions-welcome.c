@@ -186,6 +186,7 @@ static void livecaptions_welcome_class_init (LiveCaptionsWelcomeClass *klass) {
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_progress);
 
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, cancel_button);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, quit_button);
 
     gtk_widget_class_bind_template_callback (widget_class, do_benchmark);
     gtk_widget_class_bind_template_callback (widget_class, complete);
@@ -197,6 +198,7 @@ static void livecaptions_welcome_class_init (LiveCaptionsWelcomeClass *klass) {
 
 void livecaptions_set_cancel_enabled(LiveCaptionsWelcome *self, bool enabled) {
     gtk_widget_set_visible(GTK_WIDGET(self->cancel_button), enabled);
+    gtk_widget_set_visible(GTK_WIDGET(self->quit_button), !enabled);
 }
 
 static void livecaptions_welcome_init (LiveCaptionsWelcome *self) {

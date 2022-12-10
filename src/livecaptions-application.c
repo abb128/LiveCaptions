@@ -61,16 +61,16 @@ static void livecaptions_application_finalize(GObject *object) {
 static void
 livecaptions_application_show_welcome(LiveCaptionsApplication *self){
     asr_thread_pause(self->asr, true);
-    GtkApplication *app = GTK_APPLICATION(self);
-    GtkWindow *window = gtk_application_get_active_window(app);
+    GtkWindow *window = GTK_WINDOW(self->window);
 
-    LiveCaptionsWelcome *welcome = g_object_new(LIVECAPTIONS_TYPE_WELCOME, "application", app, NULL);
+    gtk_widget_set_visible(GTK_WIDGET(window), false);
+
+    LiveCaptionsWelcome *welcome = g_object_new(LIVECAPTIONS_TYPE_WELCOME, "application", GTK_APPLICATION(self), NULL);
     welcome->application = self;
 
     gdouble benchmark_result = g_settings_get_double(self->settings, "benchmark");
     livecaptions_set_cancel_enabled(welcome, (benchmark_result >= MINIMUM_BENCHMARK_RESULT));
 
-    gtk_window_set_transient_for (GTK_WINDOW (welcome), window);
     gtk_window_present (GTK_WINDOW (welcome));
 
     self->welcome = GTK_WINDOW(welcome);
@@ -89,10 +89,11 @@ static void livecaptions_application_activate(GApplication *app) {
         LiveCaptionsWindow *lc_window = LIVECAPTIONS_WINDOW(window);
         asr_thread_set_label(self->asr, lc_window->label);
         gtk_label_set_text(lc_window->label, " \n ");
-    }
-    
-    gtk_window_present(window);
 
+        self->window = lc_window;
+    }
+
+    gtk_window_present(window);
 
     gdouble benchmark_result = g_settings_get_double(self->settings, "benchmark");
 
@@ -219,6 +220,8 @@ static void livecaptions_application_init(LiveCaptionsApplication *self) {
 
 
 void livecaptions_application_finish_setup(LiveCaptionsApplication *self, gdouble result) {
+    gtk_widget_set_visible(GTK_WIDGET(self->window), true);
+
     gtk_window_close(self->welcome);
     gtk_window_destroy(self->welcome);
     self->welcome = NULL;

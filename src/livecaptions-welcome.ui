@@ -138,6 +138,18 @@
                         </style>
                       </object>
                     </child>
+
+                    <child>
+                      <object class="GtkButton" id="quit_button">
+                        <property name="margin-top">8</property>
+                        <property name="label">Quit</property>
+                        <property name="halign">center</property>
+                        <property name="action-name">app.quit</property>
+                        <style>
+                          <class name="pill"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </property>
               </object>
