@@ -30,6 +30,15 @@
     <p>More models may be trained and released in the future with better and more robust accuracy.</p>
   </description>
 
+  <url type="homepage">https://github.com/abb128/LiveCaptions</url>
+  <url type="bugtracker">https://github.com/abb128/LiveCaptions/issues</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://github.com/abb128/LiveCaptions/blob/main/screenshot.png?raw=true</image>
+    </screenshot>
+  </screenshots>
+
   <metadata_license>CC0-1.0</metadata_license>
 
   <launchable type="desktop-id">net.sapples.LiveCaptions.desktop</launchable>
