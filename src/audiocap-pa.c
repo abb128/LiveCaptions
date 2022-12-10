@@ -82,9 +82,6 @@ void *run_audio_thread_pa(void *userdata) {
         pa_threaded_mainloop_wait(data->mainloop);
     }
 
-    printf("Sink name: %s\n", data->sink_name);
-    printf("Source name: %s\n", data->source_name);
-
     // Create a recording stream
     pa_sample_spec sample_specifications;
     sample_specifications.format = PA_SAMPLE_S16LE;
@@ -125,10 +122,14 @@ void *run_audio_thread_pa(void *userdata) {
         pa_threaded_mainloop_wait(data->mainloop);
     }
 
-    pa_threaded_mainloop_unlock(data->mainloop);
-
-    // Uncork the stream so it will start playing
+    // Uncork the stream so it will start recording
     pa_stream_cork(data->stream, 0, stream_success_cb, data);
+    for(;;) {
+        if (pa_stream_is_corked(data->stream) == 0) break;
+        pa_threaded_mainloop_wait(data->mainloop);
+    }
+
+    pa_threaded_mainloop_unlock(data->mainloop);
 
     return NULL;
 }
@@ -176,7 +177,8 @@ void stream_read_cb(pa_stream *stream, size_t nbytes, void *userdata) {
 }
 
 void stream_success_cb(pa_stream *stream, int success, void *userdata) {
-    return;
+    audio_thread_pa data = userdata;
+    pa_threaded_mainloop_signal(data->mainloop, 0);
 }
 
 
@@ -192,7 +194,19 @@ audio_thread_pa create_audio_thread_pa(bool microphone, asr_thread asr) {
 
 
 void free_audio_thread_pa(audio_thread_pa thread){
+    // Cork the stream
+    pa_threaded_mainloop_lock(thread->mainloop);
     pa_stream_cork(thread->stream, 1, stream_success_cb, thread);
+    for(;;) {
+        if (pa_stream_is_corked(thread->stream) == 1) break;
+        pa_threaded_mainloop_wait(thread->mainloop);
+    }
+    pa_threaded_mainloop_unlock(thread->mainloop);
+
+    // Stop the main loop
+    pa_threaded_mainloop_stop(thread->mainloop);
+
+    // Disconnect and free everything
     pa_stream_disconnect(thread->stream);
     pa_stream_unref(thread->stream);
 

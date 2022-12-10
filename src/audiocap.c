@@ -7,7 +7,9 @@
 #define USE_PULSEAUDIO 1
 
 struct audio_thread_i {
-    GThread * thread_id;
+#ifdef LIVE_CAPTIONS_PIPEWIRE
+    GThread * pw_thread_id;
+#endif
 
     bool using_pulse;
     union {
@@ -32,12 +34,12 @@ audio_thread create_audio_thread(bool microphone, asr_thread asr){
 
     if(data->using_pulse) {
         data->thread.pulse = create_audio_thread_pa(microphone, asr);
-        data->thread_id = g_thread_new("lcap-audiothread", run_audio_thread_pa, data->thread.pulse);
+        run_audio_thread_pa(data->thread.pulse);
     }
 #ifdef LIVE_CAPTIONS_PIPEWIRE
       else {
         data->thread.pipewire = create_audio_thread_pw(microphone, asr);
-        data->thread_id = g_thread_new("lcap-audiothread", run_audio_thread_pw, data->thread.pipewire);
+        data->pw_thread_id = g_thread_new("lcap-audiothread", run_audio_thread_pw, data->thread.pipewire);
     }
 #endif
 
@@ -47,23 +49,13 @@ audio_thread create_audio_thread(bool microphone, asr_thread asr){
 void free_audio_thread(audio_thread thread) {
     if(thread->using_pulse){
         free_audio_thread_pa(thread->thread.pulse);
-    }
-#ifdef LIVE_CAPTIONS_PIPEWIRE
-      else {
-        free_audio_thread_pw(thread->thread.pipewire);
-    }
-#endif
-
-    g_thread_join(thread->thread_id);
-
-    g_thread_unref(thread->thread_id); // ?
-
-
-    if(thread->using_pulse){
         free(thread->thread.pulse);
     }
 #ifdef LIVE_CAPTIONS_PIPEWIRE
       else {
+        free_audio_thread_pw(thread->thread.pipewire);
+        g_thread_join(thread->pw_thread_id);
+        g_thread_unref(thread->pw_thread_id); // ?
         free(thread->thread.pipewire);
     }
 #endif
