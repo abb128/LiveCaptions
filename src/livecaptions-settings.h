@@ -28,6 +28,10 @@ struct _LiveCaptionsSettings {
     GtkFontButton *font_button;
     GtkSwitch *text_upper_switch;
     GtkSwitch *fade_text_switch;
+
+    AdwActionRow *font_button_ar;
+    AdwActionRow *text_upper_switch_ar;
+    AdwActionRow *fade_text_switch_ar;
     //GtkSwitch *filter_profanity_switch;
     //GtkSwitch *filter_slurs_switch;
 

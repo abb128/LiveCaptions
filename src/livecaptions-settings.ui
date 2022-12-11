@@ -25,18 +25,10 @@
             <property name="title" translatable="yes">Text Settings</property>
 
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwActionRow" id="font_button_ar">
                 <property name="title" translatable="yes">Change Font</property>
-                <!--<property name="activatable">True</property>-->
-                <!--<signal name="activated" handler="change_font" swapped="yes"/>
-                <child>
-                  <object class="GtkImage">
-                    <property name="icon_name">go-next-symbolic</property>
-                  </object>
-                </child>
-                -->
 
-                <child>
+                <child type="suffix">
                   <object class="GtkFontButton" id="font_button">
                     <property name="valign">center</property>
                     <property name="use-font">True</property>
@@ -48,15 +40,13 @@
 
 
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwActionRow" id="text_upper_switch_ar">
                 <property name="title" translatable="yes">Show Text in Uppercase</property>
-                <!--<property name="activatable">True</property>-->
 
                 <child type="suffix">
                   <object class="GtkSwitch" id="text_upper_switch">
                     <property name="visible">True</property>
                     <property name="valign">center</property>
-                    <!--<signal name="notify::active" handler="subpage1_activated_cb" swapped="yes"/>-->
                   </object>
                 </child>
               </object>
@@ -64,15 +54,13 @@
 
 
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwActionRow" id="fade_text_switch_ar">
                 <property name="title" translatable="yes">Fade Text based on Confidence</property>
-                <!--<property name="activatable">True</property>-->
 
                 <child type="suffix">
                   <object class="GtkSwitch" id="fade_text_switch">
                     <property name="visible">True</property>
                     <property name="valign">center</property>
-                    <!--<signal name="notify::active" handler="subpage1_activated_cb" swapped="yes"/>-->
                   </object>
                 </child>
               </object>
@@ -90,7 +78,6 @@
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Filter Slurs</property>
-                <property name="activatable">True</property>
 
                 <child type="suffix">
                   <object class="GtkSwitch" id="filter_slurs_switch">
@@ -104,13 +91,11 @@
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Filter Swears</property>
-                <property name="activatable">True</property>
 
                 <child type="suffix">
                   <object class="GtkSwitch" id="filter_profanity_switch">
                     <property name="visible">True</property>
                     <property name="valign">center</property>
-
                   </object>
                 </child>
               </object>
@@ -139,7 +124,6 @@
                 <property name="title" translatable="yes">Re-run Benchmark</property>
                 <property name="activatable">True</property>
                 <signal name="activated" handler="rerun_benchmark_cb" swapped="yes"/>
-                <!--<property name="action-name">app.setup</property>-->
 
                 <child>
                   <object class="GtkImage">

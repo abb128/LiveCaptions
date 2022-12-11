@@ -112,8 +112,14 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-settings.ui");
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, font_button);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, font_button_ar);
+    
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, text_upper_switch);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, text_upper_switch_ar);
+    
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, fade_text_switch);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, fade_text_switch_ar);
+
     //gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_profanity_switch);
     //gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch);
 
@@ -126,6 +132,10 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
 
 static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
+
+    adw_action_row_set_activatable_widget(self->font_button_ar, GTK_WIDGET(self->font_button));
+    adw_action_row_set_activatable_widget(self->text_upper_switch_ar, GTK_WIDGET(self->text_upper_switch));
+    adw_action_row_set_activatable_widget(self->fade_text_switch_ar, GTK_WIDGET(self->fade_text_switch));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
 
