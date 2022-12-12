@@ -32,6 +32,7 @@
 #include <adwaita.h>
 
 #include "line-gen.h"
+#include "profanity-filter.h"
 
 #define REL_LINE_IDX(HEAD, IDX) (4*AC_LINE_COUNT + (HEAD) + (IDX)) % AC_LINE_COUNT
 
@@ -50,6 +51,7 @@ void line_generator_init(struct line_generator *lg) {
 
 void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens) {
     bool use_fade = g_settings_get_boolean(settings, "fade-text");
+    bool use_filter = g_settings_get_boolean(settings, "filter-profanity");
 
     size_t base_chars = 45;
 
@@ -84,9 +86,25 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
 
         // print line
         for(size_t j=start_of_line; j<((size_t)end); j++) {
+            bool is_word_boundary = (tokens[j].token[0] == ' ');
+            if(use_filter && is_word_boundary) {
+                size_t skip = get_filter_skip(tokens, j, num_tokens);
+                while(skip > 0) {
+                    curr->head += sprintf(&curr->text[curr->head], " [__]");
+                    g_assert(curr->head < AC_LINE_MAX);
+                    curr->len += 4;
+
+                    j += skip;
+                    if(j >= (size_t)end) break;
+
+                    skip = get_filter_skip(tokens, j, num_tokens);
+                }
+                if(j >= (size_t)end) break;
+            }
+
             // TODO: More accurate line width calculation and line breaking
-            bool can_break_nicely = ((curr->len > (base_chars)) && (tokens[j].token[0] == ' ') && (tokens[j].logprob > -1.0f))
-                                 || ((curr->len > (base_chars+10)) && (tokens[j].token[0] == ' '))
+            bool can_break_nicely = ((curr->len > (base_chars)) && is_word_boundary && (tokens[j].logprob > -1.0f))
+                                 || ((curr->len > (base_chars+10)) && is_word_boundary)
                                  || (curr->len >= (base_chars+20));
             bool must_break = (curr->head > (AC_LINE_MAX - 256));
             if((i == lg->current_line) && (can_break_nicely  || must_break)) {

@@ -68,13 +68,12 @@
           </object>
         </child>
 
-<!-- TODO
         <child>
           <object class="AdwPreferencesGroup">
             <property name="description" translatable="yes">Please keep in mind that even if the source audio is clean, the model may sometimes make mistakes and include profanity where there isn't.</property>
             <property name="title" translatable="yes">Filtering</property>
 
-
+            <!--
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Filter Slurs</property>
@@ -87,10 +86,11 @@
                 </child>
               </object>
             </child>
+            -->
 
             <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="yes">Filter Swears</property>
+              <object class="AdwActionRow" id="filter_profanity_switch_ar">
+                <property name="title" translatable="yes">Filter Profanity</property>
 
                 <child type="suffix">
                   <object class="GtkSwitch" id="filter_profanity_switch">
@@ -102,7 +102,7 @@
             </child>
           </object>
         </child>
--->
+
         <child>
           <object class="AdwPreferencesGroup">
             <property name="description" translatable="yes"></property>

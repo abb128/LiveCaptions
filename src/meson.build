@@ -8,7 +8,8 @@ livecaptions_sources = [
   'audiocap-pa.c',
   'audiocap-pw.c',
   'asrproc.c',
-  'line-gen.c'
+  'line-gen.c',
+  'profanity-filter.c'
 ]
 
 cc = meson.get_compiler('c')

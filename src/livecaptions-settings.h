@@ -32,7 +32,9 @@ struct _LiveCaptionsSettings {
     AdwActionRow *font_button_ar;
     AdwActionRow *text_upper_switch_ar;
     AdwActionRow *fade_text_switch_ar;
-    //GtkSwitch *filter_profanity_switch;
+
+    GtkSwitch *filter_profanity_switch;
+    AdwActionRow *filter_profanity_switch_ar;
     //GtkSwitch *filter_slurs_switch;
 
     GtkLabel *benchmark_label;
