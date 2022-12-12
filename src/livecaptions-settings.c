@@ -64,7 +64,7 @@ static void about_cb(LiveCaptionsSettings *self) {
 
     adw_about_window_add_link(ADW_ABOUT_WINDOW(about),
                               "Discord Chat",
-                              "https://discord.gg/Umdwd9gNDy");
+                              "https://discord.gg/QWaJHxWjUM");
 
     adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
                                        _("Model"),
