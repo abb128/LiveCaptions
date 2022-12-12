@@ -1,4 +1,6 @@
 /* livecaptions-window.h
+ * The main application window, which contains the captions, a microphone
+ * button, settings button, and close button.
  *
  * Copyright 2022 abb128
  *

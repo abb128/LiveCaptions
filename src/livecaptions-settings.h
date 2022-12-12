@@ -1,4 +1,4 @@
-/* livecaptions-window.h
+/* livecaptions-settings.h
  *
  * Copyright 2022 abb128
  *

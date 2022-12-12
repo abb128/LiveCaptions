@@ -1,4 +1,6 @@
-/* livecaptions-window.h
+/* livecaptions-welcome.h
+ * The LiveCaptionsWelcome window is the first-time setup window, which
+ * performs a benchmark and warns the user about accuracy.
  *
  * Copyright 2022 abb128
  *

@@ -1,3 +1,22 @@
+/* line-gen.c
+ * This file contains the implementation for line_generator
+ *
+ * Copyright 2022 abb128
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <stdio.h>
 #include <errno.h>
 #include <signal.h>
@@ -48,13 +67,12 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
         if(num_tokens == 0) continue;
 
         if(start_of_line >= num_tokens) {
-            printf("%ld more tokens than exist %ld!\n", start_of_line, num_tokens);
             if(i == lg->current_line) {
                 // oops... turns out our text isn't long enough for the new line
                 // backtrack to the previous line
                 lg->active_start_of_lines[lg->current_line] = -1;
                 lg->current_line = REL_LINE_IDX(lg->current_line, -1);
-                return line_generator_update(lg, num_tokens, tokens); // TODO?
+                return line_generator_update(lg, num_tokens, tokens);
             } else {
                 continue;
             }
@@ -75,7 +93,7 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
                 // line break
                 lg->current_line = REL_LINE_IDX(lg->current_line, 1);
                 lg->active_start_of_lines[lg->current_line] = j;
-                return line_generator_update(lg, num_tokens, tokens); // TODO?
+                return line_generator_update(lg, num_tokens, tokens);
             }
 
             if(must_break){
