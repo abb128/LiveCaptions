@@ -35,9 +35,21 @@
 
   <screenshots>
     <screenshot type="default">
-      <image>https://github.com/abb128/LiveCaptions/blob/main/screenshot.png?raw=true</image>
+      <image>https://github.com/abb128/LiveCaptions/blob/main/screenshots/0.png?raw=true</image>
+    </screenshot>
+    <screenshot>
+      <image>https://github.com/abb128/LiveCaptions/blob/main/screenshots/1.png?raw=true</image>
     </screenshot>
   </screenshots>
+
+  <releases>
+    <release date="2022-12-15" version="0.1.2">
+      <url>https://github.com/abb128/LiveCaptions/releases/tag/v0.1.2</url>
+      <description>
+        <p>Initial release of Live Captions</p>
+      </description>
+    </release>
+  </releases>
 
   <metadata_license>CC0-1.0</metadata_license>
 
