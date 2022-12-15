@@ -52,7 +52,7 @@ static void about_cb(LiveCaptionsSettings *self) {
                     "application-icon", "net.sapples.LiveCaptions",
                     "application-name", _("Live Captions"),
                     "developer-name", _("abb128"),
-                    "version", "0.0.1",
+                    "version", "0.1.0",
                     "comments", _("Live Captions is an application for the Linux Desktop that captions desktop audio."),
                     "website", "https://github.com/abb128/LiveCaptions",
                     "issue-url", "https://github.com/abb128/LiveCaptions/issues",
