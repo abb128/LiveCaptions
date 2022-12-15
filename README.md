@@ -47,9 +47,7 @@ $ git submodule update --init --recursive
 ## Option 1: Building with GNOME Builder (easy)
 You can build this easily with GNOME Builder. After cloning, open the project directory in GNOME Builder, download the SDK if it asks you, and click the play button to build and run.
 
-The Clone Repository feature in GNOME Builder appears to have issues with submodules that prevents building (you will get `ERROR: Subproject exists but has no CMakeLists.txt file`). For now, please follow the above commands to clone the project outside of Builder, then open the folder in Builder. Don't clone it directly within Builder.
-
-Warning: You may experience issues building/running this with the Flatpak version of GNOME Builder (for example, some cryptic X Window System error). If possible, please use your distro's native packaged version of GNOME Builder instead (e.g. `sudo apt install gnome-builder`).
+Warning: You may experience issues building/running this with the Flatpak version of GNOME Builder (for example, some cryptic X Window System error). If you experience issues, please try using your distro's native packaged version of GNOME Builder instead (e.g. `sudo apt install gnome-builder`).
 
 ## Option 2: Building from the terminal (not as easy)
 First you must [download ONNXRuntime v1.13.1](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz), extract it somewhere, and set the environment variables to point to it:
