@@ -4,6 +4,12 @@
 
 Live Captions is an application that provides live captioning for the Linux desktop.
 
+<p align="center">
+    <a href='https://flathub.org/apps/details/net.sapples.LiveCaptions'>
+        <img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/>
+    </a>
+</p>
+
 Join the [Discord Chat](https://discord.gg/QWaJHxWjUM) if you're interested in keeping in touch.
 
 Only the English language is supported currently. Other languages may produce gibberish or a bad phonetic translation.
