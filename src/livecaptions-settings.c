@@ -18,9 +18,11 @@
 
 #include <glib/gi18n.h>
 
+#include "common.h"
 #include "livecaptions-config.h"
 #include "livecaptions-settings.h"
 #include "livecaptions-application.h"
+
 
 G_DEFINE_TYPE(LiveCaptionsSettings, livecaptions_settings, ADW_TYPE_PREFERENCES_WINDOW)
 
@@ -52,7 +54,7 @@ static void about_cb(LiveCaptionsSettings *self) {
                     "application-icon", "net.sapples.LiveCaptions",
                     "application-name", _("Live Captions"),
                     "developer-name", _("abb128"),
-                    "version", "0.1.1",
+                    "version", LIVECAPTIONS_VERSION,
                     "comments", _("Live Captions is an application for the Linux Desktop that captions desktop audio."),
                     "website", "https://github.com/abb128/LiveCaptions",
                     "issue-url", "https://github.com/abb128/LiveCaptions/issues",
