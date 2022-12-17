@@ -156,7 +156,7 @@
             </child>
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="yes">About</property>
+                <property name="title" translatable="yes">About Live Captions</property>
                 <property name="activatable">True</property>
                 <signal name="activated" handler="about_cb" swapped="yes"/>
                 <child>
