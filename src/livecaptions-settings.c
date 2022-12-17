@@ -55,18 +55,14 @@ static void about_cb(LiveCaptionsSettings *self) {
                     "application-name", _("Live Captions"),
                     "developer-name", _("abb128"),
                     "version", LIVECAPTIONS_VERSION,
-                    "comments", _("Live Captions is an application for the Linux Desktop that captions desktop audio."),
                     "website", "https://github.com/abb128/LiveCaptions",
                     "issue-url", "https://github.com/abb128/LiveCaptions/issues",
-                    "copyright", "© 2022 abb128",
+                    "support-url", "https://discord.gg/QWaJHxWjUM",
+                    "copyright", "Copyright © 2022 abb128",
                     "license-type", GTK_LICENSE_GPL_3_0,
                     "developers", developers,
                     "translator-credits", _("translator-credits"),
                     NULL);
-
-    adw_about_window_add_link(ADW_ABOUT_WINDOW(about),
-                              "Discord Chat",
-                              "https://discord.gg/QWaJHxWjUM");
 
     adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
                                        _("Model"),
@@ -75,20 +71,20 @@ static void about_cb(LiveCaptionsSettings *self) {
                                        "The ASR model was originally trained by Fangjun Kuang (@csukuangfj), and has been finetuned on extra data.");
 
     adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
-                                       _("april-asr"),
-                                       "Copyright (c) abb128, 2022",
-                                       GTK_LICENSE_UNKNOWN,
+                                       "april-asr",
+                                       "Copyright © 2022 abb128",
+                                       GTK_LICENSE_GPL_3_0,
                                        NULL);
 
     adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
-                                       _("ONNXRuntime"),
-                                       "Copyright (c) Microsoft Corporation",
+                                       "ONNXRuntime",
+                                       "Copyright © 2021 Microsoft Corporation",
                                        GTK_LICENSE_MIT_X11,
                                        NULL);
 
     adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
-                                       _("pocketfft"),
-                                       "Copyright (C) 2010-2019 Max-Planck-Society",
+                                       "pocketfft",
+                                       "Copyright © 2010-2019 Max-Planck-Society",
                                        GTK_LICENSE_BSD_3,
                                        NULL);
 
