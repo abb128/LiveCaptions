@@ -73,7 +73,7 @@ static void about_cb(LiveCaptionsSettings *self) {
     adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
                                        "april-asr",
                                        "Copyright © 2022 abb128",
-                                       GTK_LICENSE_GPL_3_0,
+                                       GTK_LICENSE_GPL_3_0_ONLY,
                                        NULL);
 
     adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
