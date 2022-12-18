@@ -2,7 +2,7 @@
     background-color: #000000FF;
     color: white;
 
-    border: 1px solid #3d3d3d;
+    border: 1px solid #3a3a3a;
 }
 
 .transparent-mode {
@@ -11,4 +11,30 @@
 
 .main-container {
     background-color: #00000000;
+}
+
+.warning-icon {
+    animation-name: flashing;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-delay: 0s;
+    animation-fill-mode: none;
+    animation-play-state: running;
+}
+
+
+@keyframes flashing {
+    0% {
+      color: yellow;
+    }
+  
+    50% {
+      color: red;
+    }
+
+    100% {
+      color: yellow;
+    }
 }

@@ -33,6 +33,7 @@
 
 #include "asrproc.h"
 #include "line-gen.h"
+#include "livecaptions-window.h"
 
 struct asr_thread_i {
     volatile size_t sound_counter;
@@ -48,7 +49,7 @@ struct asr_thread_i {
     AprilASRModel model;
     AprilASRSession session;
 
-    GtkLabel *label;
+    LiveCaptionsWindow *window;
 
     volatile bool pause;
 };
@@ -69,10 +70,10 @@ void *run_asr_thread(void *userdata) {
 gboolean main_thread_update_label(void *userdata){
     asr_thread data = userdata;
 
-    if((data->label == NULL) || (data->pause)) return G_SOURCE_REMOVE;
+    if((data->window == NULL) || (data->pause)) return G_SOURCE_REMOVE;
 
     g_mutex_lock(&data->text_mutex);
-    line_generator_set_text(&data->line, data->label);
+    line_generator_set_text(&data->line, data->window->label);
     g_mutex_unlock(&data->text_mutex);
 
     return G_SOURCE_REMOVE;
@@ -81,19 +82,31 @@ gboolean main_thread_update_label(void *userdata){
 void april_result_handler(void* userdata, AprilResultType result, size_t count, const AprilToken* tokens) {
     asr_thread data = userdata;
 
-    g_mutex_lock(&data->text_mutex);
+    switch(result) {
+        case APRIL_RESULT_RECOGNITION_PARTIAL:
+        case APRIL_RESULT_RECOGNITION_FINAL:
+        {
+            g_mutex_lock(&data->text_mutex);
 
-    line_generator_update(&data->line, count, tokens);
-    if(result == APRIL_RESULT_RECOGNITION_FINAL) {
-        line_generator_finalize(&data->line);
+            line_generator_update(&data->line, count, tokens);
+            if(result == APRIL_RESULT_RECOGNITION_FINAL) {
+                line_generator_finalize(&data->line);
+            }
+
+            g_mutex_unlock(&data->text_mutex);
+            g_idle_add(main_thread_update_label, data);
+            break;
+        }
+
+        case APRIL_RESULT_ERROR_CANT_KEEP_UP: {
+            printf("CANT KEEP UP\n");
+            livecaptions_window_warn_slow(data->window);
+        }
     }
-
-    g_mutex_unlock(&data->text_mutex);
-    g_idle_add(main_thread_update_label, data);
 }
 
 void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts) {
-    if((thread->label == NULL) || thread->pause) return;
+    if((thread->window == NULL) || thread->pause) return;
 
     bool found_nonzero = false;
     for(size_t i=0; i<num_shorts; i++){
@@ -156,8 +169,8 @@ asr_thread create_asr_thread(const char *model_path){
     return data;
 }
 
-void asr_thread_set_label(asr_thread thread, GtkLabel *label) {
-    thread->label = label;
+void asr_thread_set_main_window(asr_thread thread, LiveCaptionsWindow *window) {
+    thread->window = window;
 }
 
 void asr_thread_flush(asr_thread thread) {

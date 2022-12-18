@@ -92,6 +92,21 @@
                     <property name="decoration-layout">:close</property>
                   </object>
                 </child>
+
+                <child type="overlay">
+                  <object class="GtkImage" id="too_slow_warning">
+                    <style>
+                      <class name="warning-icon"/>
+                    </style>
+                    <property name="visible">False</property>
+                    <property name="margin-end">6</property>
+                    <property name="margin-bottom">6</property>
+                    <property name="halign">end</property>
+                    <property name="valign">end</property>
+                    <property name="icon-name">dialog-warning-symbolic</property>
+                    <property name="tooltip-text">Can't keep up! Try closing any processing-intensive programs. Accuracy will be affected.</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>

@@ -33,12 +33,17 @@ struct _LiveCaptionsWindow {
     GtkToggleButton  *mic_button;
     GtkLabel         *label;
 
+    bool slow_warning_shown;
+    GtkWidget *too_slow_warning;
+    time_t slow_time;
 };
 
 G_BEGIN_DECLS
 
 #define LIVECAPTIONS_TYPE_WINDOW (livecaptions_window_get_type())
 
-G_DECLARE_FINAL_TYPE (LiveCaptionsWindow, livecaptions_window, LIVECAPTIONS, WINDOW, GtkApplicationWindow)
+G_DECLARE_FINAL_TYPE (LiveCaptionsWindow, livecaptions_window, LIVECAPTIONS, WINDOW, GtkApplicationWindow);
+
+void livecaptions_window_warn_slow(LiveCaptionsWindow *self);
 
 G_END_DECLS

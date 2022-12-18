@@ -87,7 +87,7 @@ static void livecaptions_application_activate(GApplication *app) {
         window = g_object_new(LIVECAPTIONS_TYPE_WINDOW, "application", app, NULL);
 
         LiveCaptionsWindow *lc_window = LIVECAPTIONS_WINDOW(window);
-        asr_thread_set_label(self->asr, lc_window->label);
+        asr_thread_set_main_window(self->asr, lc_window);
         gtk_label_set_text(lc_window->label, " \n ");
 
         self->window = lc_window;

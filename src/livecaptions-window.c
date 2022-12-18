@@ -32,6 +32,7 @@ static void livecaptions_window_class_init (LiveCaptionsWindowClass *klass) {
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, side_box);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, mic_button);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, label);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, too_slow_warning);
 }
 
 static void change_orientable_orientation(LiveCaptionsWindow *self, gint font_height){
@@ -107,5 +108,30 @@ static void livecaptions_window_init (LiveCaptionsWindow *self) {
 
     update_font(self);
     update_window_transparency(self);
+
+    self->slow_warning_shown = false;
 }
 
+static gboolean hide_slow_warning_after_some_time(void *userdata) {
+    LiveCaptionsWindow *self = userdata;
+
+    time_t current_time = time(NULL);
+
+    if(difftime(current_time, self->slow_time) > 4.0) {
+        self->slow_warning_shown = false;
+        gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), false);
+        return G_SOURCE_REMOVE;
+    }
+
+    return G_SOURCE_CONTINUE;
+}
+
+void livecaptions_window_warn_slow(LiveCaptionsWindow *self) {
+    self->slow_time = time(NULL);
+    if(self->slow_warning_shown) return;
+
+    gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), true);
+    self->slow_warning_shown = true;
+
+    g_timeout_add_seconds(1, hide_slow_warning_after_some_time, self);
+}
