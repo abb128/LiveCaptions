@@ -2,6 +2,10 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="LiveCaptionsWindow" parent="GtkApplicationWindow">
+    <style>
+      <class name="main-window-parent"/>
+    </style>
+
     <property name="default-width">70</property>
     <property name="default-height">10</property>
     <property name="resizable">False</property>
@@ -9,7 +13,7 @@
     <child type="titlebar">
       <object class="GtkWindowHandle" id="main">
         <style>
-          <class name="osd"/>
+          <class name="main-container"/>
         </style>
         <child>
           <object class="GtkBox">
@@ -113,3 +117,4 @@
     </section>
   </menu>
 </interface>
+

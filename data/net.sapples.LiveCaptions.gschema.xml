@@ -31,6 +31,11 @@
             <summary>Caption microphone input instead of desktop audio</summary>
         </key>
 
+        <key name="transparent-window" type="b">
+            <default>false</default>
+            <summary>Make window transparent</summary>
+        </key>
+
         <key name="benchmark" type="d">
             <default>-1.0</default>
         </key>

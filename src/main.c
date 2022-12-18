@@ -61,9 +61,6 @@ int main (int argc, char *argv[]) {
         bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
         textdomain(GETTEXT_PACKAGE);
 
-        AdwStyleManager *style_manager = adw_style_manager_get_default ();
-        adw_style_manager_set_color_scheme (style_manager, ADW_COLOR_SCHEME_FORCE_DARK);
-
         /*
         * Create a new GtkApplication. The application manages our main loop,
         * application windows, integration with the window manager/compositor, and

@@ -65,6 +65,19 @@
                 </child>
               </object>
             </child>
+
+            <child>
+              <object class="AdwActionRow" id="transparent_window_switch_ar">
+                <property name="title" translatable="yes">Transparent Window</property>
+
+                <child type="suffix">
+                  <object class="GtkSwitch" id="transparent_window_switch">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
 

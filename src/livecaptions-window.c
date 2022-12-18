@@ -69,15 +69,26 @@ static void update_font(LiveCaptionsWindow *self) {
     gtk_label_set_width_chars(self->label, 100 * font_size / 24);
 }
 
+static void update_window_transparency(LiveCaptionsWindow *self) {
+    bool use_transparency = g_settings_get_boolean(self->settings, "transparent-window");
+
+    if(use_transparency){
+        gtk_widget_add_css_class(GTK_WIDGET(self), "transparent-mode");
+    }else{
+        gtk_widget_remove_css_class(GTK_WIDGET(self), "transparent-mode");
+    }
+}
+
 static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
                                char      *key,
                                gpointer   user_data){
 
-    if(!g_str_equal(key, "font-name")) return;
-
     LiveCaptionsWindow *self = user_data;
-
-    update_font(self);
+    if(g_str_equal(key, "font-name")) {
+        update_font(self);
+    }else if(g_str_equal(key, "transparent-window")) {
+        update_window_transparency(self);
+    }
 }
 
 
@@ -95,4 +106,6 @@ static void livecaptions_window_init (LiveCaptionsWindow *self) {
     gtk_window_set_title(GTK_WINDOW(self), "Live Captions");
 
     update_font(self);
+    update_window_transparency(self);
 }
+

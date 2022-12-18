@@ -1,0 +1,14 @@
+.main-window-parent {
+    background-color: #000000FF;
+    color: white;
+
+    border: 1px solid #3d3d3d;
+}
+
+.transparent-mode {
+    background-color: #000000BB;
+}
+
+.main-container {
+    background-color: #00000000;
+}
