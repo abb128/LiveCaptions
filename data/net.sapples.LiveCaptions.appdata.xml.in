@@ -43,6 +43,16 @@
   </screenshots>
 
   <releases>
+    <release date="2022-12-20" version="0.2.0">
+      <url>https://github.com/abb128/LiveCaptions/releases/tag/v0.2.0</url>
+      <description>
+        <p>Added a setting to make window transparent</p>
+        <p>Added a setting to adjust window width</p>
+        <p>Reworked line generator to follow window width</p>
+        <p>Added a more visible outline around the captions window</p>
+        <p>Settings menu now follows system light/dark mode setting</p>
+      </description>
+    </release>
     <release date="2022-12-15" version="0.1.2">
       <url>https://github.com/abb128/LiveCaptions/releases/tag/v0.1.2</url>
       <description>
