@@ -51,6 +51,8 @@ struct asr_thread_i {
 
     LiveCaptionsWindow *window;
 
+    size_t layout_counter;
+
     volatile bool pause;
 };
 
@@ -88,6 +90,15 @@ void april_result_handler(void* userdata, AprilResultType result, size_t count, 
         {
             g_mutex_lock(&data->text_mutex);
 
+            if((data->layout_counter != data->window->font_layout_counter) || (data->line.layout == NULL)) {
+                if(data->line.layout != NULL) g_object_unref(data->line.layout);
+
+                data->line.layout = pango_layout_copy(data->window->font_layout);
+                data->line.max_text_width = data->window->max_text_width;
+
+                data->layout_counter = data->window->font_layout_counter;
+            }
+
             line_generator_update(&data->line, count, tokens);
             if(result == APRIL_RESULT_RECOGNITION_FINAL) {
                 line_generator_finalize(&data->line);
@@ -99,7 +110,6 @@ void april_result_handler(void* userdata, AprilResultType result, size_t count, 
         }
 
         case APRIL_RESULT_ERROR_CANT_KEEP_UP: {
-            printf("CANT KEEP UP\n");
             livecaptions_window_warn_slow(data->window);
         }
     }

@@ -35,21 +35,19 @@ static void livecaptions_window_class_init (LiveCaptionsWindowClass *klass) {
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, too_slow_warning);
 }
 
-static void change_orientable_orientation(LiveCaptionsWindow *self, gint font_height){
-    int text_height = 2 * font_height + 2;
-    int button_height = 16;
+static void change_orientable_orientation(LiveCaptionsWindow *self, gint text_height){
+    int button_height = 29;
 
-    if(text_height > 2 * button_height) {
+    if(text_height > (2 * button_height)) {
         gtk_orientable_set_orientation(GTK_ORIENTABLE(self->side_box), GTK_ORIENTATION_VERTICAL);
     } else {
         gtk_orientable_set_orientation(GTK_ORIENTABLE(self->side_box), GTK_ORIENTATION_HORIZONTAL);
     }
 }
 
-
+const char LINE_WIDTH_TEXT_TEMPLATE[] = "This program is free software, you can redistribute or modify";
 static void update_font(LiveCaptionsWindow *self) {
     PangoFontDescription *desc = pango_font_description_from_string(g_settings_get_string(self->settings, "font-name"));
-    gint font_size = pango_font_description_get_size(desc) / PANGO_SCALE;
 
     PangoAttribute *attr_font = pango_attr_font_desc_new(desc);
 
@@ -61,13 +59,27 @@ static void update_font(LiveCaptionsWindow *self) {
 
     gtk_label_set_attributes(self->label, attr);
 
-    change_orientable_orientation(self, font_size);
-
-    // pango_attr_list_unref(attr); // ?
     pango_font_description_free(desc);
 
+    if(self->font_layout != NULL) g_object_unref(self->font_layout);
 
-    gtk_label_set_width_chars(self->label, 100 * font_size / 24);
+    int width, height;
+    PangoLayout *layout = gtk_label_get_layout(self->label);
+    layout = pango_layout_copy(layout);
+
+    pango_layout_set_width(layout, -1);
+    pango_layout_set_text(layout, LINE_WIDTH_TEXT_TEMPLATE, sizeof(LINE_WIDTH_TEXT_TEMPLATE));
+    pango_layout_get_size(layout, &width, &height);
+
+    height = (height / PANGO_SCALE) * 2 + 2;
+    width  = (width / PANGO_SCALE);
+    change_orientable_orientation(self, height);
+
+    gtk_widget_set_size_request(GTK_WIDGET(self->label), width, height);
+
+    self->max_text_width = width;
+    self->font_layout = layout;
+    self->font_layout_counter++;
 }
 
 static void update_window_transparency(LiveCaptionsWindow *self) {
@@ -93,7 +105,7 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
 }
 
 
-static void livecaptions_window_init (LiveCaptionsWindow *self) {
+static void livecaptions_window_init(LiveCaptionsWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
@@ -105,6 +117,9 @@ static void livecaptions_window_init (LiveCaptionsWindow *self) {
     g_settings_bind(self->settings, "microphone", self->mic_button, "active", G_SETTINGS_BIND_DEFAULT);
 
     gtk_window_set_title(GTK_WINDOW(self), "Live Captions");
+
+    self->font_layout = NULL;
+    self->font_layout_counter = 0;
 
     update_font(self);
     update_window_transparency(self);

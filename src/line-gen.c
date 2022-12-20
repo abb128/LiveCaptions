@@ -49,11 +49,24 @@ void line_generator_init(struct line_generator *lg) {
     if(settings == NULL) settings = g_settings_new("net.sapples.LiveCaptions");
 }
 
+static int line_generator_get_text_width(struct line_generator *lg, const char *text){
+    pango_layout_set_width(lg->layout, -1);
+
+    int width, height;
+    pango_layout_set_text(lg->layout, text, strlen(text));
+    pango_layout_get_size(lg->layout, &width, &height);
+
+    return width / PANGO_SCALE;
+}
+
+#define MAX_TOKEN_SCRATCH 16
+const char SWEAR_REPLACEMENT[] = " [__]";
 void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens) {
     bool use_fade = g_settings_get_boolean(settings, "fade-text");
     bool use_filter = g_settings_get_boolean(settings, "filter-profanity");
 
-    size_t base_chars = 45;
+    bool use_lowercase = !g_settings_get_boolean(settings, "text-uppercase");
+    char token_scratch[MAX_TOKEN_SCRATCH];
 
     for(size_t i=0; i<AC_LINE_COUNT; i++){
         if(lg->active_start_of_lines[i] == -1) continue;
@@ -85,40 +98,54 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
         if((end == -1) || (i == lg->current_line)) end = num_tokens;
 
         // print line
-        for(size_t j=start_of_line; j<((size_t)end); j++) {
-            bool is_word_boundary = (tokens[j].token[0] == ' ');
-            if(use_filter && is_word_boundary) {
-                size_t skip = get_filter_skip(tokens, j, num_tokens);
-                while(skip > 0) {
-                    curr->head += sprintf(&curr->text[curr->head], " [__]");
-                    g_assert(curr->head < AC_LINE_MAX);
-                    curr->len += 4;
+        for(size_t j=start_of_line; j<((size_t)end);) {
+            int skipahead = 1;
+            const char *token = tokens[j].token;
+            if(use_lowercase){
+                token = token_scratch;
+                int i;
+                for(i=0; i<strlen(tokens[j].token); i++) {
+                    if((i+1) >= MAX_TOKEN_SCRATCH) {
+                        printf("Token too long!\n");
+                        break;
+                    }
 
-                    j += skip;
-                    if(j >= (size_t)end) break;
-
-                    skip = get_filter_skip(tokens, j, num_tokens);
+                    token_scratch[i] = tolower(tokens[j].token[i]);
                 }
-                if(j >= (size_t)end) break;
+                
+                token_scratch[i] = 0;
             }
 
-            // TODO: More accurate line width calculation and line breaking
-            bool can_break_nicely = ((curr->len > (base_chars)) && is_word_boundary && (tokens[j].logprob > -1.0f))
-                                 || ((curr->len > (base_chars+10)) && is_word_boundary)
-                                 || (curr->len >= (base_chars+20));
+            // filter current word, if applicable
+            bool is_word_boundary = (token[0] == ' ');
+            if(use_filter && is_word_boundary) {
+                size_t skip = get_filter_skip(tokens, j, num_tokens);
+                if(skip > 0) {
+                    skipahead = skip;
+                    token = SWEAR_REPLACEMENT;
+                }
+            }
+
+            // skip if line is too long to safely write
             bool must_break = (curr->head > (AC_LINE_MAX - 256));
-            if((i == lg->current_line) && (can_break_nicely  || must_break)) {
+            if(must_break){
+                printf("Must linebreak, but not active line. Leaving incomplete line...\n");
+                break;
+            }
+
+            // break line if too long
+            curr->len += line_generator_get_text_width(lg, token);
+            if(curr->len >= lg->max_text_width) {
+                // find previous word boundary
+                while((tokens[j].token[0] != ' ') && (j > 0)) j--;
+
                 // line break
                 lg->current_line = REL_LINE_IDX(lg->current_line, 1);
                 lg->active_start_of_lines[lg->current_line] = j;
                 return line_generator_update(lg, num_tokens, tokens);
             }
 
-            if(must_break){
-                printf("Must linebreak, but not active line. Leaving incomplete line...\n");
-                break;
-            }
-
+            // write the actual line
             int alpha = (int)((tokens[j].logprob + 2.0) / 8.0 * 65536.0);
             alpha /= 2.0;
             alpha += 32768;
@@ -126,13 +153,13 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
             if(alpha > 65535) alpha = 65535;
 
             if(use_fade)
-                curr->head += sprintf(&curr->text[curr->head], "<span fgalpha=\"%d\">%s</span>", alpha, tokens[j].token);
+                curr->head += sprintf(&curr->text[curr->head], "<span fgalpha=\"%d\">%s</span>", alpha, token);
             else
-                curr->head += sprintf(&curr->text[curr->head], "%s", tokens[j].token);
+                curr->head += sprintf(&curr->text[curr->head], "%s", token);
             
             g_assert(curr->head < AC_LINE_MAX);
 
-            curr->len += strlen(tokens[j].token);
+            j += skipahead;
         }
     }
 }
