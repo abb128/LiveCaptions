@@ -134,15 +134,21 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
             }
 
             // break line if too long
-            curr->len += line_generator_get_text_width(lg, token);
-            if(curr->len >= lg->max_text_width) {
-                // find previous word boundary
-                while((tokens[j].token[0] != ' ') && (j > 0)) j--;
+            if(i == lg->current_line){
+                curr->len += line_generator_get_text_width(lg, token);
+                if(curr->len >= lg->max_text_width) {
+                    size_t tgt_brk = j;
+                    // find previous word boundary
+                    while((tokens[tgt_brk].token[0] != ' ') && (tgt_brk > start_of_line)) tgt_brk--;
 
-                // line break
-                lg->current_line = REL_LINE_IDX(lg->current_line, 1);
-                lg->active_start_of_lines[lg->current_line] = j;
-                return line_generator_update(lg, num_tokens, tokens);
+                    // if we backtracked all the way to the start of line, just give up and break here
+                    if(tgt_brk == start_of_line) tgt_brk = j;
+
+                    // line break
+                    lg->current_line = REL_LINE_IDX(lg->current_line, 1);
+                    lg->active_start_of_lines[lg->current_line] = tgt_brk;
+                    return line_generator_update(lg, num_tokens, tokens);
+                }
             }
 
             // write the actual line

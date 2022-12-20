@@ -36,6 +36,10 @@
             <summary>Make window transparent</summary>
         </key>
 
+        <key name="line-width" type="i">
+            <default>50</default>
+        </key>
+
         <key name="benchmark" type="d">
             <default>-1.0</default>
         </key>

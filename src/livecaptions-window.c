@@ -45,7 +45,33 @@ static void change_orientable_orientation(LiveCaptionsWindow *self, gint text_he
     }
 }
 
-const char LINE_WIDTH_TEXT_TEMPLATE[] = "This program is free software, you can redistribute or modify";
+const char LINE_WIDTH_TEXT_TEMPLATE[] = "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.";
+static void update_line_width(LiveCaptionsWindow *self){
+    if(self->font_layout != NULL) g_object_unref(self->font_layout);
+
+    int preferred_width = g_settings_get_int(self->settings, "line-width");
+    size_t text_len = sizeof(LINE_WIDTH_TEXT_TEMPLATE);
+    if(preferred_width < text_len) text_len = preferred_width;
+
+    int width, height;
+    PangoLayout *layout = gtk_label_get_layout(self->label);
+    layout = pango_layout_copy(layout);
+
+    pango_layout_set_width(layout, -1);
+    pango_layout_set_text(layout, LINE_WIDTH_TEXT_TEMPLATE, text_len);
+    pango_layout_get_size(layout, &width, &height);
+
+    height = (height / PANGO_SCALE) * 2 + 2;
+    width  = (width / PANGO_SCALE);
+    change_orientable_orientation(self, height);
+
+    gtk_widget_set_size_request(GTK_WIDGET(self->label), width, height);
+
+    self->max_text_width = width;
+    self->font_layout = layout;
+    self->font_layout_counter++;
+}
+
 static void update_font(LiveCaptionsWindow *self) {
     PangoFontDescription *desc = pango_font_description_from_string(g_settings_get_string(self->settings, "font-name"));
 
@@ -61,25 +87,7 @@ static void update_font(LiveCaptionsWindow *self) {
 
     pango_font_description_free(desc);
 
-    if(self->font_layout != NULL) g_object_unref(self->font_layout);
-
-    int width, height;
-    PangoLayout *layout = gtk_label_get_layout(self->label);
-    layout = pango_layout_copy(layout);
-
-    pango_layout_set_width(layout, -1);
-    pango_layout_set_text(layout, LINE_WIDTH_TEXT_TEMPLATE, sizeof(LINE_WIDTH_TEXT_TEMPLATE));
-    pango_layout_get_size(layout, &width, &height);
-
-    height = (height / PANGO_SCALE) * 2 + 2;
-    width  = (width / PANGO_SCALE);
-    change_orientable_orientation(self, height);
-
-    gtk_widget_set_size_request(GTK_WIDGET(self->label), width, height);
-
-    self->max_text_width = width;
-    self->font_layout = layout;
-    self->font_layout_counter++;
+    update_line_width(self);
 }
 
 static void update_window_transparency(LiveCaptionsWindow *self) {
@@ -99,6 +107,8 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
     LiveCaptionsWindow *self = user_data;
     if(g_str_equal(key, "font-name")) {
         update_font(self);
+    }else if(g_str_equal(key, "line-width")) {
+        update_line_width(self);
     }else if(g_str_equal(key, "transparent-window")) {
         update_window_transparency(self);
     }

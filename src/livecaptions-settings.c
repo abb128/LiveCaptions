@@ -125,6 +125,7 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, transparent_window_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, transparent_window_switch_ar);
 
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_adjustment);
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, benchmark_label);
 
@@ -147,8 +148,9 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     g_settings_bind(self->settings, "text-uppercase", self->text_upper_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "fade-text", self->fade_text_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "filter-profanity", self->filter_profanity_switch, "state", G_SETTINGS_BIND_DEFAULT);
-    g_settings_bind(self->settings, "transparent-window", self->transparent_window_switch, "state", G_SETTINGS_BIND_DEFAULT);
     //g_settings_bind(self->settings, "filter-slurs", self->filter_slurs_switch, "state", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "transparent-window", self->transparent_window_switch, "state", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "line-width", self->line_width_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
 
     g_settings_bind(self->settings, "font-name", self->font_button, "font", G_SETTINGS_BIND_DEFAULT);
 
