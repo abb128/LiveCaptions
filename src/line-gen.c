@@ -117,8 +117,7 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
             }
 
             // filter current word, if applicable
-            bool is_word_boundary = (token[0] == ' ');
-            if(use_filter && is_word_boundary) {
+            if(use_filter && (tokens[j].flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)) {
                 size_t skip = get_filter_skip(tokens, j, num_tokens);
                 if(skip > 0) {
                     skipahead = skip;
@@ -139,7 +138,7 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
                 if(curr->len >= lg->max_text_width) {
                     size_t tgt_brk = j;
                     // find previous word boundary
-                    while((tokens[tgt_brk].token[0] != ' ') && (tgt_brk > start_of_line)) tgt_brk--;
+                    while((!(tokens[tgt_brk].flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)) && (tgt_brk > start_of_line)) tgt_brk--;
 
                     // if we backtracked all the way to the start of line, just give up and break here
                     if(tgt_brk == start_of_line) tgt_brk = j;

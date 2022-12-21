@@ -1,3 +1,22 @@
+/* profanity-filter.c
+ * Implements the function that performs profanity filtering
+ *
+ * Copyright 2022 abb128
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "profanity-filter.h"
 #include <stdbool.h>
 #include <string.h>
@@ -40,9 +59,9 @@ size_t get_filter_skip(const AprilToken *tokens, size_t curr_idx, size_t count) 
     bool matched_badword = false;
     bool still_scanning_any = true;
     for(size_t i=curr_idx; i<count; i++){
-        bool starts_w_space = (tokens[i].token[0] == ' ');
-        if((i > curr_idx) && starts_w_space) {
-            // Word boundary
+        if((i > curr_idx) && (tokens[i].flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)) {
+            // Once we've arrived at the next word, stop looking.
+            // we only want to filter the word starting at curr_idx
             break;
         }
 
