@@ -27,6 +27,7 @@
                 <property name="margin-start">4</property>
                 <property name="orientation">vertical</property>
                 <property name="valign">center</property>
+                <property name="visible">True</property>
 
                 <child>
                   <object class="GtkToggleButton" id="mic_button">
@@ -52,6 +53,30 @@
                     <property name="icon-name">settings-symbolic</property>
                     <property name="action-name">app.preferences</property>
                     <property name="tooltip-text">Adjust preferences</property>
+                    <style>
+                      <class name="flat"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkBox" id="side_box_tiny">
+                <property name="margin-start">4</property>
+                <property name="orientation">vertical</property>
+                <property name="valign">center</property>
+                <property name="visible">False</property>
+
+                <child>
+                  <object class="GtkMenuButton">
+                    <property name="margin-start">4</property>
+                    <property name="margin-end">4</property>
+                    <property name="margin-top">4</property>
+                    <property name="margin-bottom">4</property>
+                    <property name="valign">center</property>
+                    <property name="menu-model">primary_menu</property>
+                    <property name="icon-name">open-menu-symbolic</property>
                     <style>
                       <class name="flat"/>
                     </style>
@@ -118,16 +143,12 @@
   <menu id="primary_menu">
     <section>
       <item>
+        <attribute name="label" translatable="yes">_Microphone Captioning</attribute>
+        <attribute name="action">app.microphone</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">_Preferences</attribute>
         <attribute name="action">app.preferences</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
-        <attribute name="action">win.show-help-overlay</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_About livecaptions</attribute>
-        <attribute name="action">app.about</attribute>
       </item>
     </section>
   </menu>

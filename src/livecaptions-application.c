@@ -35,7 +35,8 @@ static void deinit_audio(LiveCaptionsApplication *self){
 static void init_audio(LiveCaptionsApplication *self) {
     deinit_audio(self);
 
-    self->audio = create_audio_thread(g_settings_get_boolean(self->settings, "microphone"), self->asr);
+    gboolean use_microphone = g_settings_get_boolean(self->settings, "microphone");
+    self->audio = create_audio_thread(use_microphone, self->asr);
 
     asr_thread_flush(self->asr);
 }
@@ -178,10 +179,31 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
 
     if(g_str_equal(key, "microphone")) {
         init_audio(self);
+        g_simple_action_set_state(self->mic_action, g_variant_new_boolean(g_settings_get_boolean(self->settings, "microphone")));
     }
 }
 
+static void
+livecaptions_application_toggle_microphone(GSimpleAction *action,
+                                           GVariant      *state,
+                                           gpointer       user_data)
+{
+    gboolean use_microphone;
+    LiveCaptionsApplication *self;
+
+    g_assert(LIVECAPTIONS_IS_APPLICATION(user_data));
+
+    self = LIVECAPTIONS_APPLICATION(user_data);
+    use_microphone = g_variant_get_boolean(state);
+
+    g_settings_set_boolean(self->settings, "microphone", use_microphone);
+
+    g_simple_action_set_state(action, state);
+
+}
 static void livecaptions_application_init(LiveCaptionsApplication *self) {
+    self->settings = g_settings_new("net.sapples.LiveCaptions");
+
     g_autoptr(GSimpleAction) quit_action = g_simple_action_new("quit", NULL);
     g_signal_connect_swapped(quit_action, "activate", G_CALLBACK(g_application_quit), self);
     g_action_map_add_action(G_ACTION_MAP(self), G_ACTION(quit_action));
@@ -198,6 +220,13 @@ static void livecaptions_application_init(LiveCaptionsApplication *self) {
     g_signal_connect(prefs_action, "activate", G_CALLBACK(livecaptions_application_show_preferences), self);
     g_action_map_add_action(G_ACTION_MAP(self), G_ACTION(prefs_action));
 
+    gboolean use_microphone = g_settings_get_boolean(self->settings, "microphone");
+    g_autoptr(GSimpleAction) mic_action = g_simple_action_new_stateful("microphone", NULL, g_variant_new_boolean(use_microphone));
+    g_signal_connect(mic_action, "change-state", G_CALLBACK(livecaptions_application_toggle_microphone), self);
+    g_action_map_add_action(G_ACTION_MAP(self), G_ACTION(mic_action));
+
+    self->mic_action = mic_action;
+
     gtk_application_set_accels_for_action(GTK_APPLICATION(self),
                                            "app.quit",
                                            (const char *[]) {
@@ -212,7 +241,6 @@ static void livecaptions_application_init(LiveCaptionsApplication *self) {
                                              NULL,
                                            });
 
-    self->settings = g_settings_new("net.sapples.LiveCaptions");
 
     g_signal_connect(self->settings, "changed", G_CALLBACK(on_settings_change), self);
     

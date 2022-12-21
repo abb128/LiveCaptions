@@ -30,6 +30,7 @@ struct _LiveCaptionsWindow {
     /* Template widgets */
     GtkWidget        *main;
     GtkBox           *side_box;
+    GtkBox           *side_box_tiny;
     GtkToggleButton  *mic_button;
     GtkLabel         *label;
 

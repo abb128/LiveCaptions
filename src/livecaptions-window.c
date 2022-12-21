@@ -30,18 +30,21 @@ static void livecaptions_window_class_init (LiveCaptionsWindowClass *klass) {
     gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-window.ui");
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, main);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, side_box);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, side_box_tiny);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, mic_button);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, label);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, too_slow_warning);
 }
 
-static void change_orientable_orientation(LiveCaptionsWindow *self, gint text_height){
+static void change_button_layout(LiveCaptionsWindow *self, gint text_height){
     int button_height = 29;
 
     if(text_height > (2 * button_height)) {
-        gtk_orientable_set_orientation(GTK_ORIENTABLE(self->side_box), GTK_ORIENTATION_VERTICAL);
+        gtk_widget_set_visible(GTK_WIDGET(self->side_box), true);
+        gtk_widget_set_visible(GTK_WIDGET(self->side_box_tiny), false);
     } else {
-        gtk_orientable_set_orientation(GTK_ORIENTABLE(self->side_box), GTK_ORIENTATION_HORIZONTAL);
+        gtk_widget_set_visible(GTK_WIDGET(self->side_box_tiny), true);
+        gtk_widget_set_visible(GTK_WIDGET(self->side_box), false);
     }
 }
 
@@ -63,7 +66,7 @@ static void update_line_width(LiveCaptionsWindow *self){
 
     height = (height / PANGO_SCALE) * 2 + 2;
     width  = (width / PANGO_SCALE);
-    change_orientable_orientation(self, height);
+    change_button_layout(self, height);
 
     gtk_widget_set_size_request(GTK_WIDGET(self->label), width, height);
 

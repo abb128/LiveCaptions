@@ -25,6 +25,8 @@
 struct _LiveCaptionsApplication {
     AdwApplication parent_instance;
 
+    GSimpleAction *mic_action;
+
     GSettings *settings;
     LiveCaptionsWindow *window;
     GtkWindow *welcome;
