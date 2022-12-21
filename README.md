@@ -25,6 +25,7 @@ Running this requires a somewhat-decent CPU that can perform realtime captioning
 * Intel i7-2670QM (2011)
 * Intel i5-8265U (2018)
 * AMD Ryzen 5 1600 (2017)
+* Steam Deck
 
 GPU is not required or used.
 
