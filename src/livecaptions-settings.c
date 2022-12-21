@@ -125,6 +125,7 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, transparent_window_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, transparent_window_switch_ar);
 
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_scale);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_adjustment);
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, benchmark_label);
@@ -153,6 +154,8 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     g_settings_bind(self->settings, "line-width", self->line_width_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
 
     g_settings_bind(self->settings, "font-name", self->font_button, "font", G_SETTINGS_BIND_DEFAULT);
+
+    gtk_scale_add_mark(self->line_width_scale, 50.0, GTK_POS_TOP, NULL);
 
     char benchmark_result[32];
     double benchmark_result_v = g_settings_get_double(self->settings, "benchmark");

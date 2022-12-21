@@ -44,13 +44,14 @@
                 <property name="title" translatable="yes">Window Width</property>
 
                 <child type="suffix">
-                  <object class="GtkSpinButton">
+                  <object class="GtkScale" id="line_width_scale">
                     <property name="visible">True</property>
                     <property name="valign">center</property>
+                    <property name="width-request">200</property>
                     <property name="adjustment">
                       <object class="GtkAdjustment" id="line_width_adjustment">
                         <property name="lower">20</property>
-                        <property name="upper">300</property>
+                        <property name="upper">140</property>
                         <property name="step-increment">1</property>
                         <property name="page-increment">1</property>
                       </object>

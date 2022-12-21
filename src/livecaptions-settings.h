@@ -39,6 +39,7 @@ struct _LiveCaptionsSettings {
     AdwActionRow *filter_profanity_switch_ar;
     //GtkSwitch *filter_slurs_switch;
 
+    GtkScale *line_width_scale;
     GtkAdjustment *line_width_adjustment;
 
     GtkLabel *benchmark_label;
