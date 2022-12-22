@@ -9,6 +9,7 @@
     <property name="default-width">70</property>
     <property name="default-height">10</property>
     <property name="resizable">False</property>
+    <property name="title">Live Captions</property>
 
     <child type="titlebar">
       <object class="GtkWindowHandle" id="main">

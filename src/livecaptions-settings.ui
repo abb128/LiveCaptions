@@ -5,6 +5,7 @@
   <template class="LiveCaptionsSettings" parent="AdwPreferencesWindow">
     <property name="can-navigate-back">True</property>
     <property name="search-enabled">False</property>
+    <property name="title">Live Captions Preferences</property>
 
     <child>
       <object class="AdwPreferencesPage">

@@ -165,7 +165,6 @@ livecaptions_application_show_preferences(G_GNUC_UNUSED GSimpleAction *action,
     GtkWindow *window = gtk_application_get_active_window (app);
     LiveCaptionsSettings *preferences = g_object_new(LIVECAPTIONS_TYPE_SETTINGS, "application", app, NULL);
 
-    gtk_window_set_transient_for (GTK_WINDOW (preferences), window);
     gtk_window_present (GTK_WINDOW (preferences));
 
 }
