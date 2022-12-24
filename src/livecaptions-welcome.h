@@ -44,6 +44,8 @@ struct _LiveCaptionsWelcome {
 
     GtkProgressBar *benchmark_progress;
 
+    GtkLabel *bad_label;
+
     GThread *benchmark_thread;
 
     volatile gdouble benchmark_progress_v;

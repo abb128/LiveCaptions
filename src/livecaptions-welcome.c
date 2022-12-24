@@ -46,6 +46,11 @@ static gboolean update_progress(gpointer userdata){
 
 static gboolean benchmark_finish(gpointer userdata){
     LiveCaptionsWelcome *self = userdata;
+
+    char result_txt[128];
+    snprintf(result_txt, 256, "Result: %.2f", self->benchmark_result_v);
+    gtk_label_set_text(self->bad_label, result_txt);
+
     printf("Result: %.2f\n", self->benchmark_result_v);
 
     if(self->benchmark_result_v < MINIMUM_BENCHMARK_RESULT) {
@@ -184,6 +189,7 @@ static void livecaptions_welcome_class_init (LiveCaptionsWelcomeClass *klass) {
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, accuracy_page);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_result_bad);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_progress);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, bad_label);
 
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, cancel_button);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, quit_button);
@@ -204,3 +210,4 @@ void livecaptions_set_cancel_enabled(LiveCaptionsWelcome *self, bool enabled) {
 static void livecaptions_welcome_init (LiveCaptionsWelcome *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 }
+

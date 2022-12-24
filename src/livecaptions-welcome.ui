@@ -290,6 +290,15 @@
                       <object class="GtkLabel">
                         <property name="label">Unfortunately, your system is not powerful enough to perform live captioning in real-time.</property>
                         <property name="wrap">True</property>
+                        <property name="margin-bottom">8</property>
+                        <property name="justify">center</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel" id="bad_label">
+                        <property name="label">Result: ?</property>
+                        <property name="wrap">True</property>
                         <property name="margin-bottom">24</property>
                         <property name="justify">center</property>
                       </object>
