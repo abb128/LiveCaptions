@@ -48,7 +48,7 @@ static gboolean benchmark_finish(gpointer userdata){
     LiveCaptionsWelcome *self = userdata;
 
     char result_txt[128];
-    snprintf(result_txt, 256, "Result: %.2f", self->benchmark_result_v);
+    snprintf(result_txt, 128, "Result: %.2f", self->benchmark_result_v);
     gtk_label_set_text(self->bad_label, result_txt);
 
     printf("Result: %.2f\n", self->benchmark_result_v);
