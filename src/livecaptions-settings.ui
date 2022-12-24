@@ -39,30 +39,6 @@
               </object>
             </child>
 
-
-            <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="yes">Window Width</property>
-
-                <child type="suffix">
-                  <object class="GtkScale" id="line_width_scale">
-                    <property name="visible">True</property>
-                    <property name="valign">center</property>
-                    <property name="width-request">200</property>
-                    <property name="adjustment">
-                      <object class="GtkAdjustment" id="line_width_adjustment">
-                        <property name="lower">20</property>
-                        <property name="upper">140</property>
-                        <property name="step-increment">1</property>
-                        <property name="page-increment">1</property>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
-            </child>
-
-
             <child>
               <object class="AdwActionRow" id="text_upper_switch_ar">
                 <property name="title" translatable="yes">Show Text in Uppercase</property>
@@ -91,17 +67,50 @@
             </child>
 
             <child>
-              <object class="AdwActionRow" id="transparent_window_switch_ar">
-                <property name="title" translatable="yes">Transparent Window</property>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Window Width</property>
 
                 <child type="suffix">
-                  <object class="GtkSwitch" id="transparent_window_switch">
+                  <object class="GtkScale" id="line_width_scale">
                     <property name="visible">True</property>
                     <property name="valign">center</property>
+                    <property name="width-request">200</property>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="line_width_adjustment">
+                        <property name="lower">20</property>
+                        <property name="upper">140</property>
+                        <property name="step-increment">1</property>
+                        <property name="page-increment">1</property>
+                      </object>
+                    </property>
                   </object>
                 </child>
               </object>
             </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Window Transparency</property>
+
+                <child type="suffix">
+                  <object class="GtkScale" id="window_transparency_scale">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <property name="width-request">200</property>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="window_transparency_adjustment">
+                        <property name="lower">0</property>
+                        <property name="upper">1</property>
+                        <property name="step-increment">0.01</property>
+                        <property name="page-increment">0.01</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+
           </object>
         </child>
 

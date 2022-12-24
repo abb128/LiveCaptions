@@ -34,6 +34,8 @@ struct _LiveCaptionsWindow {
     GtkToggleButton  *mic_button;
     GtkLabel         *label;
 
+    GtkCssProvider *css_provider;
+
     bool slow_warning_shown;
     GtkWidget *too_slow_warning;
     time_t slow_time;

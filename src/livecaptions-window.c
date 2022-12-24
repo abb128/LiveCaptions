@@ -94,10 +94,16 @@ static void update_font(LiveCaptionsWindow *self) {
 }
 
 static void update_window_transparency(LiveCaptionsWindow *self) {
-    bool use_transparency = g_settings_get_boolean(self->settings, "transparent-window");
+    bool use_transparency = true;// g_settings_get_boolean(self->settings, "transparent-window");
 
     if(use_transparency){
         gtk_widget_add_css_class(GTK_WIDGET(self), "transparent-mode");
+
+        int transparency = (int)((1.0 - g_settings_get_double(self->settings, "window-transparency")) * 255.0);
+
+        char css_data[256];
+        snprintf(css_data, 256, ".transparent-mode {\nbackground-color: #000000%02X;\n}", transparency);
+        gtk_css_provider_load_from_data(self->css_provider, css_data, -1);
     }else{
         gtk_widget_remove_css_class(GTK_WIDGET(self), "transparent-mode");
     }
@@ -112,7 +118,7 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
         update_font(self);
     }else if(g_str_equal(key, "line-width")) {
         update_line_width(self);
-    }else if(g_str_equal(key, "transparent-window")) {
+    }else if(g_str_equal(key, "transparent-window") || g_str_equal(key, "window-transparency")) {
         update_window_transparency(self);
     }
 }
@@ -122,6 +128,10 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
+
+    self->css_provider = gtk_css_provider_new();
+    GtkStyleContext *context = gtk_widget_get_style_context(self);
+    gtk_style_context_add_provider(context, self->css_provider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
     g_signal_connect(self->settings, "changed", G_CALLBACK(on_settings_change), self);
     
