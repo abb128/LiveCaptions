@@ -44,6 +44,7 @@ struct _LiveCaptionsWelcome {
 
     GtkProgressBar *benchmark_progress;
 
+    GtkLabel *good_label;
     GtkLabel *bad_label;
 
     GThread *benchmark_thread;

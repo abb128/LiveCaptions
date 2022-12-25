@@ -49,6 +49,7 @@ static gboolean benchmark_finish(gpointer userdata){
 
     char result_txt[128];
     snprintf(result_txt, 128, "Result: %.2f", self->benchmark_result_v);
+    gtk_label_set_text(self->good_label, result_txt);
     gtk_label_set_text(self->bad_label, result_txt);
 
     printf("Result: %.2f\n", self->benchmark_result_v);
@@ -189,6 +190,7 @@ static void livecaptions_welcome_class_init (LiveCaptionsWelcomeClass *klass) {
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, accuracy_page);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_result_bad);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_progress);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, good_label);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, bad_label);
 
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, cancel_button);

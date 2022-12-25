@@ -172,6 +172,15 @@
                       <object class="GtkLabel">
                         <property name="label">Success! Your computer can handle live captioning.</property>
                         <property name="wrap">True</property>
+                        <property name="margin-bottom">8</property>
+                        <property name="justify">center</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel" id="good_label">
+                        <property name="label">Result: ?</property>
+                        <property name="wrap">True</property>
                         <property name="margin-bottom">24</property>
                         <property name="justify">center</property>
                       </object>
