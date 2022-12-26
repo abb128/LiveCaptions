@@ -120,7 +120,9 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_profanity_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_profanity_switch_ar);
-    //gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch);
+    
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch_ar);
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_scale);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_adjustment);
@@ -142,13 +144,14 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     adw_action_row_set_activatable_widget(self->text_upper_switch_ar, GTK_WIDGET(self->text_upper_switch));
     adw_action_row_set_activatable_widget(self->fade_text_switch_ar, GTK_WIDGET(self->fade_text_switch));
     adw_action_row_set_activatable_widget(self->filter_profanity_switch_ar, GTK_WIDGET(self->filter_profanity_switch));
+    adw_action_row_set_activatable_widget(self->filter_slurs_switch_ar, GTK_WIDGET(self->filter_slurs_switch));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
 
     g_settings_bind(self->settings, "text-uppercase", self->text_upper_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "fade-text", self->fade_text_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "filter-profanity", self->filter_profanity_switch, "state", G_SETTINGS_BIND_DEFAULT);
-    //g_settings_bind(self->settings, "filter-slurs", self->filter_slurs_switch, "state", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "filter-slurs", self->filter_slurs_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "line-width", self->line_width_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "window-transparency", self->window_transparency_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
 

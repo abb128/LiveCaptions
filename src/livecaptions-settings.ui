@@ -119,9 +119,8 @@
             <property name="description" translatable="yes">Please keep in mind that even if the source audio is clean, the model may sometimes make mistakes and include profanity where there isn't.</property>
             <property name="title" translatable="yes">Filtering</property>
 
-            <!--
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwActionRow" id="filter_slurs_switch_ar">
                 <property name="title" translatable="yes">Filter Slurs</property>
 
                 <child type="suffix">
@@ -132,7 +131,6 @@
                 </child>
               </object>
             </child>
-            -->
 
             <child>
               <object class="AdwActionRow" id="filter_profanity_switch_ar">

@@ -21,20 +21,24 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define NUM_CURSE_WORDS 19
 #define MAX_CURSE_WORD_LENGTH 64
+
+#define NUM_CURSE_WORDS 22
 const char curse_words[NUM_CURSE_WORDS][MAX_CURSE_WORD_LENGTH] = {
+    "FAG*",
+    "HOMO",
+    "SLUT*",
+    "NIGG*",
+    "PUSSY*",
+    "TRANN*",
+    "\1",
     "CUM*",
     "SEX*",
-    "FAG*",
     "FUCK*",
     "SHIT*",
-    "NIGG*",
     "DICK*",
     "PORN*",
     "COCK*",
-    "SLUT*",
-    "PUSSY*",
     "BITCH*",
     "DILDO*",
     "PENIS*",
@@ -51,7 +55,9 @@ typedef enum WordState {
     WORD_MATCHED = 2
 } WordState;
 
-size_t get_filter_skip(const AprilToken *tokens, size_t curr_idx, size_t count) {
+size_t get_filter_skip(const AprilToken *tokens, size_t curr_idx, size_t count, FilterMode mode) {
+    if(mode <= FILTER_NONE) return 0;
+
     WordState is_match[NUM_CURSE_WORDS] = { 0 };
 
     size_t num_to_skip = 0;
@@ -78,6 +84,8 @@ size_t get_filter_skip(const AprilToken *tokens, size_t curr_idx, size_t count) 
 
             for(size_t j=0; j<NUM_CURSE_WORDS; j++){
                 const char *rule = curse_words[j];
+                if((rule[0] == '\1') && mode < FILTER_PROFANITY) break;
+
                 if(is_match[j] == WORD_STILL_SCANNING) {
                     still_scanning_any = true;
 
@@ -90,6 +98,16 @@ size_t get_filter_skip(const AprilToken *tokens, size_t curr_idx, size_t count) 
                         is_match[j] = WORD_MATCHED;
                         matched_badword = true;
                         break;
+                    }else if(rule[curr_character + 1] == '\0') {
+                        // if doesn't end in *, must be the end of word to match
+                        if(((i + 1) >= count) || (tokens[i + 1].flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)) {
+                            is_match[j] = WORD_MATCHED;
+                            matched_badword = true;
+                            break;
+                        }else{
+                            is_match[j] = WORD_NON_MATCHING;
+                            continue;
+                        }
                     }
                 }
             }
@@ -99,6 +117,7 @@ size_t get_filter_skip(const AprilToken *tokens, size_t curr_idx, size_t count) 
 
         if(!still_scanning_any) break;
     }
+
 
     if(matched_badword) return num_to_skip;
     else return 0;

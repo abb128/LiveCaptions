@@ -63,7 +63,11 @@ static int line_generator_get_text_width(struct line_generator *lg, const char *
 const char SWEAR_REPLACEMENT[] = " [__]";
 void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens) {
     bool use_fade = g_settings_get_boolean(settings, "fade-text");
-    bool use_filter = g_settings_get_boolean(settings, "filter-profanity");
+
+    bool filter_slurs = g_settings_get_boolean(settings, "filter-slurs");
+    bool filter_profanity = g_settings_get_boolean(settings, "filter-profanity");
+
+    FilterMode filter_mode = filter_profanity ? FILTER_PROFANITY : (filter_slurs ? FILTER_SLURS : FILTER_NONE);
 
     bool use_lowercase = !g_settings_get_boolean(settings, "text-uppercase");
     char token_scratch[MAX_TOKEN_SCRATCH];
@@ -117,8 +121,8 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
             }
 
             // filter current word, if applicable
-            if(use_filter && (tokens[j].flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)) {
-                size_t skip = get_filter_skip(tokens, j, num_tokens);
+            if((filter_mode > FILTER_NONE) && (tokens[j].flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)) {
+                size_t skip = get_filter_skip(tokens, j, num_tokens, filter_mode);
                 if(skip > 0) {
                     skipahead = skip;
                     token = SWEAR_REPLACEMENT;

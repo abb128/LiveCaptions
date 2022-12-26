@@ -23,8 +23,17 @@
 #include <stdlib.h>
 #include <april_api.h>
 
+typedef enum FilterMode {
+    FILTER_NONE = 0,
+    FILTER_SLURS = 1,
+    FILTER_PROFANITY = 2
+} FilterMode;
+
 // Takes in an array of tokens, the current index in the list of tokens, and
 // token count. The current index should be at a word boundary.
 // Returns the number of tokens to skip after the current index if filtered,
 // or 0 if not filtered.
-size_t get_filter_skip(const AprilToken *tokens, size_t curr_idx, size_t count);
+size_t get_filter_skip(const AprilToken *tokens,
+                       size_t curr_idx,
+                       size_t count,
+                       FilterMode mode);

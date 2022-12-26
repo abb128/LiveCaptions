@@ -179,6 +179,16 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
     if(g_str_equal(key, "microphone")) {
         init_audio(self);
         g_simple_action_set_state(self->mic_action, g_variant_new_boolean(g_settings_get_boolean(self->settings, "microphone")));
+    }else if(g_str_equal(key, "filter-slurs")) {
+        if(g_settings_get_boolean(self->settings, "filter-profanity") && !g_settings_get_boolean(self->settings, "filter-slurs")){
+            // Filter slurs was turned off but profanity is still on, this is invalid state, turn off filter profanity
+            g_settings_set_boolean(self->settings, "filter-profanity", false);
+        }
+    }else if(g_str_equal(key, "filter-profanity")){
+        if(g_settings_get_boolean(self->settings, "filter-profanity") && !g_settings_get_boolean(self->settings, "filter-slurs")){
+            // Filter profanity was turned on but slurs is still off, this is invalid state, turn on slur filter
+            g_settings_set_boolean(self->settings, "filter-slurs", true);
+        }
     }
 }
 
