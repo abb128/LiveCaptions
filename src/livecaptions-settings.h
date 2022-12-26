@@ -46,6 +46,8 @@ struct _LiveCaptionsSettings {
     GtkAdjustment *window_transparency_adjustment;
 
     GtkLabel *benchmark_label;
+
+    AdwPreferencesGroup *always_on_top_tip;
 };
 
 G_BEGIN_DECLS

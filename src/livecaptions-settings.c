@@ -104,6 +104,19 @@ static void report_cb(LiveCaptionsSettings *self) {
     );
 }
 
+static const char *get_always_on_top_tip_text(){
+    const char *desktop = getenv("XDG_CURRENT_DESKTOP");
+    if(desktop == NULL) return NULL;
+
+    if(g_str_equal(desktop, "GNOME")){
+        return "Right-click the captions window and enable \"Always on Top\" to keep the captions on top.";
+    }else if(g_str_equal(desktop, "KDE")){
+        return "Right-click the captions window and enable \"More Actions\" -> \"Keep Above Others\" to keep the captions on top.";
+    }else{
+        return NULL;
+    }
+}
+
 static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
@@ -120,7 +133,7 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_profanity_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_profanity_switch_ar);
-    
+
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch_ar);
 
@@ -131,6 +144,8 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, window_transparency_adjustment);
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, benchmark_label);
+
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, always_on_top_tip);
 
     gtk_widget_class_bind_template_callback (widget_class, report_cb);
     gtk_widget_class_bind_template_callback (widget_class, about_cb);
@@ -164,4 +179,10 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     double benchmark_result_v = g_settings_get_double(self->settings, "benchmark");
     sprintf(benchmark_result, "%.2f", (float)benchmark_result_v);
     gtk_label_set_text(self->benchmark_label, benchmark_result);
+
+
+    const char *always_on_top_text = get_always_on_top_tip_text();
+    if(always_on_top_text != NULL){
+        adw_preferences_group_set_description(self->always_on_top_tip, always_on_top_text);
+    }
 }
