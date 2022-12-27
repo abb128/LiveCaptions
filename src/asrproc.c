@@ -57,7 +57,7 @@ struct asr_thread_i {
 };
 
 
-void *run_asr_thread(void *userdata) {
+static void *run_asr_thread(void *userdata) {
     asr_thread data = (asr_thread)userdata;
 
     //sleep(40);
@@ -69,7 +69,7 @@ void *run_asr_thread(void *userdata) {
     return NULL;
 }
 
-gboolean main_thread_update_label(void *userdata){
+static gboolean main_thread_update_label(void *userdata){
     asr_thread data = userdata;
 
     if((data->window == NULL) || (data->pause)) return G_SOURCE_REMOVE;
@@ -81,7 +81,7 @@ gboolean main_thread_update_label(void *userdata){
     return G_SOURCE_REMOVE;
 }
 
-void april_result_handler(void* userdata, AprilResultType result, size_t count, const AprilToken* tokens) {
+static void april_result_handler(void* userdata, AprilResultType result, size_t count, const AprilToken* tokens) {
     asr_thread data = userdata;
 
     switch(result) {

@@ -27,9 +27,9 @@
 #include <time.h>
 
 static void benchmark_dummy_handler(G_GNUC_UNUSED void* _userdata,
-                             G_GNUC_UNUSED AprilResultType _result,
-                             G_GNUC_UNUSED size_t _count,
-                             G_GNUC_UNUSED const AprilToken* _tokens)
+                                    G_GNUC_UNUSED AprilResultType _result,
+                                    G_GNUC_UNUSED size_t _count,
+                                    G_GNUC_UNUSED const AprilToken* _tokens)
 {
     // do nothing with result, we don't need it
 }

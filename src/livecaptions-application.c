@@ -59,8 +59,7 @@ static void livecaptions_application_finalize(GObject *object) {
 }
 
 
-static void
-livecaptions_application_show_welcome(LiveCaptionsApplication *self){
+static void livecaptions_application_show_welcome(LiveCaptionsApplication *self){
     asr_thread_pause(self->asr, true);
     GtkWindow *window = GTK_WINDOW(self->window);
 
@@ -208,8 +207,8 @@ livecaptions_application_toggle_microphone(GSimpleAction *action,
     g_settings_set_boolean(self->settings, "microphone", use_microphone);
 
     g_simple_action_set_state(action, state);
-
 }
+
 static void livecaptions_application_init(LiveCaptionsApplication *self) {
     self->settings = g_settings_new("net.sapples.LiveCaptions");
 
@@ -252,7 +251,6 @@ static void livecaptions_application_init(LiveCaptionsApplication *self) {
 
 
     g_signal_connect(self->settings, "changed", G_CALLBACK(on_settings_change), self);
-    
 }
 
 
