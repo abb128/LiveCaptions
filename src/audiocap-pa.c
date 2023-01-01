@@ -130,7 +130,7 @@ void *run_audio_thread_pa(void *userdata) {
         PA_STREAM_NOT_MONOTONIC | PA_STREAM_AUTO_TIMING_UPDATE |
         PA_STREAM_ADJUST_LATENCY;
 
-    const char *dev_name = data->microphone ? data->source_name : data->sink_name;
+    const char *dev_name = data->microphone ? NULL : data->sink_name;
     assert(pa_stream_connect_record(data->stream, dev_name, &buffer_attr, stream_flags) == 0);
 
     // Wait for the stream to be ready
