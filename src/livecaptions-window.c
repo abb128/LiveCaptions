@@ -20,6 +20,7 @@
 #include "livecaptions-window.h"
 #include "livecaptions-application.h"
 #include "audiocap.h"
+#include "window-helper.h"
 
 
 G_DEFINE_TYPE(LiveCaptionsWindow, livecaptions_window, GTK_TYPE_APPLICATION_WINDOW)
@@ -124,14 +125,22 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
 }
 
 
+static gboolean livecaptions_always_on_top(void *userdata) {
+    LiveCaptionsWindow *self = userdata;
+
+    printf("set window: %s\n", set_window_keep_above(GTK_WINDOW(self), true) ? "true" : "false");
+
+    return G_SOURCE_REMOVE;
+}
+
 static void livecaptions_window_init(LiveCaptionsWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
 
     self->css_provider = gtk_css_provider_new();
-    GtkStyleContext *context = gtk_widget_get_style_context(self);
-    gtk_style_context_add_provider(context, self->css_provider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    GtkStyleContext *context = gtk_widget_get_style_context(GTK_WIDGET(self));
+    gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(self->css_provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
     g_signal_connect(self->settings, "changed", G_CALLBACK(on_settings_change), self);
     
@@ -144,6 +153,8 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
     update_window_transparency(self);
 
     self->slow_warning_shown = false;
+
+    g_idle_add(livecaptions_always_on_top, self);
 }
 
 static gboolean hide_slow_warning_after_some_time(void *userdata) {
