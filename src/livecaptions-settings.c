@@ -109,9 +109,9 @@ static const char *get_always_on_top_tip_text(){
     const char *desktop = getenv("XDG_CURRENT_DESKTOP");
     if(desktop == NULL) return NULL;
 
-    if(g_str_equal(desktop, "GNOME")){
+    if(strstr(desktop, "GNOME")){
         return "Right-click the captions window and enable \"Always on Top\" to keep the captions on top.";
-    }else if(g_str_equal(desktop, "KDE")){
+    }else if(strstr(desktop, "KDE")){
         return "Right-click the captions window and enable \"More Actions\" -> \"Keep Above Others\" to keep the captions on top.";
     }else{
         return NULL;
