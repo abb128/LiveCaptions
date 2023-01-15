@@ -48,5 +48,10 @@
         <key name="benchmark" type="d">
             <default>-1.0</default>
         </key>
+
+        <key name="keep-on-top" type="b">
+            <default>true</default>
+            <summary>Keep the Captions window on top</summary>
+        </key>
     </schema>
 </schemalist>

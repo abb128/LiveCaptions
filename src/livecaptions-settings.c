@@ -137,6 +137,9 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch_ar);
 
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, keep_above_switch);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, keep_above_switch_ar);
+
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_scale);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_adjustment);
 
@@ -160,6 +163,7 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     adw_action_row_set_activatable_widget(self->fade_text_switch_ar, GTK_WIDGET(self->fade_text_switch));
     adw_action_row_set_activatable_widget(self->filter_profanity_switch_ar, GTK_WIDGET(self->filter_profanity_switch));
     adw_action_row_set_activatable_widget(self->filter_slurs_switch_ar, GTK_WIDGET(self->filter_slurs_switch));
+    adw_action_row_set_activatable_widget(self->keep_above_switch_ar, GTK_WIDGET(self->keep_above_switch));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
 
@@ -167,6 +171,7 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     g_settings_bind(self->settings, "fade-text", self->fade_text_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "filter-profanity", self->filter_profanity_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "filter-slurs", self->filter_slurs_switch, "state", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "keep-on-top", self->keep_above_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "line-width", self->line_width_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "window-transparency", self->window_transparency_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
 

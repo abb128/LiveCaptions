@@ -110,6 +110,13 @@ static void update_window_transparency(LiveCaptionsWindow *self) {
     }
 }
 
+static void update_keep_above(LiveCaptionsWindow *self) {
+    gboolean keep_above = g_settings_get_boolean(self->settings, "keep-on-top");
+    if(!set_window_keep_above(GTK_WINDOW(self), keep_above)){
+        printf("Failed to set keep above\n");
+    }
+}
+
 static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
                                char      *key,
                                gpointer   user_data){
@@ -121,14 +128,16 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
         update_line_width(self);
     }else if(g_str_equal(key, "transparent-window") || g_str_equal(key, "window-transparency")) {
         update_window_transparency(self);
+    }else if(g_str_equal(key, "keep-on-top")) {
+        update_keep_above(self);
     }
 }
 
 
-static gboolean livecaptions_always_on_top(void *userdata) {
+static gboolean deferred_update_keep_above(void *userdata) {
     LiveCaptionsWindow *self = userdata;
 
-    printf("set window: %s\n", set_window_keep_above(GTK_WINDOW(self), true) ? "true" : "false");
+    update_keep_above(self);
 
     return G_SOURCE_REMOVE;
 }
@@ -154,7 +163,7 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
 
     self->slow_warning_shown = false;
 
-    g_idle_add(livecaptions_always_on_top, self);
+    g_idle_add(deferred_update_keep_above, self);
 }
 
 static gboolean hide_slow_warning_after_some_time(void *userdata) {
