@@ -19,6 +19,7 @@
 #include <glib/gi18n.h>
 
 #include "common.h"
+#include "window-helper.h"
 #include "livecaptions-config.h"
 #include "livecaptions-settings.h"
 #include "livecaptions-application.h"
@@ -185,9 +186,14 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     sprintf(benchmark_result, "%.2f", (float)benchmark_result_v);
     gtk_label_set_text(self->benchmark_label, benchmark_result);
 
-
-    const char *always_on_top_text = get_always_on_top_tip_text();
-    if(always_on_top_text != NULL){
-        adw_preferences_group_set_description(self->always_on_top_tip, always_on_top_text);
+    if(is_keep_above_supported(GTK_WINDOW(self))) {
+        gtk_widget_set_visible(GTK_WIDGET(self->keep_above_switch_ar), true);
+        adw_preferences_group_set_description(self->always_on_top_tip, "");
+    } else {
+        gtk_widget_set_visible(GTK_WIDGET(self->keep_above_switch_ar), false);
+        const char *always_on_top_text = get_always_on_top_tip_text();
+        if(always_on_top_text != NULL){
+            adw_preferences_group_set_description(self->always_on_top_tip, always_on_top_text);
+        }
     }
 }

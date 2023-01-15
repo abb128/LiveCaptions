@@ -62,6 +62,28 @@ static bool set_window_keep_above_x11(GtkWindow *window, bool keep_above) {
 }
 #endif
 
+bool is_keep_above_supported(GtkWindow *window) {
+    GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(window));
+
+    #ifdef GDK_WINDOWING_X11
+    if(GDK_IS_X11_DISPLAY(display))
+      {
+        return true;
+      }
+    else
+    #endif
+    #ifdef GDK_WINDOWING_WAYLAND
+    if(GDK_IS_WAYLAND_DISPLAY(display))
+      {
+        return false; // TODO: Plasma
+      }
+    else
+    #endif
+    {
+        return false;
+    }
+}
+
 bool set_window_keep_above(GtkWindow *window, bool keep_above) {
     GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(window));
 

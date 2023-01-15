@@ -19,5 +19,7 @@
 
 #include <adwaita.h>
 
+bool is_keep_above_supported(GtkWindow *window);
+
 // Returns false if impossible to set keep above
 bool set_window_keep_above(GtkWindow *window, bool keep_above);
