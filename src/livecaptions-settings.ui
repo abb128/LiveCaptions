@@ -16,7 +16,7 @@
         <child>
           <object class="AdwPreferencesGroup" id="always_on_top_tip">
             <property name="title" translatable="yes">Keep Above</property>
-            <property name="description" translatable="yes">Right-click the captions window and enable "Always on Top" or "Keep Above Others" to keep the captions on top.</property>
+            <property name="description" translatable="yes">Right-click, Alt+Right-click, Alt+Space or Alt+F3 the captions window and enable "Always on Top" or "Keep Above Others" to keep the captions on top.</property>
 
             <child>
               <object class="AdwActionRow" id="keep_above_switch_ar">
