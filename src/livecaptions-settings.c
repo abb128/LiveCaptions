@@ -156,6 +156,15 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_callback (widget_class, rerun_benchmark_cb);
 }
 
+
+static gboolean deferred_update_keep_above(void *userdata) {
+    LiveCaptionsSettings *self = userdata;
+
+    set_window_keep_above(GTK_WINDOW(self), g_settings_get_boolean(self->settings, "keep-on-top"));
+
+    return G_SOURCE_REMOVE;
+}
+
 static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
@@ -189,6 +198,8 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     if(is_keep_above_supported(GTK_WINDOW(self))) {
         gtk_widget_set_visible(GTK_WIDGET(self->keep_above_switch_ar), true);
         adw_preferences_group_set_description(self->always_on_top_tip, "");
+
+        g_idle_add(deferred_update_keep_above, self);
     } else {
         gtk_widget_set_visible(GTK_WIDGET(self->keep_above_switch_ar), false);
         const char *always_on_top_text = get_always_on_top_tip_text();
