@@ -110,9 +110,9 @@ static const char *get_always_on_top_tip_text(){
     if(desktop == NULL) return NULL;
 
     if(strstr(desktop, "GNOME")){
-        return "Right-click the captions window and enable \"Always on Top\" to keep the captions on top.";
+        return _("Right-click the captions window and enable \"Always on Top\" to keep the captions on top.");
     }else if(strstr(desktop, "KDE")){
-        return "Right-click the captions window (or hit AlT+F3) and enable \"More Actions\" -> \"Keep Above Others\" to keep the captions on top.";
+        return _("Right-click the captions window (or hit AlT+F3) and enable \"More Actions\" -> \"Keep Above Others\" to keep the captions on top.");
     }else{
         return NULL;
     }
@@ -204,7 +204,7 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
 
         gtk_label_set_label(self->keep_above_instructions, "");
     } else {
-        adw_action_row_set_subtitle(self->keep_above_switch_ar, "Your compositor does not support this setting. Read below for manual instructions");
+        adw_action_row_set_subtitle(self->keep_above_switch_ar, _("Your compositor does not support this setting. Read below for manual instructions"));
         gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch_ar), false);
         gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch), false);
 
