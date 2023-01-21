@@ -20,6 +20,9 @@
     animation-play-state: running;
 }
 
+.keep-above-tip {
+    margin-top: 6pt;
+}
 
 @keyframes flashing {
     0% {

@@ -14,9 +14,8 @@
 
 
         <child>
-          <object class="AdwPreferencesGroup" id="always_on_top_tip">
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Keep Above</property>
-            <property name="description" translatable="yes">Right-click, Alt+Right-click, Alt+Space or Alt+F3 the captions window and enable "Always on Top" or "Keep Above Others" to keep the captions on top.</property>
 
             <child>
               <object class="AdwActionRow" id="keep_above_switch_ar">
@@ -28,6 +27,16 @@
                     <property name="valign">center</property>
                   </object>
                 </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkLabel" id="keep_above_instructions">
+                <style>
+                  <class name="keep-above-tip"/>
+                </style>
+                <property name="label" translatable="yes">Right-click, Alt+Right-click, Alt+Space or Alt+F3 the captions window and enable "Always on Top" or "Keep Above Others" to keep the captions on top.</property>
+                <property name="wrap">True</property>
               </object>
             </child>
 

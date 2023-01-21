@@ -148,15 +148,15 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, window_transparency_adjustment);
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, benchmark_label);
-
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, always_on_top_tip);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, keep_above_instructions);
 
     gtk_widget_class_bind_template_callback (widget_class, report_cb);
     gtk_widget_class_bind_template_callback (widget_class, about_cb);
     gtk_widget_class_bind_template_callback (widget_class, rerun_benchmark_cb);
 }
 
-
+// The settings window needs to be kept on top if the main window is kept on top,
+// otherwise the settings will appear under the main window which is not ideal
 static gboolean deferred_update_keep_above(void *userdata) {
     LiveCaptionsSettings *self = userdata;
 
@@ -173,7 +173,6 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     adw_action_row_set_activatable_widget(self->fade_text_switch_ar, GTK_WIDGET(self->fade_text_switch));
     adw_action_row_set_activatable_widget(self->filter_profanity_switch_ar, GTK_WIDGET(self->filter_profanity_switch));
     adw_action_row_set_activatable_widget(self->filter_slurs_switch_ar, GTK_WIDGET(self->filter_slurs_switch));
-    adw_action_row_set_activatable_widget(self->keep_above_switch_ar, GTK_WIDGET(self->keep_above_switch));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
 
@@ -181,7 +180,6 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     g_settings_bind(self->settings, "fade-text", self->fade_text_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "filter-profanity", self->filter_profanity_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "filter-slurs", self->filter_slurs_switch, "state", G_SETTINGS_BIND_DEFAULT);
-    g_settings_bind(self->settings, "keep-on-top", self->keep_above_switch, "state", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "line-width", self->line_width_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "window-transparency", self->window_transparency_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
 
@@ -196,15 +194,23 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     gtk_label_set_text(self->benchmark_label, benchmark_result);
 
     if(is_keep_above_supported(GTK_WINDOW(self))) {
-        gtk_widget_set_visible(GTK_WIDGET(self->keep_above_switch_ar), true);
-        adw_preferences_group_set_description(self->always_on_top_tip, "");
+        adw_action_row_set_activatable_widget(self->keep_above_switch_ar, GTK_WIDGET(self->keep_above_switch));
+        g_settings_bind(self->settings, "keep-on-top", self->keep_above_switch, "state", G_SETTINGS_BIND_DEFAULT);
+
+        gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch_ar), true);
+        gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch), true);
 
         g_idle_add(deferred_update_keep_above, self);
+
+        gtk_label_set_label(self->keep_above_instructions, "");
     } else {
-        gtk_widget_set_visible(GTK_WIDGET(self->keep_above_switch_ar), false);
+        adw_action_row_set_subtitle(self->keep_above_switch_ar, "Your compositor does not support this setting. Read below for manual instructions");
+        gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch_ar), false);
+        gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch), false);
+
+        gtk_switch_set_state(self->keep_above_switch, false);
+
         const char *always_on_top_text = get_always_on_top_tip_text();
-        if(always_on_top_text != NULL){
-            adw_preferences_group_set_description(self->always_on_top_tip, always_on_top_text);
-        }
+        gtk_label_set_label(self->keep_above_instructions, always_on_top_text);
     }
 }
