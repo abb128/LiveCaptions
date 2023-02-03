@@ -34,6 +34,7 @@
 #include "asrproc.h"
 #include "line-gen.h"
 #include "livecaptions-window.h"
+#include "history.h"
 
 struct asr_thread_i {
     volatile size_t sound_counter;
@@ -102,6 +103,7 @@ static void april_result_handler(void* userdata, AprilResultType result, size_t 
             line_generator_update(&data->line, count, tokens);
             if(result == APRIL_RESULT_RECOGNITION_FINAL) {
                 line_generator_finalize(&data->line);
+                commit_tokens_to_current_history(tokens, count);
             }
 
             g_mutex_unlock(&data->text_mutex);

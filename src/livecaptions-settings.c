@@ -23,6 +23,7 @@
 #include "livecaptions-config.h"
 #include "livecaptions-settings.h"
 #include "livecaptions-application.h"
+#include "history.h"
 
 
 G_DEFINE_TYPE(LiveCaptionsSettings, livecaptions_settings, ADW_TYPE_PREFERENCES_WINDOW)
@@ -105,6 +106,55 @@ static void report_cb(LiveCaptionsSettings *self) {
     );
 }
 
+static void on_save_response(GtkDialog *dialog,
+                             int        response,
+                             LiveCaptionsSettings *self)
+{
+    if(response == GTK_RESPONSE_ACCEPT){
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+
+        g_autoptr(GFile) file = gtk_file_chooser_get_file (chooser);
+        
+        char *path = g_file_get_path(file);
+
+        export_history_as_text(path);
+
+        char *uri = g_file_get_uri(file);
+
+        gtk_show_uri(GTK_WINDOW(self), uri, GDK_CURRENT_TIME);
+
+        g_free(path);
+        g_free(uri);
+    }
+
+    gtk_window_destroy (GTK_WINDOW (dialog));                  
+}
+
+static void export_cb(LiveCaptionsSettings *self) {
+    GtkWidget *dialog;
+    GtkFileChooser *chooser;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+
+    dialog = gtk_file_chooser_dialog_new("Export History",
+                                         GTK_WINDOW(self),
+                                         action,
+                                         _("_Cancel"),
+                                         GTK_RESPONSE_CANCEL,
+                                         _("_Export"),
+                                         GTK_RESPONSE_ACCEPT,
+                                         NULL);
+
+    chooser = GTK_FILE_CHOOSER(dialog);
+
+    gtk_file_chooser_set_current_name(chooser, _("Live Captions History.txt"));
+
+    gtk_window_present(GTK_WINDOW(dialog));
+
+    g_signal_connect(dialog, "response",
+                     G_CALLBACK (on_save_response),
+                     self);
+}
+
 static const char *get_always_on_top_tip_text(){
     const char *desktop = getenv("XDG_CURRENT_DESKTOP");
     if(desktop == NULL) return NULL;
@@ -152,6 +202,7 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
 
     gtk_widget_class_bind_template_callback (widget_class, report_cb);
     gtk_widget_class_bind_template_callback (widget_class, about_cb);
+    gtk_widget_class_bind_template_callback (widget_class, export_cb);
     gtk_widget_class_bind_template_callback (widget_class, rerun_benchmark_cb);
 }
 

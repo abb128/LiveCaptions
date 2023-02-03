@@ -21,6 +21,7 @@
 #include "livecaptions-application.h"
 #include "audiocap.h"
 #include "window-helper.h"
+#include "history.h"
 
 
 G_DEFINE_TYPE(LiveCaptionsWindow, livecaptions_window, GTK_TYPE_APPLICATION_WINDOW)
@@ -164,6 +165,8 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
     self->slow_warning_shown = false;
 
     g_idle_add(deferred_update_keep_above, self);
+
+    history_init();
 }
 
 static gboolean hide_slow_warning_after_some_time(void *userdata) {
