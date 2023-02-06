@@ -22,6 +22,7 @@
 #include "livecaptions-welcome.h"
 #include "asrproc.h"
 #include "common.h"
+#include "history.h"
 
 G_DEFINE_TYPE (LiveCaptionsApplication, livecaptions_application, ADW_TYPE_APPLICATION)
 
@@ -49,6 +50,8 @@ LiveCaptionsApplication *livecaptions_application_new (gchar *application_id, GA
 }
 
 static void livecaptions_application_finalize(GObject *object) {
+    save_current_history(default_history_file);
+    
     LiveCaptionsApplication *self = (LiveCaptionsApplication *)object;
 
     audio_thread audio = self->audio;
@@ -77,6 +80,9 @@ static void livecaptions_application_show_welcome(LiveCaptionsApplication *self)
 }
 
 static void livecaptions_application_activate(GApplication *app) {
+    history_init();
+    load_history_from(default_history_file);
+
     GtkWindow *window;
 
     g_assert(LIVECAPTIONS_IS_APPLICATION(app));

@@ -165,8 +165,6 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
     self->slow_warning_shown = false;
 
     g_idle_add(deferred_update_keep_above, self);
-
-    history_init();
 }
 
 static gboolean hide_slow_warning_after_some_time(void *userdata) {

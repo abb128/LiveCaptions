@@ -28,6 +28,8 @@
 #define HISTORY_TOKEN_MAX_CHARS 32
 #define HISTORY_MAX_TOKENS 256
 
+extern char *default_history_file;
+
 
 // A single token. The token text is inline for serialization simplicity
 struct history_token {
@@ -50,6 +52,11 @@ struct history_session {
     struct history_entry *entries;
 };
 
+// List of past sessions
+struct past_history_sessions {
+    size_t num_sessions;
+    struct history_session *sessions;
+};
 
 // Use static global variables for simplicity
 

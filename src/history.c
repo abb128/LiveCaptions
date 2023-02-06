@@ -23,13 +23,26 @@
 #include "history.h"
 
 static struct history_session active_session = { 0 };
+static struct past_history_sessions past_sessions = { 0 };
+
+char default_history_file_v[1024] = { 0 };
+char *default_history_file = NULL;
 
 void history_init(void){
     // set timestamp for current session, etc
-
     active_session.timestamp = time(NULL);
     active_session.entries_count = 0;
     active_session.entries = NULL;
+
+    past_sessions.num_sessions = 0;
+    past_sessions.sessions = NULL;
+
+    default_history_file = default_history_file_v;
+
+    const char *data_dir = g_get_user_data_dir();
+    sprintf(default_history_file_v, "%s/live-captions-history.bin", data_dir);
+
+    printf("Save file: %s\n", default_history_file);
 }
 
 
@@ -68,13 +81,11 @@ void commit_tokens_to_current_history(const AprilToken *tokens,
 }
 
 
-void save_current_history(const char *path){
-    FILE *f = fopen(path, "w");
-
-    fwrite(&active_session.timestamp, sizeof(active_session.timestamp), 1, f);
-    fwrite(&active_session.entries_count, sizeof(active_session.entries_count), 1, f);
-    for(size_t i=0; i<active_session.entries_count; i++){
-        struct history_entry *entry = &active_session.entries[i];
+static void write_session_to_file(FILE *f, const struct history_session *session) {
+    fwrite(&session->timestamp, sizeof(session->timestamp), 1, f);
+    fwrite(&session->entries_count, sizeof(session->entries_count), 1, f);
+    for(size_t i=0; i<session->entries_count; i++){
+        struct history_entry *entry = &session->entries[i];
 
         fwrite(&entry->timestamp, sizeof(entry->timestamp), 1, f);
         fwrite(&entry->tokens_count, sizeof(entry->tokens_count), 1, f);
@@ -85,19 +96,29 @@ void save_current_history(const char *path){
             fwrite(token, sizeof(struct history_token), 1, f);
         }
     }
+}
+
+void save_current_history(const char *path){
+    FILE *f = fopen(path, "w");
+
+    size_t num_sessions_to_write = past_sessions.num_sessions + 1;
+    fwrite(&num_sessions_to_write, sizeof(num_sessions_to_write), 1, f);
+
+    for(size_t i=0; i<past_sessions.num_sessions; i++){
+        write_session_to_file(f, &past_sessions.sessions[i]);
+    }
+
+    write_session_to_file(f, &active_session);
 
     fclose(f);
 }
 
-// Currently replaces the active session with this one
-void load_history_from(const char *path){
-    FILE *f = fopen(path, "r");
 
-    struct history_session *session = &active_session;
+static void read_session_from_file(FILE *f, struct history_session *session) {
     fread(&session->timestamp, sizeof(session->timestamp), 1, f);
     fread(&session->entries_count, sizeof(session->entries_count), 1, f);
 
-    session->entries = reallocarray(session->entries,
+    session->entries = calloc(
         session->entries_count,
         sizeof(struct history_entry)
     );
@@ -108,7 +129,7 @@ void load_history_from(const char *path){
         fread(&entry->timestamp, sizeof(entry->timestamp), 1, f);
         fread(&entry->tokens_count, sizeof(entry->tokens_count), 1, f);
 
-        entry->tokens = reallocarray(entry->tokens,
+        entry->tokens = calloc(
             entry->tokens_count,
             sizeof(struct history_token)
         );
@@ -118,19 +139,32 @@ void load_history_from(const char *path){
             fread(token, sizeof(struct history_token), 1, f);
         }
     }
+}
+
+void load_history_from(const char *path){
+    FILE *f = fopen(path, "r");
+
+    if(f == NULL) {
+        printf("fopen %s returned NULL\n", path);
+        return;
+    }
+
+    size_t num_sessions_in_file = 0;
+    fread(&num_sessions_in_file, sizeof(num_sessions_in_file), 1, f);
+
+    past_sessions.num_sessions = num_sessions_in_file;
+    past_sessions.sessions = calloc(past_sessions.num_sessions, sizeof(struct history_session));
+    
+    for(size_t i=0; i<num_sessions_in_file; i++){
+        read_session_from_file(f, &past_sessions.sessions[i]);
+    }
 
     fclose(f);
 }
 
 
-
-void export_history_as_text(const char *path) {
+static void export_session_into_text(FILE *f, const struct history_session *session) {
     char time_buff[512];
-
-    FILE *f = fopen(path, "w");
-    g_assert(f != NULL);
-
-    struct history_session *session = &active_session;
 
     struct tm *tm = localtime(&session->timestamp);
     strftime(time_buff, 512, "%F", tm);
@@ -151,8 +185,17 @@ void export_history_as_text(const char *path) {
     }
 
     fprintf(f, "\n\n");
+}
+
+void export_history_as_text(const char *path) {
+    FILE *f = fopen(path, "w");
+    g_assert(f != NULL);
+
+    for(size_t i=0; i<past_sessions.num_sessions; i++){
+        export_session_into_text(f, &past_sessions.sessions[i]);
+    }
+
+    export_session_into_text(f, &active_session);
 
     fclose(f);
-
-    printf("Written to %s\n", path);
 }
