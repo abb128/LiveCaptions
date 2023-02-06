@@ -101,14 +101,17 @@ static void write_session_to_file(FILE *f, const struct history_session *session
 void save_current_history(const char *path){
     FILE *f = fopen(path, "w");
 
-    size_t num_sessions_to_write = past_sessions.num_sessions + 1;
+    bool write_active_session = active_session.entries_count > 0;
+
+    size_t num_sessions_to_write = past_sessions.num_sessions + (write_active_session ? 1 : 0);
     fwrite(&num_sessions_to_write, sizeof(num_sessions_to_write), 1, f);
 
     for(size_t i=0; i<past_sessions.num_sessions; i++){
         write_session_to_file(f, &past_sessions.sessions[i]);
     }
 
-    write_session_to_file(f, &active_session);
+    if(write_active_session)
+        write_session_to_file(f, &active_session);
 
     fclose(f);
 }
@@ -167,9 +170,9 @@ static void export_session_into_text(FILE *f, const struct history_session *sess
     char time_buff[512];
 
     struct tm *tm = localtime(&session->timestamp);
-    strftime(time_buff, 512, "%F", tm);
+    strftime(time_buff, 512, "%F | %H:%M", tm);
 
-    fprintf(f, "    -[%s]-    ", time_buff);
+    fprintf(f, "    -[ %s ]-    ", time_buff);
 
     for(size_t i=0; i<session->entries_count; i++){
         struct history_entry *entry = &session->entries[i];
@@ -192,10 +195,13 @@ void export_history_as_text(const char *path) {
     g_assert(f != NULL);
 
     for(size_t i=0; i<past_sessions.num_sessions; i++){
+        if(past_sessions.sessions[i].entries_count == 0) continue;
+        
         export_session_into_text(f, &past_sessions.sessions[i]);
     }
 
-    export_session_into_text(f, &active_session);
+    if(active_session.entries_count > 0)
+        export_session_into_text(f, &active_session);
 
     fclose(f);
 }
