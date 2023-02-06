@@ -31,6 +31,10 @@
 
 struct line {
     char text[AC_LINE_MAX];
+    
+    size_t start_head;
+    size_t start_len;
+
     size_t head;
     size_t len;
 };
@@ -52,4 +56,5 @@ struct line_generator {
 void line_generator_init(struct line_generator *lg);
 void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens);
 void line_generator_finalize(struct line_generator *lg);
+void line_generator_break(struct line_generator *lg);
 void line_generator_set_text(struct line_generator *lg, GtkLabel *lbl);

@@ -125,7 +125,6 @@ void load_history_from(const char *path){
 
 
 void export_history_as_text(const char *path) {
-
     char time_buff[512];
 
     FILE *f = fopen(path, "w");

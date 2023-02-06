@@ -41,6 +41,9 @@ static GSettings *settings = NULL;
 void line_generator_init(struct line_generator *lg) {
     for(int i=0; i<AC_LINE_COUNT; i++){
         lg->active_start_of_lines[i] = -1;
+
+        lg->lines[i].start_head = 0;
+        lg->lines[i].start_len = 0;
     }
 
     lg->current_line = 0;
@@ -79,9 +82,9 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
         struct line *curr = &lg->lines[i];
 
         // reset for writing
-        curr->text[0] = '\0';
-        curr->head = 0;
-        curr->len = 0;
+        curr->text[curr->start_head] = '\0';
+        curr->head = curr->start_head;
+        curr->len = curr->start_len;
 
         if(num_tokens == 0) continue;
 
@@ -150,6 +153,8 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
                     // line break
                     lg->current_line = REL_LINE_IDX(lg->current_line, 1);
                     lg->active_start_of_lines[lg->current_line] = tgt_brk;
+                    lg->lines[lg->current_line].start_head = 0;
+                    lg->lines[lg->current_line].start_len = 0;
                     return line_generator_update(lg, num_tokens, tokens);
                 }
             }
@@ -174,9 +179,18 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
 }
 
 void line_generator_finalize(struct line_generator *lg) {
-    // fix when new line contains only like 1 token
-    // ......
+    // reset active
+    for(size_t i=0; i<AC_LINE_COUNT; i++) lg->active_start_of_lines[i] = -1;
 
+    // freeze the current line thus far
+    lg->lines[lg->current_line].start_head = lg->lines[lg->current_line].head;
+    lg->lines[lg->current_line].start_len = lg->lines[lg->current_line].len;
+
+    // set new line to start at 0
+    lg->active_start_of_lines[lg->current_line] = 0;
+}
+
+void line_generator_break(struct line_generator *lg) {
     // insert new line
     lg->current_line = REL_LINE_IDX(lg->current_line, 1);
 
@@ -189,6 +203,9 @@ void line_generator_finalize(struct line_generator *lg) {
     // clear new line
     lg->lines[lg->current_line].text[0] = '\0';
     lg->lines[lg->current_line].head = 0;
+    lg->lines[lg->current_line].len = 0;
+    lg->lines[lg->current_line].start_head = 0;
+    lg->lines[lg->current_line].start_len = 0;
 }
 
 void line_generator_set_text(struct line_generator *lg, GtkLabel *lbl) {

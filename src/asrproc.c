@@ -113,6 +113,17 @@ static void april_result_handler(void* userdata, AprilResultType result, size_t 
 
         case APRIL_RESULT_ERROR_CANT_KEEP_UP: {
             livecaptions_window_warn_slow(data->window);
+            break;
+        }
+
+        case APRIL_RESULT_SILENCE: {
+            g_mutex_lock(&data->text_mutex);
+
+            line_generator_break(&data->line);
+
+            g_mutex_unlock(&data->text_mutex);
+            g_idle_add(main_thread_update_label, data);
+            break;
         }
     }
 }
