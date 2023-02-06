@@ -26,6 +26,7 @@ struct _LiveCaptionsHistoryWindow {
 
     GSettings *settings;
 
+    GtkScrolledWindow *scroll;
     GtkLabel *label;
 };
 
