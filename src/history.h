@@ -92,3 +92,10 @@ Format:
 
 // Display in a history window. Make sure it's copyable
 // ?
+
+// 0 returns the active session
+// 1 returns the previous session
+// 2 returns the one prior to the previous
+// ...
+// returns NULL once reached the first session
+const struct history_session *get_history_session(size_t idx);

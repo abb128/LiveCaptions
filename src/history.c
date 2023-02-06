@@ -191,12 +191,14 @@ static void export_session_into_text(FILE *f, const struct history_session *sess
 }
 
 void export_history_as_text(const char *path) {
+    // TODO: Apply current settings for filtering, capitalization, etc
+    
     FILE *f = fopen(path, "w");
     g_assert(f != NULL);
 
     for(size_t i=0; i<past_sessions.num_sessions; i++){
         if(past_sessions.sessions[i].entries_count == 0) continue;
-        
+
         export_session_into_text(f, &past_sessions.sessions[i]);
     }
 
@@ -204,4 +206,13 @@ void export_history_as_text(const char *path) {
         export_session_into_text(f, &active_session);
 
     fclose(f);
+}
+
+const struct history_session *get_history_session(size_t idx) {
+    if(idx == 0) return &active_session;
+
+    ssize_t i = ((ssize_t)past_sessions.num_sessions - (ssize_t)idx);
+    if(i < 0) return NULL;
+
+    return &past_sessions.sessions[i];
 }

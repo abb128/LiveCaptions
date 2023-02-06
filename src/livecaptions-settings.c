@@ -24,7 +24,7 @@
 #include "livecaptions-settings.h"
 #include "livecaptions-application.h"
 #include "history.h"
-
+#include "livecaptions-history-window.h"
 
 G_DEFINE_TYPE(LiveCaptionsSettings, livecaptions_settings, ADW_TYPE_PREFERENCES_WINDOW)
 
@@ -155,6 +155,11 @@ static void export_cb(LiveCaptionsSettings *self) {
                      self);
 }
 
+static void open_history(LiveCaptionsSettings *self) {
+    LiveCaptionsHistoryWindow *window = g_object_new(LIVECAPTIONS_TYPE_HISTORY_WINDOW, NULL);
+    gtk_window_present(GTK_WINDOW(window));
+}
+
 static const char *get_always_on_top_tip_text(){
     const char *desktop = getenv("XDG_CURRENT_DESKTOP");
     if(desktop == NULL) return NULL;
@@ -204,6 +209,7 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_callback (widget_class, about_cb);
     gtk_widget_class_bind_template_callback (widget_class, export_cb);
     gtk_widget_class_bind_template_callback (widget_class, rerun_benchmark_cb);
+    gtk_widget_class_bind_template_callback (widget_class, open_history);
 }
 
 // The settings window needs to be kept on top if the main window is kept on top,

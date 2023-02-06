@@ -4,6 +4,7 @@
     <file>livecaptions-window.ui</file>
     <file>livecaptions-welcome.ui</file>
     <file>livecaptions-settings.ui</file>
+    <file>livecaptions-history-window.ui</file>
     <file>style.css</file>
   </gresource>
 

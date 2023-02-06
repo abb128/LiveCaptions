@@ -11,7 +11,8 @@ livecaptions_sources = [
   'line-gen.c',
   'profanity-filter.c',
   'window-helper.c',
-  'history.c'
+  'history.c',
+  'livecaptions-history-window.c'
 ]
 
 cc = meson.get_compiler('c')
