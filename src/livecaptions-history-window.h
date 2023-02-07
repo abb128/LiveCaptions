@@ -1,5 +1,5 @@
 /* livecaptions-history-window.h
- * The history window UwU
+ *
  *
  * Copyright 2022 abb128
  *
