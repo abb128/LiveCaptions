@@ -133,21 +133,6 @@
               </object>
             </child>
 
-
-            <child>
-              <object class="AdwActionRow">
-                <property name="title" translatable="yes">Export History as Text (temporary)</property>
-                <property name="activatable">True</property>
-                <signal name="activated" handler="export_cb" swapped="yes"/>
-                <child>
-                  <object class="GtkImage">
-                    <property name="icon_name">go-next-symbolic</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-
-
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Open History Window (temporary)</property>

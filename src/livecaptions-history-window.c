@@ -17,6 +17,7 @@
  */
 
 #include <ctype.h>
+#include <glib/gi18n.h>
 #include <april_api.h>
 #include "livecaptions-history-window.h"
 #include "history.h"
@@ -91,6 +92,56 @@ static void load_more_cb(LiveCaptionsHistoryWindow *self) {
     load_to(self, ++self->session_load);
 }
 
+
+static void on_save_response(GtkDialog *dialog,
+                             int        response,
+                             LiveCaptionsHistoryWindow *self)
+{
+    if(response == GTK_RESPONSE_ACCEPT){
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+
+        g_autoptr(GFile) file = gtk_file_chooser_get_file (chooser);
+        
+        char *path = g_file_get_path(file);
+
+        export_history_as_text(path);
+
+        char *uri = g_file_get_uri(file);
+
+        gtk_show_uri(GTK_WINDOW(self), uri, GDK_CURRENT_TIME);
+
+        g_free(path);
+        g_free(uri);
+    }
+
+    gtk_window_destroy (GTK_WINDOW (dialog));                  
+}
+
+static void export_cb(LiveCaptionsHistoryWindow *self) {
+    GtkWidget *dialog;
+    GtkFileChooser *chooser;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+
+    dialog = gtk_file_chooser_dialog_new("Export History",
+                                         GTK_WINDOW(self),
+                                         action,
+                                         _("_Cancel"),
+                                         GTK_RESPONSE_CANCEL,
+                                         _("_Export"),
+                                         GTK_RESPONSE_ACCEPT,
+                                         NULL);
+
+    chooser = GTK_FILE_CHOOSER(dialog);
+
+    gtk_file_chooser_set_current_name(chooser, _("Live Captions History.txt"));
+
+    gtk_window_present(GTK_WINDOW(dialog));
+
+    g_signal_connect(dialog, "response",
+                     G_CALLBACK (on_save_response),
+                     self);
+}
+
 static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
@@ -100,8 +151,10 @@ static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClas
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, label);
 
     gtk_widget_class_bind_template_callback(widget_class, load_more_cb);
+    gtk_widget_class_bind_template_callback(widget_class, export_cb);
 }
 
+// TODO: ctrl+f search
 static void livecaptions_history_window_init(LiveCaptionsHistoryWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 

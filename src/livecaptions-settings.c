@@ -106,58 +106,12 @@ static void report_cb(LiveCaptionsSettings *self) {
     );
 }
 
-static void on_save_response(GtkDialog *dialog,
-                             int        response,
-                             LiveCaptionsSettings *self)
-{
-    if(response == GTK_RESPONSE_ACCEPT){
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
-
-        g_autoptr(GFile) file = gtk_file_chooser_get_file (chooser);
-        
-        char *path = g_file_get_path(file);
-
-        export_history_as_text(path);
-
-        char *uri = g_file_get_uri(file);
-
-        gtk_show_uri(GTK_WINDOW(self), uri, GDK_CURRENT_TIME);
-
-        g_free(path);
-        g_free(uri);
-    }
-
-    gtk_window_destroy (GTK_WINDOW (dialog));                  
-}
-
-static void export_cb(LiveCaptionsSettings *self) {
-    GtkWidget *dialog;
-    GtkFileChooser *chooser;
-    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
-
-    dialog = gtk_file_chooser_dialog_new("Export History",
-                                         GTK_WINDOW(self),
-                                         action,
-                                         _("_Cancel"),
-                                         GTK_RESPONSE_CANCEL,
-                                         _("_Export"),
-                                         GTK_RESPONSE_ACCEPT,
-                                         NULL);
-
-    chooser = GTK_FILE_CHOOSER(dialog);
-
-    gtk_file_chooser_set_current_name(chooser, _("Live Captions History.txt"));
-
-    gtk_window_present(GTK_WINDOW(dialog));
-
-    g_signal_connect(dialog, "response",
-                     G_CALLBACK (on_save_response),
-                     self);
-}
-
 static void open_history(LiveCaptionsSettings *self) {
     LiveCaptionsHistoryWindow *window = g_object_new(LIVECAPTIONS_TYPE_HISTORY_WINDOW, NULL);
     gtk_window_present(GTK_WINDOW(window));
+
+    gtk_window_close(GTK_WINDOW(self));
+    gtk_window_destroy(GTK_WINDOW(self));
 }
 
 static const char *get_always_on_top_tip_text(){
@@ -207,7 +161,6 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
 
     gtk_widget_class_bind_template_callback (widget_class, report_cb);
     gtk_widget_class_bind_template_callback (widget_class, about_cb);
-    gtk_widget_class_bind_template_callback (widget_class, export_cb);
     gtk_widget_class_bind_template_callback (widget_class, rerun_benchmark_cb);
     gtk_widget_class_bind_template_callback (widget_class, open_history);
 }

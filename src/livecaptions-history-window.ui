@@ -5,8 +5,21 @@
   <template class="LiveCaptionsHistoryWindow" parent="GtkApplicationWindow">
     <property name="default-width">720</property>
     <property name="default-height">640</property>
-    <property name="resizable">True</property>
+    <property name="resizable">False</property>
     <property name="title">Live Captions History</property>
+
+    <property name="titlebar">
+      <object class="GtkHeaderBar">
+        <child type="end">
+          <object class="GtkButton">
+            <property name="icon-name">export-symbolic</property>
+            <property name="tooltip-text">Export history as .txt</property>
+            <signal name="clicked" handler="export_cb" swapped="yes"/>
+          </object>
+        </child>
+      </object>
+    </property>
+
 
     <child>
       <object class="GtkScrolledWindow" id="scroll">
