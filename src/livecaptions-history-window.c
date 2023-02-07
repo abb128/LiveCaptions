@@ -16,21 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "livecaptions-history-window.h"
-
-#include "history.h"
+#include <ctype.h>
 #include <april_api.h>
+#include "livecaptions-history-window.h"
+#include "history.h"
 
 G_DEFINE_TYPE(LiveCaptionsHistoryWindow, livecaptions_history_window, GTK_TYPE_APPLICATION_WINDOW)
-
-static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClass *klass) {
-    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
-
-    gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-history-window.ui");
-
-    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, scroll);
-    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, label);
-}
 
 static bool force_bottom(gpointer userdata) {
     LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(userdata);
@@ -39,6 +30,76 @@ static bool force_bottom(gpointer userdata) {
     gtk_adjustment_set_value(adj, gtk_adjustment_get_upper(adj));
 
     return G_SOURCE_REMOVE;
+}
+
+static void load_to(LiveCaptionsHistoryWindow *self, size_t idx){
+    size_t text_size = 4096;
+    char *text = calloc(text_size, 1);
+
+    size_t head = 0;
+
+    // TODO: separate each session into its own label, and put a date/time?
+
+    for(size_t i_1=0; i_1<idx; i_1++){
+        const struct history_session *session = get_history_session(idx - i_1 - 1);
+        if(session == NULL) break;
+
+        // TODO: Timestamps?
+        // TODO: text fading?
+
+        for(size_t i=0; i<session->entries_count; i++){
+            if((head + 64) >= text_size){
+                text_size *= 2;
+                text = realloc(text, text_size);
+            }
+
+            head += sprintf(&text[head], "\n");
+            
+            const struct history_entry *entry = &session->entries[i];
+
+            for(size_t j=0; j<entry->tokens_count; j++) {
+                if((head + 64) >= text_size){
+                    text_size *= 2;
+                    text = realloc(text, text_size);
+                }
+
+                const char *token = entry->tokens[j].token;
+                if((j == 0) && (*token == ' ')) token++;
+
+                head += sprintf(&text[head], "%s", token);
+            }
+        }
+    }
+
+    bool use_lowercase = !g_settings_get_boolean(self->settings, "text-uppercase");
+    if(use_lowercase){
+        for(int i=0; i<text_size; i++){
+            if(text[i] == '\0') break;
+            text[i] = tolower(text[i]);
+        }
+    }
+
+    gtk_label_set_label(self->label, text);
+
+    // TODO: dont force bottom on load more, keep relative position somehow
+    // this doesnt even work on load more?
+    g_idle_add(force_bottom, self);
+}
+
+static void load_more_cb(LiveCaptionsHistoryWindow *self) {
+    // gets very laggy
+    load_to(self, ++self->session_load);
+}
+
+static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClass *klass) {
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+
+    gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-history-window.ui");
+
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, scroll);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, label);
+
+    gtk_widget_class_bind_template_callback(widget_class, load_more_cb);
 }
 
 static void livecaptions_history_window_init(LiveCaptionsHistoryWindow *self) {
@@ -57,36 +118,7 @@ static void livecaptions_history_window_init(LiveCaptionsHistoryWindow *self) {
     gtk_label_set_attributes(self->label, attr);
     pango_font_description_free(desc);
 
-
-
-    char text[16384];
-    char *head = &text[0];
-    char *end = &text[16383];
-
-    const struct history_session *session = get_history_session(0); // TODO: load more than just active
-
-    // TODO: Timestamps?
-    // TODO: Respect settings
-
-    for(size_t i=0; i<session->entries_count; i++){
-        if(head >= end) break;
-
-        head += sprintf(head, "\n");
-        
-        const struct history_entry *entry = &session->entries[i];
-
-        for(size_t j=0; j<entry->tokens_count; j++) {
-            if((head+16) >= end) break;
-
-            const char *token = entry->tokens[j].token;
-            if((j == 0) && (*token == ' ')) token++;
-
-            head += sprintf(head, "%s", token);
-        }
-    }
-
-    gtk_label_set_label(self->label, text);
-
-    g_idle_add(force_bottom, self);
+    self->session_load = 0;
+    load_to(self, ++self->session_load);
 }
 

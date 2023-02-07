@@ -28,6 +28,8 @@ struct _LiveCaptionsHistoryWindow {
 
     GtkScrolledWindow *scroll;
     GtkLabel *label;
+
+    size_t session_load;
 };
 
 G_BEGIN_DECLS
