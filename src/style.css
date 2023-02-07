@@ -24,6 +24,10 @@
     margin-top: 6pt;
 }
 
+.history-label {
+    line-height: 1.3;
+}
+
 @keyframes flashing {
     0% {
       color: yellow;

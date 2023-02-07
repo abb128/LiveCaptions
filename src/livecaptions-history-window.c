@@ -33,6 +33,14 @@ static bool force_bottom(gpointer userdata) {
     return G_SOURCE_REMOVE;
 }
 
+static void clear_texts(LiveCaptionsHistoryWindow *self){
+    // Clear main_box
+}
+
+static void add_session(LiveCaptionsHistoryWindow *self){
+    // Create Label(s?) for session
+}
+
 static void load_to(LiveCaptionsHistoryWindow *self, size_t idx){
     size_t text_size = 4096;
     char *text = calloc(text_size, 1);
@@ -81,10 +89,6 @@ static void load_to(LiveCaptionsHistoryWindow *self, size_t idx){
     }
 
     gtk_label_set_label(self->label, text);
-
-    // TODO: dont force bottom on load more, keep relative position somehow
-    // this doesnt even work on load more?
-    g_idle_add(force_bottom, self);
 }
 
 static void load_more_cb(LiveCaptionsHistoryWindow *self) {
@@ -173,5 +177,7 @@ static void livecaptions_history_window_init(LiveCaptionsHistoryWindow *self) {
 
     self->session_load = 0;
     load_to(self, ++self->session_load);
+
+    g_idle_add(force_bottom, self);
 }
 
