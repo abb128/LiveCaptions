@@ -96,7 +96,7 @@ static void update_font(LiveCaptionsWindow *self) {
 }
 
 static void update_window_transparency(LiveCaptionsWindow *self) {
-    bool use_transparency = true;// g_settings_get_boolean(self->settings, "transparent-window");
+    bool use_transparency = g_settings_get_double(self->settings, "window-transparency") > 0.01;
 
     if(use_transparency){
         gtk_widget_add_css_class(GTK_WIDGET(self), "transparent-mode");
