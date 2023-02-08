@@ -54,7 +54,11 @@ static struct history_entry *allocate_new_entry(size_t tokens_count) {
     struct history_entry *entry = &active_session.entries[active_session.entries_count - 1];
 
     entry->tokens_count = tokens_count;
-    entry->tokens = calloc(tokens_count, sizeof(struct history_token));
+
+    if(tokens_count > 0)
+        entry->tokens = calloc(tokens_count, sizeof(struct history_token));
+    else
+        entry->tokens = NULL;
 
     return entry;
 }
@@ -78,6 +82,11 @@ void commit_tokens_to_current_history(const AprilToken *tokens,
         token->logprob = tokens[i].logprob;
         token->flags   = tokens[i].flags;
     }
+}
+
+void save_silence_to_history(void){
+    struct history_entry *entry = allocate_new_entry(0);
+    entry->timestamp = time(NULL);
 }
 
 
@@ -131,6 +140,11 @@ static void read_session_from_file(FILE *f, struct history_session *session) {
 
         fread(&entry->timestamp, sizeof(entry->timestamp), 1, f);
         fread(&entry->tokens_count, sizeof(entry->tokens_count), 1, f);
+
+        if(entry->tokens_count == 0){
+            entry->tokens = NULL;
+            continue;
+        }
 
         entry->tokens = calloc(
             entry->tokens_count,

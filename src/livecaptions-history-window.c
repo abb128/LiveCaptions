@@ -33,62 +33,93 @@ static bool force_bottom(gpointer userdata) {
     return G_SOURCE_REMOVE;
 }
 
-static void clear_texts(LiveCaptionsHistoryWindow *self){
-    // Clear main_box
+static void add_text(LiveCaptionsHistoryWindow *self, char *text, bool is_text) {
+    GtkWidget *label = gtk_label_new(text);
+
+    if(is_text){
+        PangoFontDescription *desc = pango_font_description_from_string(g_settings_get_string(self->settings, "font-name"));
+        PangoAttribute *attr_font = pango_attr_font_desc_new(desc);
+        PangoAttrList *attr = gtk_label_get_attributes(GTK_LABEL(label));
+        if(attr == NULL){
+            attr = pango_attr_list_new();
+        }
+        pango_attr_list_change(attr, attr_font);
+        gtk_label_set_attributes(GTK_LABEL(label), attr);
+        pango_font_description_free(desc);
+    }
+
+    gtk_label_set_selectable(GTK_LABEL(label), true);
+    gtk_label_set_wrap(GTK_LABEL(label), true);
+    gtk_label_set_xalign(GTK_LABEL(label), 0.0f);
+    gtk_widget_add_css_class(label, is_text ? "history-label" : "timestamp-label");
+
+    gtk_widget_set_hexpand(label, true);
+    gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
+    gtk_box_prepend(self->main_box, label);
 }
 
-static void add_session(LiveCaptionsHistoryWindow *self){
-    // Create Label(s?) for session
+static void add_time(LiveCaptionsHistoryWindow *self, time_t timestamp, bool date) {
+    char text[64];
+
+    struct tm *tm = localtime(&timestamp);
+    strftime(text, 64, date ? "Start of session %F | %H:%M" : "%H:%M:%S", tm);
+
+    add_text(self, text, false);
+}
+
+static void add_session(LiveCaptionsHistoryWindow *self, const struct history_session *session){
+    if(session->entries_count == 0) return;
+
+    bool use_lowercase = !g_settings_get_boolean(self->settings, "text-uppercase");
+    GString *string = g_string_new(NULL);
+
+    for(size_t i_1=0; i_1<session->entries_count; i_1++){
+        size_t i = session->entries_count - i_1 - 1;
+
+        const struct history_entry *entry = &session->entries[i];
+
+        if(entry->tokens_count == 0){
+            // Silence
+            add_text(self, string->str, true);
+            add_time(self, entry->timestamp, false);
+
+            g_string_truncate(string, 0);
+        } else {
+            GString *entry_text = g_string_new(NULL);
+
+            for(size_t j=0; j<entry->tokens_count; j++) {
+                const char *token = entry->tokens[j].token;
+                if((j == 0) && (*token == ' ')) token++;
+
+                g_string_append(entry_text, token);
+            }
+
+            if(use_lowercase) g_string_ascii_down(entry_text);
+
+            g_string_append_c(entry_text, '\n');
+            g_string_prepend(string, entry_text->str);
+
+            g_string_free(entry_text, true);
+        }
+    }
+
+    add_text(self, string->str, true);
+    add_time(self, session->entries[0].timestamp, true);
 }
 
 static void load_to(LiveCaptionsHistoryWindow *self, size_t idx){
-    size_t text_size = 4096;
-    char *text = calloc(text_size, 1);
-
-    size_t head = 0;
 
     // TODO: separate each session into its own label, and put a date/time?
 
-    for(size_t i_1=0; i_1<idx; i_1++){
+    for(size_t i_1=0; i_1<1; i_1++){
         const struct history_session *session = get_history_session(idx - i_1 - 1);
         if(session == NULL) break;
 
         // TODO: Timestamps?
         // TODO: text fading?
-
-        for(size_t i=0; i<session->entries_count; i++){
-            if((head + 64) >= text_size){
-                text_size *= 2;
-                text = realloc(text, text_size);
-            }
-
-            head += sprintf(&text[head], "\n");
-            
-            const struct history_entry *entry = &session->entries[i];
-
-            for(size_t j=0; j<entry->tokens_count; j++) {
-                if((head + 64) >= text_size){
-                    text_size *= 2;
-                    text = realloc(text, text_size);
-                }
-
-                const char *token = entry->tokens[j].token;
-                if((j == 0) && (*token == ' ')) token++;
-
-                head += sprintf(&text[head], "%s", token);
-            }
-        }
+        add_session(self, session);
     }
-
-    bool use_lowercase = !g_settings_get_boolean(self->settings, "text-uppercase");
-    if(use_lowercase){
-        for(int i=0; i<text_size; i++){
-            if(text[i] == '\0') break;
-            text[i] = tolower(text[i]);
-        }
-    }
-
-    gtk_label_set_label(self->label, text);
 }
 
 static void load_more_cb(LiveCaptionsHistoryWindow *self) {
@@ -152,7 +183,7 @@ static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClas
     gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-history-window.ui");
 
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, scroll);
-    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, label);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, main_box);
 
     gtk_widget_class_bind_template_callback(widget_class, load_more_cb);
     gtk_widget_class_bind_template_callback(widget_class, export_cb);
@@ -164,16 +195,6 @@ static void livecaptions_history_window_init(LiveCaptionsHistoryWindow *self) {
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
 
-
-    PangoFontDescription *desc = pango_font_description_from_string(g_settings_get_string(self->settings, "font-name"));
-    PangoAttribute *attr_font = pango_attr_font_desc_new(desc);
-    PangoAttrList *attr = gtk_label_get_attributes(self->label);
-    if(attr == NULL){
-        attr = pango_attr_list_new();
-    }
-    pango_attr_list_change(attr, attr_font);
-    gtk_label_set_attributes(self->label, attr);
-    pango_font_description_free(desc);
 
     self->session_load = 0;
     load_to(self, ++self->session_load);

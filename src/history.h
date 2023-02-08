@@ -39,6 +39,7 @@ struct history_token {
 };
 
 // A single history entry containing a collection of tokens
+// An entry consisting of 0 tokens denotes silence
 struct history_entry {
     time_t timestamp;
     size_t tokens_count;
@@ -68,30 +69,16 @@ void commit_tokens_to_current_history(const AprilToken *tokens,
                                       size_t tokens_count);
 
 
+// Puts an empty entry into history meaning silence
+void save_silence_to_history(void);
+
 // Serialize/Deserialize list of history_entry
 void save_current_history(const char *path);
 void load_history_from(const char *path);
 
 // Convert to text file
 void export_history_as_text(const char *path);
-/*
-Format:
 
-    -[2022-02-02 | 16:47]-
-(16:47:04) - this is some text hello
-(16:47:37) - hello hello hello hello hello hello hello hello
-(16:47:52) - some text here some text here
-
-
-    -[2022-02-02 | 16:48]-
-(16:48:32) - some text here some text here
-(16:48:57) - hello hello hello hello hello hello hello hello
-
-
-*/
-
-// Display in a history window. Make sure it's copyable
-// ?
 
 // 0 returns the active session
 // 1 returns the previous session

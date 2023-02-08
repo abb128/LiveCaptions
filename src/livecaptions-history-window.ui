@@ -44,7 +44,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkBox" id="main-box">
+              <object class="GtkBox" id="main_box">
                 <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
                 <property name="halign">start</property>
@@ -55,17 +55,8 @@
                 <property name="margin-top">12</property>
                 <property name="margin-bottom">12</property>
 
-                <child>
-                  <object class="GtkLabel" id="label">
-                    <property name="label">Sample Text</property>
-                    <property name="selectable">True</property>
-                    <property name="wrap">True</property>
+                <property name="orientation">vertical</property>
 
-                    <style>
-                      <class name="history-label"/>
-                    </style>
-                  </object>
-                </child>
 
               </object>
             </child>

@@ -120,6 +120,7 @@ static void april_result_handler(void* userdata, AprilResultType result, size_t 
             g_mutex_lock(&data->text_mutex);
 
             line_generator_break(&data->line);
+            save_silence_to_history();
 
             g_mutex_unlock(&data->text_mutex);
             g_idle_add(main_thread_update_label, data);
