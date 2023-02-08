@@ -63,7 +63,7 @@ static void add_time(LiveCaptionsHistoryWindow *self, time_t timestamp, bool dat
     char text[64];
 
     struct tm *tm = localtime(&timestamp);
-    strftime(text, 64, date ? "Start of session %F | %H:%M" : "%H:%M:%S", tm);
+    strftime(text, 64, date ? "\n\nStart of session %F | %H:%M" : "%H:%M:%S", tm);
 
     add_text(self, text, false);
 }
@@ -81,8 +81,11 @@ static void add_session(LiveCaptionsHistoryWindow *self, const struct history_se
 
         if(entry->tokens_count == 0){
             // Silence
+            if((i + 1) >= session->entries_count) continue;
+            const struct history_entry *next_entry = &session->entries[i+1];
+
             add_text(self, string->str, true);
-            add_time(self, entry->timestamp, false);
+            add_time(self, next_entry->timestamp, false);
 
             g_string_truncate(string, 0);
         } else {
@@ -109,14 +112,10 @@ static void add_session(LiveCaptionsHistoryWindow *self, const struct history_se
 }
 
 static void load_to(LiveCaptionsHistoryWindow *self, size_t idx){
-
-    // TODO: separate each session into its own label, and put a date/time?
-
     for(size_t i_1=0; i_1<1; i_1++){
         const struct history_session *session = get_history_session(idx - i_1 - 1);
         if(session == NULL) break;
 
-        // TODO: Timestamps?
         // TODO: text fading?
         add_session(self, session);
     }
