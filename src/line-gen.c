@@ -33,6 +33,7 @@
 
 #include "line-gen.h"
 #include "profanity-filter.h"
+#include "common.h"
 
 #define REL_LINE_IDX(HEAD, IDX) (4*AC_LINE_COUNT + (HEAD) + (IDX)) % AC_LINE_COUNT
 
@@ -62,8 +63,7 @@ static int line_generator_get_text_width(struct line_generator *lg, const char *
     return width / PANGO_SCALE;
 }
 
-#define MAX_TOKEN_SCRATCH 16
-const char SWEAR_REPLACEMENT[] = " [__]";
+#define MAX_TOKEN_SCRATCH 48
 void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens) {
     bool use_fade = g_settings_get_boolean(settings, "fade-text");
 
@@ -106,7 +106,7 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
 
         // print line
         for(size_t j=start_of_line; j<((size_t)end);) {
-            int skipahead = 1;
+            size_t skipahead = 1;
             const char *token = tokens[j].token;
             if(use_lowercase){
                 token = token_scratch;

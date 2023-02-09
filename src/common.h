@@ -18,6 +18,8 @@
 
 #pragma once
 
+#define SWEAR_REPLACEMENT " [__]"
+
 #define LIVECAPTIONS_VERSION "0.3.0"
 
 #define MINIMUM_BENCHMARK_RESULT (1.2)

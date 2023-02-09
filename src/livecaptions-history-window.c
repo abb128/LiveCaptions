@@ -21,6 +21,8 @@
 #include <april_api.h>
 #include "livecaptions-history-window.h"
 #include "history.h"
+#include "profanity-filter.h"
+#include "common.h"
 
 G_DEFINE_TYPE(LiveCaptionsHistoryWindow, livecaptions_history_window, GTK_TYPE_APPLICATION_WINDOW)
 
@@ -74,6 +76,11 @@ static void add_session(LiveCaptionsHistoryWindow *self, const struct history_se
     bool use_lowercase = !g_settings_get_boolean(self->settings, "text-uppercase");
     GString *string = g_string_new(NULL);
 
+    bool filter_slurs = g_settings_get_boolean(self->settings, "filter-slurs");
+    bool filter_profanity = g_settings_get_boolean(self->settings, "filter-profanity");
+
+    FilterMode filter_mode = filter_profanity ? FILTER_PROFANITY : (filter_slurs ? FILTER_SLURS : FILTER_NONE);
+
     for(size_t i_1=0; i_1<session->entries_count; i_1++){
         size_t i = session->entries_count - i_1 - 1;
 
@@ -91,11 +98,23 @@ static void add_session(LiveCaptionsHistoryWindow *self, const struct history_se
         } else {
             GString *entry_text = g_string_new(NULL);
 
-            for(size_t j=0; j<entry->tokens_count; j++) {
+            for(size_t j=0; j<entry->tokens_count;) {
+                size_t skipahead = 1;
                 const char *token = entry->tokens[j].token;
+
+                if((filter_mode > FILTER_NONE) && (entry->tokens[j].flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)) {
+                    size_t skip = get_filter_skip_history(entry->tokens, j, entry->tokens_count, filter_mode);
+                    if(skip > 0) {
+                        skipahead = skip;
+                        token = SWEAR_REPLACEMENT;
+                    }
+                }
+
                 if((j == 0) && (*token == ' ')) token++;
 
                 g_string_append(entry_text, token);
+
+                j += skipahead;
             }
 
             if(use_lowercase) g_string_ascii_down(entry_text);

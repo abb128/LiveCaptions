@@ -18,6 +18,7 @@
  */
 
 #include "profanity-filter.h"
+#include "history.h"
 #include <stdbool.h>
 #include <string.h>
 
@@ -123,3 +124,22 @@ size_t get_filter_skip(const AprilToken *tokens, size_t curr_idx, size_t count, 
     else return 0;
 }
 
+size_t get_filter_skip_history(const struct history_token *tokens,
+                               size_t curr_idx,
+                               size_t count,
+                               FilterMode mode)
+{
+    // Construct a list of AprilToken * and copy data
+    AprilToken *a_tokens = calloc(sizeof(AprilToken), count);
+    for(size_t i=0; i<count; i++){
+        a_tokens[i].token   = &tokens[i].token[0];
+        a_tokens[i].flags   = tokens[i].flags;
+        a_tokens[i].logprob = tokens[i].logprob;
+    }
+
+    size_t result = get_filter_skip(a_tokens, curr_idx, count, mode);
+
+    free(a_tokens);
+
+    return result;
+}

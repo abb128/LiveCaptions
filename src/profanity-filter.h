@@ -37,3 +37,11 @@ size_t get_filter_skip(const AprilToken *tokens,
                        size_t curr_idx,
                        size_t count,
                        FilterMode mode);
+
+struct history_token;
+
+// Exact same but with history_token
+size_t get_filter_skip_history(const struct history_token *tokens,
+                               size_t curr_idx,
+                               size_t count,
+                               FilterMode mode);
