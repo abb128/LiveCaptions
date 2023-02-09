@@ -10,6 +10,7 @@
 
   <gresource prefix="/net/sapples/LiveCaptions/icons/scalable/actions/">
     <file preprocess="xml-stripblanks">microphone2-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">entry-clear-symbolic.svg</file>
     <file preprocess="xml-stripblanks">settings-symbolic.svg</file>
     <file preprocess="xml-stripblanks">export-symbolic.svg</file>
   </gresource>

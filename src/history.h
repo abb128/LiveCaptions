@@ -86,3 +86,6 @@ void export_history_as_text(const char *path);
 // ...
 // returns NULL once reached the first session
 const struct history_session *get_history_session(size_t idx);
+
+
+void erase_all_history(void);

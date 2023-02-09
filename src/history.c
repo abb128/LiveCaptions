@@ -230,3 +230,23 @@ const struct history_session *get_history_session(size_t idx) {
 
     return &past_sessions.sessions[i];
 }
+
+
+void erase_all_history(void){
+    for(size_t i=0; i<past_sessions.num_sessions; i++){
+        free(past_sessions.sessions[i].entries);
+    }
+    free(past_sessions.sessions);
+
+    free(active_session.entries);
+
+
+    active_session.timestamp = time(NULL);
+    active_session.entries_count = 0;
+    active_session.entries = NULL;
+
+    past_sessions.num_sessions = 0;
+    past_sessions.sessions = NULL;
+
+    save_current_history(default_history_file);
+}

@@ -22,7 +22,7 @@
 #include <gtk/gtk.h>
 
 struct _LiveCaptionsHistoryWindow {
-    GtkApplicationWindow  parent_instance;
+    GtkWindow  parent_instance;
 
     GSettings *settings;
 
@@ -37,6 +37,6 @@ G_BEGIN_DECLS
 
 #define LIVECAPTIONS_TYPE_HISTORY_WINDOW (livecaptions_history_window_get_type())
 
-G_DECLARE_FINAL_TYPE (LiveCaptionsHistoryWindow, livecaptions_history_window, LIVECAPTIONS, HISTORY_WINDOW, GtkApplicationWindow);
+G_DECLARE_FINAL_TYPE (LiveCaptionsHistoryWindow, livecaptions_history_window, LIVECAPTIONS, HISTORY_WINDOW, GtkWindow);
 
 G_END_DECLS

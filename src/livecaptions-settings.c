@@ -107,7 +107,10 @@ static void report_cb(LiveCaptionsSettings *self) {
 }
 
 static void open_history(LiveCaptionsSettings *self) {
-    LiveCaptionsHistoryWindow *window = g_object_new(LIVECAPTIONS_TYPE_HISTORY_WINDOW, NULL);
+    GtkRoot *root = gtk_widget_get_root(GTK_WIDGET(self));
+
+    LiveCaptionsHistoryWindow *window = g_object_new(LIVECAPTIONS_TYPE_HISTORY_WINDOW, "transient-for", root, NULL);
+    
     gtk_window_present(GTK_WINDOW(window));
 
     gtk_window_close(GTK_WINDOW(self));

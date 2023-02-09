@@ -19,14 +19,58 @@
 #include <ctype.h>
 #include <glib/gi18n.h>
 #include <april_api.h>
+#include <adwaita.h>
 #include "livecaptions-history-window.h"
 #include "history.h"
 #include "profanity-filter.h"
 #include "common.h"
 
-G_DEFINE_TYPE(LiveCaptionsHistoryWindow, livecaptions_history_window, GTK_TYPE_APPLICATION_WINDOW)
+G_DEFINE_TYPE(LiveCaptionsHistoryWindow, livecaptions_history_window, GTK_TYPE_WINDOW)
 
-static bool force_bottom(gpointer userdata) {
+
+static gint close_self_window(gpointer userdata) {
+    LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(userdata);
+
+    gtk_window_close(GTK_WINDOW(self));
+    //gtk_window_destroy(GTK_WINDOW(self));
+
+    return G_SOURCE_REMOVE;
+}
+
+static void message_cb(AdwMessageDialog *dialog, gchar *response, gpointer userdata){
+    if(g_str_equal(response, "delete")){
+        erase_all_history();
+
+        g_idle_add(close_self_window, userdata);
+    }
+}
+
+static void warn_deletion_cb(LiveCaptionsHistoryWindow *self){
+    GtkWindow *parent = GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(self)));
+    GtkWidget *dialog;
+
+    dialog = adw_message_dialog_new(parent,
+                                    _("Erase History?"),
+                                    _("Everything in history will be erased. You may wish to export your history before erasing!"));
+
+    adw_message_dialog_add_responses(ADW_MESSAGE_DIALOG(dialog),
+                                    "cancel",  _("_Cancel"),
+                                    "delete", _("_Erase Everything"),
+                                    NULL);
+
+    adw_message_dialog_set_response_appearance(ADW_MESSAGE_DIALOG(dialog), "delete", ADW_RESPONSE_DESTRUCTIVE);
+
+    adw_message_dialog_set_default_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
+    adw_message_dialog_set_close_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
+
+    g_signal_connect(ADW_MESSAGE_DIALOG(dialog), "response", G_CALLBACK(message_cb), self);
+
+    gtk_window_present(GTK_WINDOW(dialog));
+}
+
+
+
+static gint force_bottom(gpointer userdata) {
     LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(userdata);
 
     GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(self->scroll));
@@ -205,6 +249,7 @@ static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClas
 
     gtk_widget_class_bind_template_callback(widget_class, load_more_cb);
     gtk_widget_class_bind_template_callback(widget_class, export_cb);
+    gtk_widget_class_bind_template_callback(widget_class, warn_deletion_cb);
 }
 
 // TODO: ctrl+f search

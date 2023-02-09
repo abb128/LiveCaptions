@@ -2,7 +2,7 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <requires lib="libadwaita" version="1.0"/>
-  <template class="LiveCaptionsHistoryWindow" parent="GtkApplicationWindow">
+  <template class="LiveCaptionsHistoryWindow" parent="GtkWindow">
     <property name="default-width">680</property>
     <property name="default-height">720</property>
     <property name="resizable">False</property>
@@ -15,6 +15,13 @@
             <property name="icon-name">export-symbolic</property>
             <property name="tooltip-text">Export history as .txt</property>
             <signal name="clicked" handler="export_cb" swapped="yes"/>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkButton">
+            <property name="icon-name">entry-clear-symbolic</property>
+            <property name="tooltip-text">Clear history</property>
+            <signal name="clicked" handler="warn_deletion_cb" swapped="yes"/>
           </object>
         </child>
       </object>
