@@ -28,7 +28,7 @@
 G_DEFINE_TYPE(LiveCaptionsHistoryWindow, livecaptions_history_window, GTK_TYPE_WINDOW)
 
 
-static gint close_self_window(gpointer userdata) {
+static gboolean close_self_window(gpointer userdata) {
     LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(userdata);
 
     gtk_window_close(GTK_WINDOW(self));
@@ -70,7 +70,7 @@ static void warn_deletion_cb(LiveCaptionsHistoryWindow *self){
 
 
 
-static gint force_bottom(gpointer userdata) {
+static gboolean force_bottom(gpointer userdata) {
     LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(userdata);
 
     GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(self->scroll));
@@ -239,6 +239,17 @@ static void export_cb(LiveCaptionsHistoryWindow *self) {
                      self);
 }
 
+// The window needs to be kept on top if the main window is kept on top,
+// otherwise it will appear under the main window which is not ideal
+static gboolean deferred_update_keep_above(void *userdata) {
+    LiveCaptionsHistoryWindow *self = userdata;
+
+    set_window_keep_above(GTK_WINDOW(self), g_settings_get_boolean(self->settings, "keep-on-top"));
+
+    return G_SOURCE_REMOVE;
+}
+
+
 static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
@@ -263,5 +274,6 @@ static void livecaptions_history_window_init(LiveCaptionsHistoryWindow *self) {
     load_to(self, ++self->session_load);
 
     g_idle_add(force_bottom, self);
+    g_idle_add(deferred_update_keep_above, self);
 }
 
