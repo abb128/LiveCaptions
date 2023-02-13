@@ -90,6 +90,12 @@ static void about_cb(LiveCaptionsSettings *self) {
                                        GTK_LICENSE_BSD_3,
                                        NULL);
 
+    adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
+                                       "sonic",
+                                       "Copyright © 2010 Bill Cox",
+                                       GTK_LICENSE_APACHE_2_0,
+                                       NULL);
+
     adw_about_window_add_acknowledgement_section(ADW_ABOUT_WINDOW(about),
                                                  _("Special thanks to"),
                                                  special_thanks);
