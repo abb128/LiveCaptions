@@ -98,7 +98,7 @@ static void *run_benchmark_thread(void *userdata) {
 
 
         time_t current = time(NULL);
-        if(difftime(current, begin) > 40.0) { // if taking over 40 seconds, no chance the benchmark would succeed
+        if(difftime(current, begin) > 55.0) {
             double speed = ((double)sec) / difftime(current, begin);
             self->benchmark_result_v = speed;
             
