@@ -158,15 +158,11 @@ static gboolean quit_after_1s(G_GNUC_UNUSED gpointer user_data) {
     return G_SOURCE_CONTINUE;
 }
 
-const char perf_url[] = "https://github.com/abb128/LiveCaptions/issues/new?title=aprilv0+Benchmark+Fail&body=Hardware%3A+%28please+provide+your+system+specifications+and+hardware+information%29%0D%0A%0D%0ABenchmark+result%3A+";
+const char perf_url[] = "https://github.com/abb128/LiveCaptions/issues/40";
 static void report_perf_cb(LiveCaptionsWelcome *self){
-    char url_buffer[1024] = { 0 };
-
-    snprintf(url_buffer, 1024, "%s%.2f", perf_url, self->benchmark_result_v);
-
     gtk_show_uri(
         GTK_WINDOW(self),
-        url_buffer,
+        perf_url,
         GDK_CURRENT_TIME
     );
 
