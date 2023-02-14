@@ -19,6 +19,7 @@
 #include "livecaptions-config.h"
 #include "livecaptions-window.h"
 #include "livecaptions-application.h"
+#include "april_api.h"
 #include "audiocap.h"
 #include "window-helper.h"
 #include "history.h"
@@ -36,6 +37,8 @@ static void livecaptions_window_class_init (LiveCaptionsWindowClass *klass) {
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, mic_button);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, label);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, too_slow_warning);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, slow_warning);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, slowest_warning);
 }
 
 static void change_button_layout(LiveCaptionsWindow *self, gint text_height){
@@ -143,6 +146,41 @@ static gboolean deferred_update_keep_above(void *userdata) {
     return G_SOURCE_REMOVE;
 }
 
+static gboolean show_relevant_slow_warning(void *userdata) {
+    LiveCaptionsWindow *self = userdata;
+
+    GtkApplication *curr_app = gtk_window_get_application(GTK_WINDOW(self));
+
+    LiveCaptionsApplication *app = LIVECAPTIONS_APPLICATION(curr_app);
+
+    asr_thread asr = app->asr;
+
+    AprilASRSession session = (AprilASRSession)asr_thread_get_session(asr);
+
+    float speedup = aas_realtime_get_speedup(session);
+    printf("speedup: %.2f\n", speedup);
+
+    if(speedup <= 1.1) {
+        gtk_widget_set_visible(GTK_WIDGET(self->slow_warning), false);
+        gtk_widget_set_visible(GTK_WIDGET(self->slowest_warning), false);
+        gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), false);
+    }else if(speedup <= 1.666) {
+        gtk_widget_set_visible(GTK_WIDGET(self->slow_warning), true);
+        gtk_widget_set_visible(GTK_WIDGET(self->slowest_warning), false);
+        gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), false);
+    }else if(speedup <= 2.33){
+        gtk_widget_set_visible(GTK_WIDGET(self->slow_warning), false);
+        gtk_widget_set_visible(GTK_WIDGET(self->slowest_warning), true);
+        gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), false);
+    }else{
+        gtk_widget_set_visible(GTK_WIDGET(self->slow_warning), false);
+        gtk_widget_set_visible(GTK_WIDGET(self->slowest_warning), false);
+        gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), true);
+    }
+
+    return G_SOURCE_CONTINUE;
+}
+
 static void livecaptions_window_init(LiveCaptionsWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
@@ -165,6 +203,7 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
     self->slow_warning_shown = false;
 
     g_idle_add(deferred_update_keep_above, self);
+    g_timeout_add_seconds(5, show_relevant_slow_warning, self);
 }
 
 static gboolean hide_slow_warning_after_some_time(void *userdata) {

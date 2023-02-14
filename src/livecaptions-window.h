@@ -39,6 +39,9 @@ struct _LiveCaptionsWindow {
     bool slow_warning_shown;
     GtkWidget *too_slow_warning;
     time_t slow_time;
+    
+    GtkWidget *slow_warning;
+    GtkWidget *slowest_warning;
 
     volatile PangoLayout *font_layout;
     volatile size_t font_layout_counter;

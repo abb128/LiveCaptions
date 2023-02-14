@@ -13,5 +13,7 @@
     <file preprocess="xml-stripblanks">entry-clear-symbolic.svg</file>
     <file preprocess="xml-stripblanks">settings-symbolic.svg</file>
     <file preprocess="xml-stripblanks">export-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">slow-icon-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">slowest-icon-symbolic.svg</file>
   </gresource>
 </gresources>

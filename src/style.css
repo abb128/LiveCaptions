@@ -20,6 +20,14 @@
     animation-play-state: running;
 }
 
+.slow-icon {
+    color: lightsalmon;
+}
+
+.slowest-icon {
+    color: lightcoral;
+}
+
 .keep-above-tip {
     margin-top: 6pt;
 }

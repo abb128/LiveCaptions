@@ -155,6 +155,10 @@ gpointer asr_thread_get_model(asr_thread thread) {
     return thread->model;
 }
 
+gpointer asr_thread_get_session(asr_thread thread) {
+    return thread->session;
+}
+
 void asr_thread_pause(asr_thread thread, bool pause) {
     thread->pause = pause;
 }

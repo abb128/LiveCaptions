@@ -130,7 +130,37 @@
                     <property name="halign">end</property>
                     <property name="valign">end</property>
                     <property name="icon-name">dialog-warning-symbolic</property>
-                    <property name="tooltip-text">Can't keep up! Try closing any processing-intensive programs. Accuracy will be affected.</property>
+                    <property name="tooltip-text">Can't keep up! Try closing any processing-intensive programs. Accuracy will be severely affected.</property>
+                  </object>
+                </child>
+
+                <child type="overlay">
+                  <object class="GtkImage" id="slow_warning">
+                    <style>
+                      <class name="slow-icon"/>
+                    </style>
+                    <property name="visible">False</property>
+                    <property name="margin-end">6</property>
+                    <property name="margin-bottom">6</property>
+                    <property name="halign">end</property>
+                    <property name="valign">end</property>
+                    <property name="icon-name">slow-icon-symbolic</property>
+                    <property name="tooltip-text">Processing can't keep up. Accuracy may be affected.</property>
+                  </object>
+                </child>ild>
+
+                <child type="overlay">
+                  <object class="GtkImage" id="slowest_warning">
+                    <style>
+                      <class name="slowest-icon"/>
+                    </style>
+                    <property name="visible">False</property>
+                    <property name="margin-end">6</property>
+                    <property name="margin-bottom">6</property>
+                    <property name="halign">end</property>
+                    <property name="valign">end</property>
+                    <property name="icon-name">slowest-icon-symbolic</property>
+                    <property name="tooltip-text">Processing can't keep up. Accuracy may be affected a lot.</property>
                   </object>
                 </child>
               </object>
