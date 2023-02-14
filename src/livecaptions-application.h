@@ -21,6 +21,7 @@
 #include <adwaita.h>
 #include "audiocap.h"
 #include "livecaptions-window.h"
+#include "dbus-interface.h"
 
 struct _LiveCaptionsApplication {
     AdwApplication parent_instance;
@@ -32,8 +33,9 @@ struct _LiveCaptionsApplication {
     GtkWindow *welcome;
 
     asr_thread asr;
-
     audio_thread audio;
+
+    DBLCapExternal *dbus_external;
 };
 
 G_BEGIN_DECLS

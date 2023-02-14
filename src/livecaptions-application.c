@@ -110,6 +110,69 @@ static void livecaptions_application_activate(GApplication *app) {
     init_audio(self);
 }
 
+static gboolean on_handle_allow_keep_above(DBLCapExternal *dbus_external,
+                                           GDBusMethodInvocation *invocation,
+                                           gpointer user_data)
+{
+    LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
+
+    override_keep_above_system(true);
+
+    dblcap_external_complete_allow_keep_above(dbus_external, invocation);
+    return TRUE;
+}
+
+static gboolean
+livecaptions_application_dbus_register(GApplication     *app,
+                                       GDBusConnection  *connection,
+                                       const gchar      *object_path,
+                                       GError          **error)
+{
+    LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(app);
+ 
+    self->dbus_external = dblcap_external_skeleton_new();
+
+    gboolean success = g_dbus_interface_skeleton_export(
+        G_DBUS_INTERFACE_SKELETON(self->dbus_external),
+        connection,
+        "/net/sapples/LiveCaptions/External",
+        error
+    );
+
+    if(!success){
+        printf("Error registering D-Bus interface\n");
+        // Try not to panic here
+        return false;
+    }
+
+
+    dblcap_external_set_keep_above(
+        self->dbus_external,
+        g_settings_get_boolean(self->settings, "keep-on-top")
+    );
+
+    g_signal_connect(self->dbus_external, "handle-allow-keep-above", G_CALLBACK(on_handle_allow_keep_above), self);
+
+    return success;
+}
+
+
+static void
+livecaptions_application_dbus_unregister(GApplication    *app,
+                                         GDBusConnection *connection,
+                                         const gchar     *object_path)
+{
+    LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(app);
+
+    g_dbus_interface_skeleton_unexport(G_DBUS_INTERFACE_SKELETON(self->dbus_external));
+
+    if(self->dbus_external){
+        g_object_unref(self->dbus_external);
+        self->dbus_external = NULL;
+    }
+}
+
+
 
 static void livecaptions_application_class_init(LiveCaptionsApplicationClass *klass) {
     GObjectClass *object_class = G_OBJECT_CLASS(klass);
@@ -124,6 +187,9 @@ static void livecaptions_application_class_init(LiveCaptionsApplicationClass *kl
     * to do that, we'll just present any existing window.
     */
     app_class->activate = livecaptions_application_activate;
+
+    app_class->dbus_register = livecaptions_application_dbus_register;
+    app_class->dbus_unregister = livecaptions_application_dbus_unregister;
 }
 
 
@@ -193,6 +259,13 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
         if(g_settings_get_boolean(self->settings, "filter-profanity") && !g_settings_get_boolean(self->settings, "filter-slurs")){
             // Filter profanity was turned on but slurs is still off, this is invalid state, turn on slur filter
             g_settings_set_boolean(self->settings, "filter-slurs", true);
+        }
+    }else if(g_str_equal(key, "keep-on-top")){
+        if(self->dbus_external) {
+            dblcap_external_set_keep_above(
+                self->dbus_external,
+                g_settings_get_boolean(self->settings, "keep-on-top")
+            );
         }
     }
 }

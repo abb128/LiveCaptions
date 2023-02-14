@@ -19,6 +19,8 @@
 
 #include <adwaita.h>
 
+void override_keep_above_system(bool override);
+
 bool is_keep_above_supported(GtkWindow *window);
 
 // Returns false if impossible to set keep above

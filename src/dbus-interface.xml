@@ -1,0 +1,14 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<node xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+    <interface name="net.sapples.LiveCaptions.External">
+        <!-- On Wayland, the keep above setting is disabled as Wayland does not support it.
+             This may be called by the desktop extension to re-enable the setting. -->
+        <method name="AllowKeepAbove" />
+
+        <!-- This is synced with the keep above setting in the application. -->
+        <property name="KeepAbove" type="b" access="read" />
+    </interface>
+</node>

@@ -62,7 +62,16 @@ static bool set_window_keep_above_x11(GtkWindow *window, bool keep_above) {
 }
 #endif
 
+
+static bool is_keep_above_overridden = false;
+
+void override_keep_above_system(bool override) {
+    is_keep_above_overridden = override;
+}
+
 bool is_keep_above_supported(GtkWindow *window) {
+    if(is_keep_above_overridden) return true;
+
     GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(window));
 
     #ifdef GDK_WINDOWING_X11
@@ -85,6 +94,8 @@ bool is_keep_above_supported(GtkWindow *window) {
 }
 
 bool set_window_keep_above(GtkWindow *window, bool keep_above) {
+    if(is_keep_above_overridden) return false;
+
     GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(window));
 
     #ifdef GDK_WINDOWING_X11
