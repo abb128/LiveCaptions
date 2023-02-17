@@ -50,9 +50,10 @@ LiveCaptionsApplication *livecaptions_application_new (gchar *application_id, GA
 }
 
 static void livecaptions_application_finalize(GObject *object) {
-    save_current_history(default_history_file);
-    
     LiveCaptionsApplication *self = (LiveCaptionsApplication *)object;
+    asr_thread_pause(self->asr, true);
+
+    save_current_history(default_history_file);
 
     audio_thread audio = self->audio;
 

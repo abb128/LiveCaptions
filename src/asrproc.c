@@ -84,6 +84,7 @@ static gboolean main_thread_update_label(void *userdata){
 
 static void april_result_handler(void* userdata, AprilResultType result, size_t count, const AprilToken* tokens) {
     asr_thread data = userdata;
+    if((data->window == NULL) || (data->pause)) return;
 
     switch(result) {
         case APRIL_RESULT_RECOGNITION_PARTIAL:

@@ -150,7 +150,6 @@ static gboolean show_relevant_slow_warning(void *userdata) {
     LiveCaptionsWindow *self = userdata;
 
     GtkApplication *curr_app = gtk_window_get_application(GTK_WINDOW(self));
-
     LiveCaptionsApplication *app = LIVECAPTIONS_APPLICATION(curr_app);
 
     asr_thread asr = app->asr;
@@ -158,7 +157,6 @@ static gboolean show_relevant_slow_warning(void *userdata) {
     AprilASRSession session = (AprilASRSession)asr_thread_get_session(asr);
 
     float speedup = aas_realtime_get_speedup(session);
-    printf("speedup: %.2f\n", speedup);
 
     if(speedup <= 1.1) {
         gtk_widget_set_visible(GTK_WIDGET(self->slow_warning), false);
