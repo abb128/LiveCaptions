@@ -130,7 +130,7 @@ static const char *get_always_on_top_tip_text(){
     if(strstr(desktop, "GNOME")){
         return _("Right-click the captions window and enable \"Always on Top\" to keep the captions on top.");
     }else if(strstr(desktop, "KDE")){
-        return _("Right-click the captions window (or hit AlT+F3) and enable \"More Actions\" -> \"Keep Above Others\" to keep the captions on top.");
+        return _("Right-click the captions window (or hit ALT+F3) and enable \"More Actions\" -> \"Keep Above Others\" to keep the captions on top.");
     }else{
         return NULL;
     }
