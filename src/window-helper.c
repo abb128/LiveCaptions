@@ -94,7 +94,7 @@ bool is_keep_above_supported(GtkWindow *window) {
 }
 
 bool set_window_keep_above(GtkWindow *window, bool keep_above) {
-    if(is_keep_above_overridden) return false;
+    if(is_keep_above_overridden) return true;
 
     GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(window));
 
