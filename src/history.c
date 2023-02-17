@@ -28,6 +28,7 @@ static struct past_history_sessions past_sessions = { 0 };
 char default_history_file_v[1024] = { 0 };
 char *default_history_file = NULL;
 
+static GSettings *settings = NULL;
 void history_init(void){
     // set timestamp for current session, etc
     active_session.timestamp = time(NULL);
@@ -43,6 +44,8 @@ void history_init(void){
     sprintf(default_history_file_v, "%s/live-captions-history.bin", data_dir);
 
     printf("Save file: %s\n", default_history_file);
+
+    if(settings == NULL) settings = g_settings_new("net.sapples.LiveCaptions");
 }
 
 
@@ -111,6 +114,7 @@ void save_current_history(const char *path){
     FILE *f = fopen(path, "w");
 
     bool write_active_session = active_session.entries_count > 0;
+    write_active_session = write_active_session && g_settings_get_boolean(settings, "save-history");
 
     size_t num_sessions_to_write = past_sessions.num_sessions + (write_active_session ? 1 : 0);
     fwrite(&num_sessions_to_write, sizeof(num_sessions_to_write), 1, f);

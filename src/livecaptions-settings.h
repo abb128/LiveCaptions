@@ -38,6 +38,9 @@ struct _LiveCaptionsSettings {
 
     GtkSwitch *filter_slurs_switch;
     AdwActionRow *filter_slurs_switch_ar;
+    
+    GtkSwitch *save_history_switch;
+    AdwActionRow *save_history_switch_ar;
 
     GtkSwitch *keep_above_switch;
     AdwActionRow *keep_above_switch_ar;

@@ -132,10 +132,31 @@
                 </child>
               </object>
             </child>
+          </object>
+        </child>
+
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">History</property>
+
+            <child>
+              <object class="AdwActionRow" id="save_history_switch_ar">
+                <property name="title" translatable="yes">Save History</property>
+                <property name="subtitle" translatable="yes">If disabled, session history will be lost when app is closed</property>
+
+                <child type="suffix">
+                  <object class="GtkSwitch" id="save_history_switch">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
 
             <child>
               <object class="AdwActionRow">
-                <property name="title" translatable="yes">Open History Window (temporary)</property>
+                <property name="title" translatable="yes">View History</property>
                 <property name="activatable">True</property>
                 <signal name="activated" handler="open_history" swapped="yes"/>
                 <child>
@@ -145,7 +166,6 @@
                 </child>
               </object>
             </child>
-
 
           </object>
         </child>

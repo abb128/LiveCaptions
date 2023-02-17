@@ -53,5 +53,10 @@
             <default>true</default>
             <summary>Keep the Captions window on top</summary>
         </key>
+
+        <key name="save-history" type="b">
+            <default>true</default>
+            <summary>Save history whenever the app is closed</summary>
+        </key>
     </schema>
 </schemalist>
