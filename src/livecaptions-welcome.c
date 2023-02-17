@@ -51,11 +51,14 @@ static gboolean benchmark_finish(gpointer userdata){
     snprintf(result_txt, 128, "Result: %.2f", self->benchmark_result_v);
     gtk_label_set_text(self->good_label, result_txt);
     gtk_label_set_text(self->bad_label, result_txt);
+    gtk_label_set_text(self->q_label, result_txt);
 
     printf("Result: %.2f\n", self->benchmark_result_v);
 
     if(self->benchmark_result_v < MINIMUM_BENCHMARK_RESULT) {
         gtk_stack_set_visible_child(self->stack, GTK_WIDGET(self->benchmark_result_bad));
+    } else if(self->benchmark_result_v < 1.1) {
+        gtk_stack_set_visible_child(self->stack, GTK_WIDGET(self->benchmark_result_q));
     } else {
         gtk_stack_set_visible_child(self->stack, GTK_WIDGET(self->benchmark_result_good));
     }
@@ -183,11 +186,13 @@ static void livecaptions_welcome_class_init (LiveCaptionsWelcomeClass *klass) {
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, initial_page);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benching_page);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_result_good);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_result_q);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, accuracy_page);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_result_bad);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, benchmark_progress);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, good_label);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, bad_label);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, q_label);
 
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, cancel_button);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, quit_button);

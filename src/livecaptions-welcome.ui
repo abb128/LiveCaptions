@@ -204,6 +204,74 @@
             </child>
 
 
+            <child>
+              <object class="GtkStackPage">
+                <property name="child">
+                  <object class="GtkBox" id="benchmark_result_q">
+                    <property name="orientation">vertical</property>
+                    <property name="valign">center</property>
+                    <property name="halign">center</property>
+                    <property name="margin-start">48</property>
+                    <property name="margin-end">48</property>
+                    
+                    <child>
+                      <object class="GtkImage">
+                        <property name="name">logo</property>
+                        <property name="icon-name">net.sapples.LiveCaptions</property>
+                        <property name="pixel-size">196</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="icon-dropshadow"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Benchmark Result</property>
+                        <property name="margin-bottom">24</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Your device may be able to handle live captioning, but at a reduced accuracy. You may need to close background tasks, plug in your device and/or enable performance power mode for better results.</property>
+                        <property name="wrap">True</property>
+                        <property name="margin-bottom">8</property>
+                        <property name="justify">center</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel" id="q_label">
+                        <property name="label">Result: ?</property>
+                        <property name="wrap">True</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="justify">center</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label">Continue</property>
+                        <property name="halign">center</property>
+                        <signal name="clicked" handler="continue_to_notice" swapped="yes"/>
+                        <style>
+                          <class name="pill"/>
+                          <class name="suggested-action"/>
+                        </style>
+                      </object>
+                    </child>
+
+                  </object>
+                </property>
+              </object>
+            </child>
+
+
 
             <child>
               <object class="GtkStackPage">
