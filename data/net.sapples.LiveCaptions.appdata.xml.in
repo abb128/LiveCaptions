@@ -4,9 +4,10 @@
 
   <name>Live Captions</name>
   <summary>Live Captioning for the desktop</summary>
+  <developer_name translatable="no">abb128</developer_name>
 
   <description>
-    <p>Live Captions is an application that provides live captioning for the Linux desktop.</p>
+    <p>Live Captions is an application that provides realtime automatic subtitles for the Linux desktop.</p>
     <p>Only the English language is supported currently. Other languages may produce gibberish or a bad phonetic translation.</p>
     <p>Features:</p>
     <ul>
@@ -44,6 +45,16 @@
   </screenshots>
 
   <releases>
+    <release date="2023-02-18" version="0.3.0">
+      <url>https://github.com/abb128/LiveCaptions/releases/tag/v0.3.0</url>
+      <description>
+        <p>Window can now automatically be kept on top on X11</p>
+        <p>Support for GNOME/KDE extensions to automatically keep window on top on Wayland</p>
+        <p>Input audio speedup for better low-performance support</p>
+        <p>Reduced minimum benchmark requirement</p>
+        <p>Added History window and export</p>
+      </description>
+    </release>
     <release date="2022-12-20" version="0.2.0">
       <url>https://github.com/abb128/LiveCaptions/releases/tag/v0.2.0</url>
       <description>
