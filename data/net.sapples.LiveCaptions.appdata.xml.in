@@ -45,6 +45,12 @@
   </screenshots>
 
   <releases>
+    <release date="2023-02-18" version="0.3.1">
+      <url>https://github.com/abb128/LiveCaptions/releases/tag/v0.3.1</url>
+      <description>
+        <p>Fixed the history export file dialog</p>
+      </description>
+    </release>
     <release date="2023-02-18" version="0.3.0">
       <url>https://github.com/abb128/LiveCaptions/releases/tag/v0.3.0</url>
       <description>
