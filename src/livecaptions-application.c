@@ -344,6 +344,5 @@ void livecaptions_application_finish_setup(LiveCaptionsApplication *self, gdoubl
     if(result > 0.0)
         g_settings_set_double(self->settings, "benchmark", result);
 
-    livecaptions_application_show_preferences(NULL, NULL, self);
     asr_thread_pause(self->asr, false);
 }
