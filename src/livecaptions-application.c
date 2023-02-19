@@ -20,6 +20,7 @@
 #include "livecaptions-settings.h"
 #include "livecaptions-window.h"
 #include "livecaptions-welcome.h"
+#include "window-helper.h"
 #include "asrproc.h"
 #include "common.h"
 #include "history.h"
