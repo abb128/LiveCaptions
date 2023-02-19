@@ -190,14 +190,14 @@ static void load_more_cb(LiveCaptionsHistoryWindow *self) {
 }
 
 
-static void on_save_response(GtkDialog *dialog,
+static void on_save_response(GtkNativeDialog *native,
                              int        response,
                              LiveCaptionsHistoryWindow *self)
 {
     if(response == GTK_RESPONSE_ACCEPT){
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER(native);
 
-        g_autoptr(GFile) file = gtk_file_chooser_get_file (chooser);
+        g_autoptr(GFile) file = gtk_file_chooser_get_file(chooser);
         
         char *path = g_file_get_path(file);
 
@@ -211,30 +211,27 @@ static void on_save_response(GtkDialog *dialog,
         g_free(uri);
     }
 
-    gtk_window_destroy (GTK_WINDOW (dialog));                  
+    g_object_unref(native);
 }
 
 static void export_cb(LiveCaptionsHistoryWindow *self) {
-    GtkWidget *dialog;
+    GtkFileChooserNative *native;
     GtkFileChooser *chooser;
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
 
-    dialog = gtk_file_chooser_dialog_new("Export History",
+    native = gtk_file_chooser_native_new("Export History",
                                          GTK_WINDOW(self),
                                          action,
-                                         _("_Cancel"),
-                                         GTK_RESPONSE_CANCEL,
                                          _("_Export"),
-                                         GTK_RESPONSE_ACCEPT,
-                                         NULL);
+                                         _("_Cancel"));
 
-    chooser = GTK_FILE_CHOOSER(dialog);
+    chooser = GTK_FILE_CHOOSER(native);
 
     gtk_file_chooser_set_current_name(chooser, _("Live Captions History.txt"));
 
-    gtk_window_present(GTK_WINDOW(dialog));
+    gtk_native_dialog_show(GTK_NATIVE_DIALOG(native));
 
-    g_signal_connect(dialog, "response",
+    g_signal_connect(native, "response",
                      G_CALLBACK (on_save_response),
                      self);
 }
