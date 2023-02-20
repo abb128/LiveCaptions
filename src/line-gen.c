@@ -148,7 +148,8 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
                     while((!(tokens[tgt_brk].flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)) && (tgt_brk > start_of_line)) tgt_brk--;
 
                     // if we backtracked all the way to the start of line, just give up and break here
-                    if(tgt_brk == start_of_line) tgt_brk = j;
+                    // unless this line has starting text
+                    if((tgt_brk == start_of_line) && (curr->start_head == 0)) tgt_brk = j;
 
                     // line break
                     lg->current_line = REL_LINE_IDX(lg->current_line, 1);
