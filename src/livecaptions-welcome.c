@@ -75,7 +75,7 @@ static void *run_benchmark_thread(void *userdata) {
     AprilConfig config = {
         .handler = benchmark_dummy_handler,
         .userdata = NULL,
-        .flags = APRIL_CONFIG_FLAG_SYNCHRONOUS_BIT
+        .flags = APRIL_CONFIG_FLAG_ZERO_BIT
     };
 
     AprilASRSession session = aas_create_session(model, config);

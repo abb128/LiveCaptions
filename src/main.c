@@ -32,7 +32,7 @@
 #include "common.h"
 
 int main (int argc, char *argv[]) {
-    aam_api_init();
+    aam_api_init(APRIL_VERSION);
 
 #ifdef LIVE_CAPTIONS_PIPEWIRE
     pw_init(&argc, &argv);

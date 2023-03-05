@@ -181,7 +181,7 @@ asr_thread create_asr_thread(const char *model_path){
 
     AprilConfig config = {
         .handler = april_result_handler,
-        .flags = APRIL_CONFIG_FLAG_REALTIME_BIT,
+        .flags = APRIL_CONFIG_FLAG_ASYNC_RT_BIT,
         .userdata = data
     };
 
