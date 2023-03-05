@@ -36,22 +36,22 @@
                 {
                     "type" : "archive",
                     "only-arches" : ["x86_64"],
-                    "dest" : "onnxruntime-1.13.1",
-                    "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz",
-                    "sha256" : "2c7fdcfa8131b52167b1870747758cb24265952eba975318a67cc840c04ca73e"
+                    "dest" : "onnxruntime-1",
+                    "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.14.1/onnxruntime-linux-x64-1.14.1.tgz",
+                    "sha256" : "010585f534d822bf02d54c7cfc53b57aa3eb0cf34f8fb7503ee519ed18e25d29"
                 },
 
                 {
                     "type" : "archive",
                     "only-arches" : ["aarch64"],
-                    "dest" : "onnxruntime-1.13.1",
-                    "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-aarch64-1.13.1.tgz",
-                    "sha256" : "18e441585de69ef8aab263e2e96f0325729537ebfbd17cdcee78b2eabf0594d2"
+                    "dest" : "onnxruntime-1",
+                    "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.14.1/onnxruntime-linux-aarch64-1.14.1.tgz",
+                    "sha256" : "20965e05d2da6a0e6acedda8aca1a8f75c3f4cb1d7932403a9977b753b1b2120"
                 }
             ],
             "build-commands" : [
                 "mkdir -p $ONNX_ROOT",
-                "mv onnxruntime-1.13.1/* $ONNX_ROOT",
+                "mv onnxruntime-1/* $ONNX_ROOT",
 
                 "mkdir -p $FLATPAK_DEST/lib",
                 "cp $ONNX_ROOT/lib/* $FLATPAK_DEST/lib"
