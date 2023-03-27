@@ -63,7 +63,7 @@ static int line_generator_get_text_width(struct line_generator *lg, const char *
     return width / PANGO_SCALE;
 }
 
-#define MAX_TOKEN_SCRATCH 48
+#define MAX_TOKEN_SCRATCH 72
 void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens) {
     bool use_fade = g_settings_get_boolean(settings, "fade-text");
 
@@ -73,7 +73,7 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
     FilterMode filter_mode = filter_profanity ? FILTER_PROFANITY : (filter_slurs ? FILTER_SLURS : FILTER_NONE);
 
     bool use_lowercase = !g_settings_get_boolean(settings, "text-uppercase");
-    char token_scratch[MAX_TOKEN_SCRATCH];
+    char token_scratch[MAX_TOKEN_SCRATCH] = { 0 };
 
     for(size_t i=0; i<AC_LINE_COUNT; i++){
         if(lg->active_start_of_lines[i] == -1) continue;
@@ -109,18 +109,33 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
             size_t skipahead = 1;
             const char *token = tokens[j].token;
             if(use_lowercase){
-                token = token_scratch;
-                int i;
-                for(i=0; i<strlen(tokens[j].token); i++) {
-                    if((i+1) >= MAX_TOKEN_SCRATCH) {
-                        printf("Token too long!\n");
+                char *out = token_scratch;
+                const char *p = tokens[j].token;
+                gunichar c;
+                while (*p) {
+                    c = g_utf8_get_char_validated(p, -1);
+                    if(c == ((gunichar)-2)) {
+                        printf("gunichar -2 \n");
+                        break;
+                    }else if(c == ((gunichar)-1)) {
+                        printf("gunichar -1 \n");
                         break;
                     }
 
-                    token_scratch[i] = tolower(tokens[j].token[i]);
+                    c = g_unichar_tolower(c);
+
+                    out += g_unichar_to_utf8(c, out);
+                    if((out + 6) >= (token_scratch + MAX_TOKEN_SCRATCH)){
+                        printf("Unicode too big for token scratch!\n");
+                        break;
+                    }
+
+                    p = g_utf8_next_char(p);
                 }
-                
-                token_scratch[i] = 0;
+
+                *out = '\0';
+
+                token = token_scratch;
             }
 
             // filter current word, if applicable
@@ -218,14 +233,6 @@ void line_generator_set_text(struct line_generator *lg, GtkLabel *lbl) {
         head += sprintf(head, "%s", curr->text);
 
         if(i != 0) head += sprintf(head, "\n");
-    }
-
-    bool use_lowercase = !g_settings_get_boolean(settings, "text-uppercase");
-    if(use_lowercase){
-        for(int i=0; i<(AC_LINE_MAX * AC_LINE_COUNT); i++){
-            if(lg->output[i] == '\0') break;
-            lg->output[i] = tolower(lg->output[i]);
-        }
     }
 
     gtk_label_set_markup(lbl, lg->output);

@@ -161,7 +161,12 @@ static void add_session(LiveCaptionsHistoryWindow *self, const struct history_se
                 j += skipahead;
             }
 
-            if(use_lowercase) g_string_ascii_down(entry_text);
+            if(use_lowercase){
+                gchar *result = g_utf8_strdown(entry_text->str, -1);
+                g_string_free(entry_text, true);
+
+                entry_text = g_string_new(result);
+            } 
 
             g_string_append_c(entry_text, '\n');
             g_string_prepend(string, entry_text->str);
