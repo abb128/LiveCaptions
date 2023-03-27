@@ -12,7 +12,7 @@
         </key>
         
         <key name="fade-text" type="b">
-            <default>true</default>
+            <default>false</default>
             <summary>Fade text based on confidence</summary>
         </key>
 
