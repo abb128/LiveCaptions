@@ -35,6 +35,7 @@
 #include "line-gen.h"
 #include "livecaptions-window.h"
 #include "history.h"
+#include "common.h"
 
 struct asr_thread_i {
     volatile size_t sound_counter;
@@ -177,7 +178,16 @@ asr_thread create_asr_thread(const char *model_path){
 
     line_generator_init(&data->line);
 
-    asr_thread_update_model(data, model_path);
+    if(!asr_thread_update_model(data, model_path)){
+        char *model_default = GET_MODEL_PATH();
+        if(!asr_thread_update_model(data, model_default)) {
+            return NULL;
+        }
+
+        GSettings *settings = g_settings_new("net.sapples.LiveCaptions");
+        g_settings_set_string(settings, "active-model", model_default);
+        g_object_unref(G_OBJECT(settings));
+    }
 
     g_mutex_init(&data->text_mutex);
 

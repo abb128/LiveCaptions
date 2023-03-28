@@ -156,7 +156,11 @@ static gboolean show_relevant_slow_warning(void *userdata) {
 
     if(asr_thread_is_errored(asr)){
         gtk_label_set_text(self->label, "[Model Error]");
+        self->was_errored = true;
         return G_SOURCE_CONTINUE;
+    }else if(self->was_errored) {
+        self->was_errored = false;
+        gtk_label_set_text(self->label, "");
     }
 
     AprilASRSession session = (AprilASRSession)asr_thread_get_session(asr);
@@ -205,6 +209,7 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
     update_window_transparency(self);
 
     self->slow_warning_shown = false;
+    self->was_errored = false;
 
     g_idle_add(deferred_update_keep_above, self);
     g_timeout_add_seconds(5, show_relevant_slow_warning, self);

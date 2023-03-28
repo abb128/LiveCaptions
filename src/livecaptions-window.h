@@ -46,6 +46,8 @@ struct _LiveCaptionsWindow {
     volatile PangoLayout *font_layout;
     volatile size_t font_layout_counter;
     volatile int max_text_width;
+
+    gboolean was_errored;
 };
 
 G_BEGIN_DECLS

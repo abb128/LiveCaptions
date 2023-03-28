@@ -220,10 +220,12 @@ static gboolean deferred_update_keep_above(void *userdata) {
 static void on_model_selected(GtkCheckButton* button, LiveCaptionsSettings *self){
     if(!gtk_check_button_get_active(button)) return;
 
-    char *model = g_object_get_data(button, "lcap-model-path");
+    const char *model = g_quark_to_string((GQuark)g_object_get_data(button, "lcap-model-path"));
     printf("model selected %s\n", model);
 
     asr_thread_update_model(self->application->asr, model);
+
+    g_settings_set_string(self->settings, "active-model", model);
 }
 
 static void insert_model_to_list(LiveCaptionsSettings *self, gchar *model) {
@@ -231,7 +233,9 @@ static void insert_model_to_list(LiveCaptionsSettings *self, gchar *model) {
     AdwActionRow *row = g_object_new(ADW_TYPE_ACTION_ROW, NULL);
     GtkCheckButton *button = g_object_new(GTK_TYPE_CHECK_BUTTON, NULL);
 
-    adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), model);
+    gchar *name = g_utf8_strrchr(model, -1, (gunichar)('/')) + 1;
+
+    adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), name);
     adw_preferences_group_add(self->models_list, row);
     adw_action_row_add_prefix(row, button);
 
@@ -239,7 +243,14 @@ static void insert_model_to_list(LiveCaptionsSettings *self, gchar *model) {
 
     gtk_check_button_set_group(button, first);
 
-    g_object_set_data(button, "lcap-model-path", model);
+    char *active_model = g_settings_get_string(self->settings, "active-model");
+    if(g_str_equal(model, active_model)) {
+        gtk_check_button_set_active(button, true);
+    }
+
+    g_free(active_model);
+
+    g_object_set_data(button, "lcap-model-path", (gpointer)g_quark_from_string(model));
     g_signal_connect(button, "toggled", G_CALLBACK(on_model_selected), self);
 }
 
@@ -250,6 +261,8 @@ static void init_models_page(LiveCaptionsSettings *self) {
         gchar *model = models[i];
         insert_model_to_list(self, model);
     }
+
+    g_strfreev(models);
 }
 
 static void add_new_model(LiveCaptionsSettings *self, gchar *model) {
@@ -280,7 +293,8 @@ static void on_add_model_response(GtkNativeDialog *native,
         
         insert_model_to_list(self, model);
         add_new_model(self, model);
-        //g_free(model);
+
+        g_free(model);
     }
 
     g_object_unref(native);
