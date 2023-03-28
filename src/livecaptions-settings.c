@@ -154,6 +154,7 @@ static void add_model_cb(LiveCaptionsSettings *self) {
                                          _("_Cancel"));
 
     chooser = GTK_FILE_CHOOSER(native);
+    gtk_file_chooser_add_filter(chooser, self->file_filter);
 
     gtk_native_dialog_show(GTK_NATIVE_DIALOG(native));
 
@@ -201,6 +202,7 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, models_list);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, radio_button_1);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, file_filter);
 
     gtk_widget_class_bind_template_callback (widget_class, report_cb);
     gtk_widget_class_bind_template_callback (widget_class, about_cb);
@@ -240,6 +242,11 @@ static void on_model_deleted(GtkButton *button, LiveCaptionsSettings *self) {
     const char *model = g_quark_to_string((GQuark)g_object_get_data(button, "lcap-model-path"));
     if(g_str_equal(model, "/app/LiveCaptions/models/aprilv0_en-us.april")) return;
 
+    char *active_model = g_settings_get_string(self->settings, "active-model");
+    if(g_str_equal(model, active_model)) {
+        gtk_check_button_set_active(self->radio_button_1, true);
+        on_builtin_toggled(self);
+    }
 
     gchar **models = g_settings_get_strv(self->settings, "installed-models");
     GStrvBuilder *builder = g_strv_builder_new();

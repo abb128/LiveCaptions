@@ -333,4 +333,12 @@
     </child>
 
   </template>
+
+  <object class="GtkFileFilter" id="file_filter">
+    <property name="name" translatable="yes">April Models</property>
+    <patterns>
+      <pattern>*.april</pattern>
+    </patterns>
+  </object>
+
 </interface>

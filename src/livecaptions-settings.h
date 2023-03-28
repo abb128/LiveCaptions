@@ -59,6 +59,8 @@ struct _LiveCaptionsSettings {
 
     AdwPreferencesGroup *models_list;
     GtkCheckButton *radio_button_1;
+
+    GtkFileFilter *file_filter;
 };
 
 G_BEGIN_DECLS
