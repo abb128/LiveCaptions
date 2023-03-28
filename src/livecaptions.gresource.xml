@@ -16,5 +16,6 @@
     <file preprocess="xml-stripblanks">slow-icon-symbolic.svg</file>
     <file preprocess="xml-stripblanks">slowest-icon-symbolic.svg</file>
     <file preprocess="xml-stripblanks">computer-chip-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">delete-symbolic.svg</file>
   </gresource>
 </gresources>

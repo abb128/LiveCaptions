@@ -162,6 +162,8 @@ static void add_model_cb(LiveCaptionsSettings *self) {
                      self);
 }
 
+static void on_builtin_toggled(LiveCaptionsSettings *self);
+
 static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
@@ -205,6 +207,7 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_callback (widget_class, rerun_benchmark_cb);
     gtk_widget_class_bind_template_callback (widget_class, open_history);
     gtk_widget_class_bind_template_callback (widget_class, add_model_cb);
+    gtk_widget_class_bind_template_callback (widget_class, on_builtin_toggled);
 }
 
 // The settings window needs to be kept on top if the main window is kept on top,
@@ -221,23 +224,64 @@ static void on_model_selected(GtkCheckButton* button, LiveCaptionsSettings *self
     if(!gtk_check_button_get_active(button)) return;
 
     const char *model = g_quark_to_string((GQuark)g_object_get_data(button, "lcap-model-path"));
-    printf("model selected %s\n", model);
-
     asr_thread_update_model(self->application->asr, model);
-
     g_settings_set_string(self->settings, "active-model", model);
 }
 
+static void on_builtin_toggled(LiveCaptionsSettings *self) {
+    if(!gtk_check_button_get_active(self->radio_button_1)) return;
+
+    const char *model_path = GET_MODEL_PATH();
+    asr_thread_update_model(self->application->asr, model_path);
+    g_settings_set_string(self->settings, "active-model", model_path);
+}
+
+static void on_model_deleted(GtkButton *button, LiveCaptionsSettings *self) {
+    const char *model = g_quark_to_string((GQuark)g_object_get_data(button, "lcap-model-path"));
+    if(g_str_equal(model, "/app/LiveCaptions/models/aprilv0_en-us.april")) return;
+
+
+    gchar **models = g_settings_get_strv(self->settings, "installed-models");
+    GStrvBuilder *builder = g_strv_builder_new();
+
+    for(int i=0; models[i] != NULL; i++){
+        if(g_str_equal(models[i], model)) continue;
+        g_strv_builder_add(builder, models[i]);
+    }
+
+    g_strfreev(models);
+
+    GStrv result = g_strv_builder_end(builder);
+
+    g_settings_set_strv(self->settings, "installed-models", result);
+
+    g_strfreev(result);
+    g_strv_builder_unref(builder);
+
+    AdwActionRow *row = ADW_ACTION_ROW(gtk_widget_get_parent(gtk_widget_get_parent(gtk_widget_get_parent(button))));
+
+    adw_preferences_group_remove(self->models_list, row);
+}
+
 static void insert_model_to_list(LiveCaptionsSettings *self, gchar *model) {
+    if(g_str_equal(model, "/app/LiveCaptions/models/aprilv0_en-us.april")) return;
+
     GtkCheckButton *first = self->radio_button_1;
     AdwActionRow *row = g_object_new(ADW_TYPE_ACTION_ROW, NULL);
+
     GtkCheckButton *button = g_object_new(GTK_TYPE_CHECK_BUTTON, NULL);
+    gtk_widget_set_valign(GTK_WIDGET(button), GTK_ALIGN_CENTER);
+
+    GtkButton *delete_button = gtk_button_new_from_icon_name("delete-symbolic");
+    gtk_widget_add_css_class(GTK_WIDGET(delete_button), "flat");
+    gtk_widget_set_valign(GTK_WIDGET(delete_button), GTK_ALIGN_CENTER);
 
     gchar *name = g_utf8_strrchr(model, -1, (gunichar)('/')) + 1;
 
     adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), name);
     adw_preferences_group_add(self->models_list, row);
     adw_action_row_add_prefix(row, button);
+    adw_action_row_add_suffix(row, delete_button);
 
     adw_action_row_set_activatable_widget(row, GTK_WIDGET(button));
 
@@ -250,8 +294,13 @@ static void insert_model_to_list(LiveCaptionsSettings *self, gchar *model) {
 
     g_free(active_model);
 
-    g_object_set_data(button, "lcap-model-path", (gpointer)g_quark_from_string(model));
+    gpointer quark = (gpointer)g_quark_from_string(model);
+
+    g_object_set_data(button, "lcap-model-path", quark);
     g_signal_connect(button, "toggled", G_CALLBACK(on_model_selected), self);
+
+    g_object_set_data(delete_button, "lcap-model-path", quark);
+    g_signal_connect(delete_button, "clicked", G_CALLBACK(on_model_deleted), self);
 }
 
 static void init_models_page(LiveCaptionsSettings *self) {
@@ -267,6 +316,8 @@ static void init_models_page(LiveCaptionsSettings *self) {
 
 static void add_new_model(LiveCaptionsSettings *self, gchar *model) {
     gchar **existing_models = g_settings_get_strv(self->settings, "installed-models");
+
+    if(g_strv_contains(existing_models, model)) return;
 
     GStrvBuilder *builder = g_strv_builder_new();
     g_strv_builder_addv(builder, existing_models);

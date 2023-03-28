@@ -302,6 +302,7 @@
                 <property name="title" translatable="yes">Built-in Model</property>
                 <child type="prefix">
                   <object class="GtkCheckButton" id="radio_button_1">
+                    <signal name="toggled" handler="on_builtin_toggled" swapped="yes"/>
                     <property name="valign">center</property>
                     <property name="active">True</property>
                   </object>
