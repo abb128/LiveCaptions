@@ -55,6 +55,8 @@ struct asr_thread_i {
     size_t layout_counter;
 
     volatile bool pause;
+
+    bool errored;
 };
 
 
@@ -132,6 +134,8 @@ static void april_result_handler(void* userdata, AprilResultType result, size_t 
 
 void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts) {
     if((thread->window == NULL) || thread->pause) return;
+    if((thread->session == NULL) || (thread->model == NULL)) return;
+
 
     bool found_nonzero = false;
     for(size_t i=0; i<num_shorts; i++){
@@ -173,24 +177,7 @@ asr_thread create_asr_thread(const char *model_path){
 
     line_generator_init(&data->line);
 
-    data->model = aam_create_model(model_path);
-    if(data->model == NULL) {
-        printf("Failed to create model\n");
-        return NULL;
-    }
-
-    AprilConfig config = {
-        .handler = april_result_handler,
-        .flags = APRIL_CONFIG_FLAG_ASYNC_RT_BIT,
-        .userdata = data
-    };
-
-    data->session = aas_create_session(data->model, config);
-
-    if(data->session == NULL){
-        printf("Failed to create session\n");
-        return NULL;
-    }
+    asr_thread_update_model(data, model_path);
 
     g_mutex_init(&data->text_mutex);
 
@@ -199,19 +186,87 @@ asr_thread create_asr_thread(const char *model_path){
     return data;
 }
 
+bool asr_thread_update_model(asr_thread data, const char *model_path) {
+    data->pause = true;
+
+    AprilASRModel old_model = data->model;
+    AprilASRSession old_session = data->session;
+
+    data->model = NULL;
+    data->session = NULL;
+
+    if(old_session != NULL)
+        aas_free(old_session);
+
+    if(old_model != NULL)
+        aam_free(old_model);
+
+
+    AprilConfig config = {
+        .handler = april_result_handler,
+        .flags = APRIL_CONFIG_FLAG_ASYNC_RT_BIT,
+        .userdata = data
+    };
+
+    AprilASRModel new_model = aam_create_model(model_path);
+    if(new_model == NULL) {
+        printf("Loading model %s failed!\n", model_path);
+        data->errored = true;
+        return false;
+    }
+
+    {
+        printf("\n-- Model metadata --\n");
+        printf("Name: %s\n", aam_get_name(new_model));
+        char *description = (char*)aam_get_description(new_model);
+        for(int i=0; description[i]; i++){
+            if((description[i] == ' ') && (description[i+1] == 'D') && (description[i+2] == 'i')){
+                description[i] = 0;
+                break;
+            }
+        }
+        printf("Description: %s\n", description);
+        printf("Language: %s\n", aam_get_language(new_model));
+        printf("-- --\n\n");
+    }
+
+    AprilASRSession new_session = aas_create_session(new_model, config);
+    if(new_session == NULL) {
+        printf("Creating session %s failed!\n", model_path);
+        data->errored = true;
+        return false;
+    }
+
+    data->model = new_model;
+    data->session = new_session;
+
+    data->errored = false;
+    data->pause = false;
+
+    return true;
+}
+
+bool asr_thread_is_errored(asr_thread thread) {
+    return thread->errored;
+}
+
 void asr_thread_set_main_window(asr_thread thread, LiveCaptionsWindow *window) {
     thread->window = window;
 }
 
 void asr_thread_flush(asr_thread thread) {
+    if(thread->session == NULL) return;
     aas_flush(thread->session);
 }
 
 void free_asr_thread(asr_thread thread) {
     g_thread_join(thread->thread_id);
 
-    aas_free(thread->session);
-    aam_free(thread->model);
+    if(thread->session != NULL)
+        aas_free(thread->session);
+    
+    if(thread->model != NULL)
+        aam_free(thread->model);
 
     g_thread_unref(thread->thread_id); // ?
 

@@ -25,6 +25,7 @@
 #include "livecaptions-application.h"
 #include "history.h"
 #include "livecaptions-history-window.h"
+#include "asrproc.h"
 
 G_DEFINE_TYPE(LiveCaptionsSettings, livecaptions_settings, ADW_TYPE_PREFERENCES_WINDOW)
 
@@ -136,6 +137,31 @@ static const char *get_always_on_top_tip_text(){
     }
 }
 
+
+static void on_add_model_response(GtkNativeDialog *native,
+                                  int        response,
+                                  LiveCaptionsSettings *self);
+
+static void add_model_cb(LiveCaptionsSettings *self) {
+    GtkFileChooserNative *native;
+    GtkFileChooser *chooser;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+
+    native = gtk_file_chooser_native_new("Load Model",
+                                         GTK_WINDOW(self),
+                                         action,
+                                         _("_Load"),
+                                         _("_Cancel"));
+
+    chooser = GTK_FILE_CHOOSER(native);
+
+    gtk_native_dialog_show(GTK_NATIVE_DIALOG(native));
+
+    g_signal_connect(native, "response",
+                     G_CALLBACK (on_add_model_response),
+                     self);
+}
+
 static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
@@ -171,10 +197,14 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, benchmark_label);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, keep_above_instructions);
 
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, models_list);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, radio_button_1);
+
     gtk_widget_class_bind_template_callback (widget_class, report_cb);
     gtk_widget_class_bind_template_callback (widget_class, about_cb);
     gtk_widget_class_bind_template_callback (widget_class, rerun_benchmark_cb);
     gtk_widget_class_bind_template_callback (widget_class, open_history);
+    gtk_widget_class_bind_template_callback (widget_class, add_model_cb);
 }
 
 // The settings window needs to be kept on top if the main window is kept on top,
@@ -185,6 +215,75 @@ static gboolean deferred_update_keep_above(void *userdata) {
     set_window_keep_above(GTK_WINDOW(self), g_settings_get_boolean(self->settings, "keep-on-top"));
 
     return G_SOURCE_REMOVE;
+}
+
+static void on_model_selected(GtkCheckButton* button, LiveCaptionsSettings *self){
+    if(!gtk_check_button_get_active(button)) return;
+
+    char *model = g_object_get_data(button, "lcap-model-path");
+    printf("model selected %s\n", model);
+
+    asr_thread_update_model(self->application->asr, model);
+}
+
+static void insert_model_to_list(LiveCaptionsSettings *self, gchar *model) {
+    GtkCheckButton *first = self->radio_button_1;
+    AdwActionRow *row = g_object_new(ADW_TYPE_ACTION_ROW, NULL);
+    GtkCheckButton *button = g_object_new(GTK_TYPE_CHECK_BUTTON, NULL);
+
+    adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), model);
+    adw_preferences_group_add(self->models_list, row);
+    adw_action_row_add_prefix(row, button);
+
+    adw_action_row_set_activatable_widget(row, GTK_WIDGET(button));
+
+    gtk_check_button_set_group(button, first);
+
+    g_object_set_data(button, "lcap-model-path", model);
+    g_signal_connect(button, "toggled", G_CALLBACK(on_model_selected), self);
+}
+
+static void init_models_page(LiveCaptionsSettings *self) {
+    gchar **models = g_settings_get_strv(self->settings, "installed-models");
+
+    for(int i=0; models[i] != NULL; i++){
+        gchar *model = models[i];
+        insert_model_to_list(self, model);
+    }
+}
+
+static void add_new_model(LiveCaptionsSettings *self, gchar *model) {
+    gchar **existing_models = g_settings_get_strv(self->settings, "installed-models");
+
+    GStrvBuilder *builder = g_strv_builder_new();
+    g_strv_builder_addv(builder, existing_models);
+    g_strv_builder_add(builder, model);
+
+    GStrv result = g_strv_builder_end(builder);
+
+    g_settings_set_strv(self->settings, "installed-models", result);
+
+    g_strfreev(result);
+    g_strv_builder_unref(builder);
+}
+
+static void on_add_model_response(GtkNativeDialog *native,
+                                  int        response,
+                                  LiveCaptionsSettings *self)
+{
+    if(response == GTK_RESPONSE_ACCEPT){
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER(native);
+
+        g_autoptr(GFile) file = gtk_file_chooser_get_file(chooser);
+        
+        char *model = g_file_get_path(file);
+        
+        insert_model_to_list(self, model);
+        add_new_model(self, model);
+        //g_free(model);
+    }
+
+    g_object_unref(native);
 }
 
 static void livecaptions_settings_init(LiveCaptionsSettings *self) {
@@ -237,4 +336,6 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
         const char *always_on_top_text = get_always_on_top_tip_text();
         gtk_label_set_label(self->keep_above_instructions, always_on_top_text);
     }
+
+    init_models_page(self);
 }

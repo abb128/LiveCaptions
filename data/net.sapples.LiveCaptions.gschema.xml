@@ -58,5 +58,15 @@
             <default>true</default>
             <summary>Save history whenever the app is closed</summary>
         </key>
+
+        <key name="installed-models" type="as">
+            <default>['/app/LiveCaptions/models/aprilv0_en-us.april']</default>
+            <summary>List of installed models</summary>
+        </key>
+
+        <key name="active-model" type="s">
+            <default>'/app/LiveCaptions/models/aprilv0_en-us.april'</default>
+            <summary>Currently active model</summary>
+        </key>
     </schema>
 </schemalist>

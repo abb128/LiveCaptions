@@ -92,7 +92,7 @@ static void livecaptions_application_activate(GApplication *app) {
 
     window = gtk_application_get_active_window(GTK_APPLICATION(app));
     if(window == NULL) {
-        window = g_object_new(LIVECAPTIONS_TYPE_WINDOW, "application", app, NULL);
+        window = g_object_new(LIVECAPTIONS_TYPE_WINDOW, "application", GTK_APPLICATION(self), NULL);
 
         LiveCaptionsWindow *lc_window = LIVECAPTIONS_WINDOW(window);
         asr_thread_set_main_window(self->asr, lc_window);
@@ -236,7 +236,8 @@ livecaptions_application_show_preferences(G_GNUC_UNUSED GSimpleAction *action,
 
     GtkApplication *app = GTK_APPLICATION(user_data);
     GtkWindow *window = gtk_application_get_active_window (app);
-    LiveCaptionsSettings *preferences = g_object_new(LIVECAPTIONS_TYPE_SETTINGS, "application", app, NULL);
+    LiveCaptionsSettings *preferences = g_object_new(LIVECAPTIONS_TYPE_SETTINGS, "application", GTK_APPLICATION(self), NULL);
+    preferences->application = self;
 
     gtk_window_present (GTK_WINDOW (preferences));
 

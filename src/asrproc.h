@@ -29,6 +29,8 @@ typedef struct asr_thread_i * asr_thread;
 
 
 asr_thread create_asr_thread(const char *model_path);
+bool asr_thread_update_model(asr_thread thread, const char *model_path);
+bool asr_thread_is_errored(asr_thread thread);
 void asr_thread_set_main_window(asr_thread thread, struct _LiveCaptionsWindow *window);
 void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts);
 gpointer asr_thread_get_model(asr_thread thread);

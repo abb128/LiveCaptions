@@ -9,7 +9,7 @@
 
     <child>
       <object class="AdwPreferencesPage">
-        <property name="icon_name">preferences-system-symbolic</property>
+        <property name="icon_name">settings-symbolic</property>
         <property name="title">Options</property>
 
 
@@ -271,5 +271,65 @@
 
       </object>
     </child>
+
+
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="icon_name">computer-chip-symbolic</property>
+        <property name="title">Model</property>
+
+        <child>
+          <object class="AdwPreferencesGroup" id="models_list">
+            <property name="title" translatable="yes">Local Models</property>
+            <property name="header-suffix">
+              <object class="GtkButton">
+                <signal name="clicked" handler="add_model_cb" swapped="yes"/>
+                <property name="child">
+                  <object class="AdwButtonContent">
+                    <property name="icon-name">list-add-symbolic</property>
+                    <property name="label" translatable="yes">Add</property>
+                  </object>
+                </property>
+                <style>
+                  <class name="flat"/>
+                </style>
+              </object>
+            </property>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="activatable_widget">radio_button_1</property>
+                <property name="title" translatable="yes">Built-in Model</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="radio_button_1">
+                    <property name="valign">center</property>
+                    <property name="active">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <!--
+            <child>
+              <object class="AdwActionRow">
+                <property name="activatable_widget">radio_button_2</property>
+                <property name="title" translatable="yes">Some Model 2</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="radio_button_2">
+                    <property name="group">radio_button_1</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+-->
+
+          </object>
+        </child>
+
+
+      </object>
+    </child>
+
   </template>
 </interface>

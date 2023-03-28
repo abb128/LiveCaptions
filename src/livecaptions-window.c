@@ -154,7 +154,13 @@ static gboolean show_relevant_slow_warning(void *userdata) {
 
     asr_thread asr = app->asr;
 
+    if(asr_thread_is_errored(asr)){
+        gtk_label_set_text(self->label, "[Model Error]");
+        return G_SOURCE_CONTINUE;
+    }
+
     AprilASRSession session = (AprilASRSession)asr_thread_get_session(asr);
+    if(session == NULL) return G_SOURCE_CONTINUE;
 
     float speedup = aas_realtime_get_speedup(session);
 

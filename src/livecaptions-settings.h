@@ -19,9 +19,12 @@
 #pragma once
 
 #include <adwaita.h>
+#include "livecaptions-application.h"
 
 struct _LiveCaptionsSettings {
     AdwPreferencesWindow  parent_instance;
+
+    LiveCaptionsApplication *application;
 
     GSettings *settings;
 
@@ -53,6 +56,9 @@ struct _LiveCaptionsSettings {
 
     GtkLabel *benchmark_label;
     GtkLabel *keep_above_instructions;
+
+    AdwPreferencesGroup *models_list;
+    GtkCheckButton *radio_button_1;
 };
 
 G_BEGIN_DECLS
