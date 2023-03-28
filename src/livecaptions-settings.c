@@ -222,11 +222,16 @@ static gboolean deferred_update_keep_above(void *userdata) {
     return G_SOURCE_REMOVE;
 }
 
+static void model_load_failsafe(LiveCaptionsSettings *self, bool load_default);
 static void on_model_selected(GtkCheckButton* button, LiveCaptionsSettings *self){
     if(!gtk_check_button_get_active(button)) return;
 
     const char *model = g_quark_to_string((GQuark)g_object_get_data(button, "lcap-model-path"));
-    asr_thread_update_model(self->application->asr, model);
+    if(!asr_thread_update_model(self->application->asr, model)) {
+        model_load_failsafe(self, false);
+        return;
+    }
+
     g_settings_set_string(self->settings, "active-model", model);
 }
 
@@ -338,6 +343,32 @@ static void add_new_model(LiveCaptionsSettings *self, gchar *model) {
     g_strv_builder_unref(builder);
 }
 
+static void model_load_failsafe(LiveCaptionsSettings *self, bool load_default) {
+    GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL;
+    GtkMessageDialog *dialog = gtk_message_dialog_new (self,
+                                        flags,
+                                        GTK_MESSAGE_ERROR,
+                                        GTK_BUTTONS_CLOSE,
+                                        "Failed to load model!");
+    
+    gtk_window_present(GTK_WINDOW(dialog));
+
+    g_signal_connect (dialog, "response",
+                    G_CALLBACK (gtk_window_destroy),
+                    NULL);
+    
+    char *prev_model;
+    if(load_default) {
+        prev_model = GET_MODEL_PATH();
+    }else{
+        prev_model = g_settings_get_string(self->settings, "active-model");
+    }
+
+    asr_thread_update_model(self->application->asr, prev_model);
+
+    if(load_default) gtk_check_button_set_active(self->radio_button_1, true);
+}
+
 static void on_add_model_response(GtkNativeDialog *native,
                                   int        response,
                                   LiveCaptionsSettings *self)
@@ -348,7 +379,19 @@ static void on_add_model_response(GtkNativeDialog *native,
         g_autoptr(GFile) file = gtk_file_chooser_get_file(chooser);
         
         char *model = g_file_get_path(file);
+
+
+        if(!asr_thread_update_model(self->application->asr, model)){
+            model_load_failsafe(self, false);
+
+            g_free(model);
+            g_object_unref(native);
+            return;
+        }
         
+        g_settings_set_string(self->settings, "active-model", model);
+
+
         insert_model_to_list(self, model);
         add_new_model(self, model);
 
