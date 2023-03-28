@@ -197,6 +197,10 @@ asr_thread create_asr_thread(const char *model_path){
 }
 
 bool asr_thread_update_model(asr_thread data, const char *model_path) {
+    // Freeing model frees token list, which may be being accessed during
+    // line generation
+    g_mutex_lock(&data->text_mutex);
+
     data->pause = true;
 
     AprilASRModel old_model = data->model;
@@ -222,6 +226,7 @@ bool asr_thread_update_model(asr_thread data, const char *model_path) {
     if(new_model == NULL) {
         printf("Loading model %s failed!\n", model_path);
         data->errored = true;
+        g_mutex_unlock(&data->text_mutex);
         return false;
     }
 
@@ -244,6 +249,7 @@ bool asr_thread_update_model(asr_thread data, const char *model_path) {
     if(new_session == NULL) {
         printf("Creating session %s failed!\n", model_path);
         data->errored = true;
+        g_mutex_unlock(&data->text_mutex);
         return false;
     }
 
@@ -252,6 +258,8 @@ bool asr_thread_update_model(asr_thread data, const char *model_path) {
 
     data->errored = false;
     data->pause = false;
+
+    g_mutex_unlock(&data->text_mutex);
 
     return true;
 }
@@ -270,6 +278,8 @@ void asr_thread_flush(asr_thread thread) {
 }
 
 void free_asr_thread(asr_thread thread) {
+    g_mutex_lock(&thread->text_mutex);
+
     g_thread_join(thread->thread_id);
 
     if(thread->session != NULL)
