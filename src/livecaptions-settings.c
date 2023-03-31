@@ -113,6 +113,14 @@ static void report_cb(LiveCaptionsSettings *self) {
     );
 }
 
+static void download_models_cb(LiveCaptionsSettings *self) {
+    gtk_show_uri(
+        GTK_WINDOW(self),
+        "https://abb128.github.io/april-asr/models.html",
+        GDK_CURRENT_TIME
+    );
+}
+
 static void open_history(LiveCaptionsSettings *self) {
     GtkRoot *root = gtk_widget_get_root(GTK_WIDGET(self));
 
@@ -210,6 +218,7 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_callback (widget_class, open_history);
     gtk_widget_class_bind_template_callback (widget_class, add_model_cb);
     gtk_widget_class_bind_template_callback (widget_class, on_builtin_toggled);
+    gtk_widget_class_bind_template_callback (widget_class, download_models_cb);
 }
 
 // The settings window needs to be kept on top if the main window is kept on top,

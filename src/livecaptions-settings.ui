@@ -309,25 +309,29 @@
                 </child>
               </object>
             </child>
+          </object>
+        </child>
 
-            <!--
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title"></property>
+
             <child>
               <object class="AdwActionRow">
-                <property name="activatable_widget">radio_button_2</property>
-                <property name="title" translatable="yes">Some Model 2</property>
-                <child type="prefix">
-                  <object class="GtkCheckButton" id="radio_button_2">
-                    <property name="group">radio_button_1</property>
-                    <property name="valign">center</property>
+                <property name="title" translatable="yes">Download more models</property>
+                <property name="subtitle" translatable="no">https://abb128.github.io/april-asr/models.html</property>
+                <property name="activatable">True</property>
+                <signal name="activated" handler="download_models_cb" swapped="yes"/>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon_name">adw-external-link-symbolic</property>
                   </object>
                 </child>
               </object>
             </child>
--->
 
           </object>
         </child>
-
 
       </object>
     </child>
