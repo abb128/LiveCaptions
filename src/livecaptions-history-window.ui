@@ -12,6 +12,13 @@
       <object class="GtkHeaderBar">
         <child type="end">
           <object class="GtkButton">
+            <property name="icon-name">refresh-symbolic</property>
+            <property name="tooltip-text">Refresh</property>
+            <signal name="clicked" handler="refresh_cb" swapped="yes"/>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkButton">
             <property name="icon-name">export-symbolic</property>
             <property name="tooltip-text">Export history as .txt</property>
             <signal name="clicked" handler="export_cb" swapped="yes"/>

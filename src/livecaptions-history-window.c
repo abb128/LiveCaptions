@@ -24,6 +24,7 @@
 #include "history.h"
 #include "profanity-filter.h"
 #include "common.h"
+#include "window-helper.h"
 
 G_DEFINE_TYPE(LiveCaptionsHistoryWindow, livecaptions_history_window, GTK_TYPE_WINDOW)
 
@@ -252,6 +253,19 @@ static gboolean deferred_update_keep_above(void *userdata) {
 }
 
 
+static void refresh_cb(LiveCaptionsHistoryWindow *self) {
+    GtkWidget *childs = gtk_widget_get_first_child(GTK_WIDGET(self->main_box));
+    while (childs != NULL) {
+        gtk_box_remove(self->main_box, childs);
+        childs = gtk_widget_get_first_child(GTK_WIDGET(self->main_box));
+    }
+
+    self->session_load = 0;
+    load_to(self, ++self->session_load);
+
+    g_idle_add(force_bottom, self);
+}
+
 static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
@@ -263,6 +277,7 @@ static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClas
     gtk_widget_class_bind_template_callback(widget_class, load_more_cb);
     gtk_widget_class_bind_template_callback(widget_class, export_cb);
     gtk_widget_class_bind_template_callback(widget_class, warn_deletion_cb);
+    gtk_widget_class_bind_template_callback(widget_class, refresh_cb);
 }
 
 // TODO: ctrl+f search
