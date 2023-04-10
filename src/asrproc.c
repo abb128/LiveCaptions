@@ -259,6 +259,8 @@ bool asr_thread_update_model(asr_thread data, const char *model_path) {
     data->errored = false;
     data->pause = false;
 
+    line_generator_finalize(&data->line);
+
     g_mutex_unlock(&data->text_mutex);
 
     return true;
