@@ -33,6 +33,8 @@ struct token_capitalizer {
     bool is_english;
     bool finished_at_period;
     bool previous_was_period;
+
+    bool force_next_cap;
 };
 
 bool token_capitalizer_next(struct token_capitalizer *tc, const char *token, int flags, const char *subsequent_token, int subsequent_flags);

@@ -37,8 +37,9 @@
 
 void token_capitalizer_init(struct token_capitalizer *tc) {
     tc->is_english = true;
-    tc->previous_was_period = false;
+    tc->previous_was_period = true;
     tc->finished_at_period = false;
+    tc->force_next_cap = false;
 }
 
 bool token_capitalizer_next(struct token_capitalizer *tc, const char *token, int flags, const char *subsequent_token, int subsequent_flags) {
@@ -47,7 +48,18 @@ bool token_capitalizer_next(struct token_capitalizer *tc, const char *token, int
         return false;
     }
 
+    if(tc->force_next_cap){
+        tc->force_next_cap = false;
+        return true;
+    }
+
     if((tc->previous_was_period) && (flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)){
+        // If bare space token, capitalize the subsequent token since space can't
+        // be capitalized.
+        if((token[0] == ' ') && (token[1] == 0)){
+            tc->force_next_cap = true;
+        }
+
         tc->previous_was_period = false;
         return true;
     }
@@ -72,10 +84,12 @@ bool token_capitalizer_next(struct token_capitalizer *tc, const char *token, int
 void token_capitalizer_finish(struct token_capitalizer *tc){
     tc->finished_at_period = tc->previous_was_period;
     tc->previous_was_period = false;
+    tc->force_next_cap = false;
 }
 
 void token_capitalizer_rewind(struct token_capitalizer *tc){
     tc->previous_was_period = tc->finished_at_period;
+    tc->force_next_cap = false;
 }
 
 
@@ -120,12 +134,6 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
             should_capitalize[i] = token_capitalizer_next(&lg->tcap, tokens[i].token, tokens[i].flags, tokens[i+1].token, tokens[i+1].flags);
         }else{
             should_capitalize[i] = token_capitalizer_next(&lg->tcap, tokens[i].token, tokens[i].flags, NULL, 0);
-        }
-
-        if(should_capitalize[i] && (tokens[i].token[0] == ' ') && (tokens[i].token[1] == 0)) {
-            // This token is just a space, followed by a token that's a letter.
-            // We are trying to capitalize the word, not the space, so capitalize the next token
-            should_capitalize[++i] = true;
         }
     }
 

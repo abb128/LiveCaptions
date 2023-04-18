@@ -25,6 +25,7 @@
 #include "profanity-filter.h"
 #include "common.h"
 #include "window-helper.h"
+#include "line-gen.h"
 
 G_DEFINE_TYPE(LiveCaptionsHistoryWindow, livecaptions_history_window, GTK_TYPE_WINDOW)
 
@@ -125,6 +126,8 @@ static void add_session(LiveCaptionsHistoryWindow *self, const struct history_se
     bool filter_profanity = g_settings_get_boolean(self->settings, "filter-profanity");
 
     FilterMode filter_mode = filter_profanity ? FILTER_PROFANITY : (filter_slurs ? FILTER_SLURS : FILTER_NONE);
+    struct token_capitalizer tcap;
+    token_capitalizer_init(&tcap);
 
     for(size_t i_1=0; i_1<session->entries_count; i_1++){
         size_t i = session->entries_count - i_1 - 1;
@@ -143,6 +146,10 @@ static void add_session(LiveCaptionsHistoryWindow *self, const struct history_se
         } else {
             GString *entry_text = g_string_new(NULL);
 
+            if(entry->tokens[0].flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT) {
+                tcap.previous_was_period = true;
+            }
+
             for(size_t j=0; j<entry->tokens_count;) {
                 size_t skipahead = 1;
                 const char *token = entry->tokens[j].token;
@@ -157,17 +164,46 @@ static void add_session(LiveCaptionsHistoryWindow *self, const struct history_se
 
                 if((j == 0) && (*token == ' ')) token++;
 
-                g_string_append(entry_text, token);
+                bool should_be_capitalized = false;
+                if((j+skipahead) < entry->tokens_count){
+                    should_be_capitalized = use_lowercase && token_capitalizer_next(&tcap, token, entry->tokens[j].flags, entry->tokens[j+skipahead].token, entry->tokens[j+skipahead].flags);
+                }else{
+                    should_be_capitalized = use_lowercase && token_capitalizer_next(&tcap, token, entry->tokens[j].flags, NULL, 0);
+                }
+
+                if(use_lowercase){
+                    const char *p = token;
+                    gunichar c;
+                    while (*p) {
+                        c = g_utf8_get_char_validated(p, -1);
+                        if(c == ((gunichar)-2)) {
+                            printf("gunichar -2 \n");
+                            break;
+                        }else if(c == ((gunichar)-1)) {
+                            printf("gunichar -1 \n");
+                            break;
+                        }
+
+                        c = g_unichar_tolower(c);
+
+                        if(should_be_capitalized){
+                            gunichar c1 = g_unichar_toupper(c);
+                            if(c != c1){
+                                c = c1;
+                                should_be_capitalized = false;
+                            }
+                        }
+
+                        g_string_append_unichar(entry_text, c);
+
+                        p = g_utf8_next_char(p);
+                    }
+                }else{
+                    g_string_append(entry_text, token);
+                }
 
                 j += skipahead;
             }
-
-            if(use_lowercase){
-                gchar *result = g_utf8_strdown(entry_text->str, -1);
-                g_string_free(entry_text, true);
-
-                entry_text = g_string_new(result);
-            } 
 
             g_string_append_c(entry_text, '\n');
             g_string_prepend(string, entry_text->str);
