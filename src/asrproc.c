@@ -245,6 +245,8 @@ bool asr_thread_update_model(asr_thread data, const char *model_path) {
         printf("-- --\n\n");
     }
 
+    line_generator_set_language(&data->line, aam_get_language(new_model));
+
     AprilASRSession new_session = aas_create_session(new_model, config);
     if(new_session == NULL) {
         printf("Creating session %s failed!\n", model_path);

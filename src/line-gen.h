@@ -29,9 +29,20 @@
 #define AC_LINE_MAX 4096
 #define AC_LINE_COUNT 2
 
+struct token_capitalizer {
+    bool is_english;
+    bool finished_at_period;
+    bool previous_was_period;
+};
+
+bool token_capitalizer_next(struct token_capitalizer *tc, const char *token, int flags, const char *subsequent_token, int subsequent_flags);
+void token_capitalizer_finish(struct token_capitalizer *tc);
+void token_capitalizer_rewind(struct token_capitalizer *tc);
+
+
 struct line {
     char text[AC_LINE_MAX];
-    
+
     size_t start_head;
     size_t start_len;
 
@@ -51,6 +62,9 @@ struct line_generator {
 
     PangoLayout *layout;
     int max_text_width;
+
+    bool is_english;
+    struct token_capitalizer tcap;
 };
 
 void line_generator_init(struct line_generator *lg);
@@ -58,3 +72,4 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
 void line_generator_finalize(struct line_generator *lg);
 void line_generator_break(struct line_generator *lg);
 void line_generator_set_text(struct line_generator *lg, GtkLabel *lbl);
+void line_generator_set_language(struct line_generator *lg, const char* language);

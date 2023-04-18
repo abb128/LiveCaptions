@@ -35,6 +35,50 @@
 #include "profanity-filter.h"
 #include "common.h"
 
+void token_capitalizer_init(struct token_capitalizer *tc) {
+    tc->is_english = true;
+    tc->previous_was_period = false;
+    tc->finished_at_period = false;
+}
+
+bool token_capitalizer_next(struct token_capitalizer *tc, const char *token, int flags, const char *subsequent_token, int subsequent_flags) {
+    if((flags & APRIL_TOKEN_FLAG_SENTENCE_END_BIT) != 0){
+        tc->previous_was_period = true;
+        return false;
+    }
+
+    if((tc->previous_was_period) && (flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)){
+        tc->previous_was_period = false;
+        return true;
+    }
+
+    // English-specific behavior: capitalize 'I'
+    // TODO: A better way of capitalizing I and names and places
+    if(tc->is_english) {
+        if((token[0] == ' ') && (token[1] == 'I') && (token[2] == 0)){
+            if(subsequent_token != NULL){
+                if (((subsequent_flags & (APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT | APRIL_TOKEN_FLAG_SENTENCE_END_BIT)) != 0) || (subsequent_token[0] == '\'')){
+                    return true;
+                }
+            }else{
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void token_capitalizer_finish(struct token_capitalizer *tc){
+    tc->finished_at_period = tc->previous_was_period;
+    tc->previous_was_period = false;
+}
+
+void token_capitalizer_rewind(struct token_capitalizer *tc){
+    tc->previous_was_period = tc->finished_at_period;
+}
+
+
 #define REL_LINE_IDX(HEAD, IDX) (4*AC_LINE_COUNT + (HEAD) + (IDX)) % AC_LINE_COUNT
 
 static GSettings *settings = NULL;
@@ -51,6 +95,8 @@ void line_generator_init(struct line_generator *lg) {
     lg->active_start_of_lines[0] = 0;
 
     if(settings == NULL) settings = g_settings_new("net.sapples.LiveCaptions");
+
+    token_capitalizer_init(&lg->tcap);
 }
 
 static int line_generator_get_text_width(struct line_generator *lg, const char *text){
@@ -65,6 +111,18 @@ static int line_generator_get_text_width(struct line_generator *lg, const char *
 
 #define MAX_TOKEN_SCRATCH 72
 void line_generator_update(struct line_generator *lg, size_t num_tokens, const AprilToken *tokens) {
+    // Add capitalization information
+    static bool should_capitalize[1024];
+
+    token_capitalizer_rewind(&lg->tcap);
+    for(size_t i=0; i<num_tokens; i++){
+        if((i+1) < num_tokens) {
+            should_capitalize[i] = token_capitalizer_next(&lg->tcap, tokens[i].token, tokens[i].flags, tokens[i+1].token, tokens[i+1].flags);
+        }else{
+            should_capitalize[i] = token_capitalizer_next(&lg->tcap, tokens[i].token, tokens[i].flags, NULL, 0);
+        }
+    }
+
     bool use_fade = g_settings_get_boolean(settings, "fade-text");
 
     bool filter_slurs = g_settings_get_boolean(settings, "filter-slurs");
@@ -108,6 +166,9 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
         for(size_t j=start_of_line; j<((size_t)end);) {
             size_t skipahead = 1;
             const char *token = tokens[j].token;
+
+            bool should_be_capitalized = should_capitalize[j];
+
             if(use_lowercase){
                 char *out = token_scratch;
                 const char *p = tokens[j].token;
@@ -123,6 +184,14 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
                     }
 
                     c = g_unichar_tolower(c);
+
+                    if(should_be_capitalized){
+                        gunichar c1 = g_unichar_toupper(c);
+                        if(c != c1){
+                            c = c1;
+                            should_be_capitalized = false;
+                        }
+                    }
 
                     out += g_unichar_to_utf8(c, out);
                     if((out + 6) >= (token_scratch + MAX_TOKEN_SCRATCH)){
@@ -202,6 +271,8 @@ void line_generator_finalize(struct line_generator *lg) {
     lg->lines[lg->current_line].start_head = lg->lines[lg->current_line].head;
     lg->lines[lg->current_line].start_len = lg->lines[lg->current_line].len;
 
+    token_capitalizer_finish(&lg->tcap);
+
     // set new line to start at 0
     lg->active_start_of_lines[lg->current_line] = 0;
 }
@@ -236,4 +307,9 @@ void line_generator_set_text(struct line_generator *lg, GtkLabel *lbl) {
     }
 
     gtk_label_set_markup(lbl, lg->output);
+}
+
+void line_generator_set_language(struct line_generator *lg, const char* language) {
+    lg->is_english = (language[0] == 'e') && (language[1] == 'n');
+    lg->tcap.is_english = lg->is_english;
 }
