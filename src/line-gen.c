@@ -121,6 +121,12 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
         }else{
             should_capitalize[i] = token_capitalizer_next(&lg->tcap, tokens[i].token, tokens[i].flags, NULL, 0);
         }
+
+        if(should_capitalize[i] && (tokens[i].token[0] == ' ') && (tokens[i].token[1] == 0)) {
+            // This token is just a space, followed by a token that's a letter.
+            // We are trying to capitalize the word, not the space, so capitalize the next token
+            should_capitalize[++i] = true;
+        }
     }
 
     bool use_fade = g_settings_get_boolean(settings, "fade-text");
