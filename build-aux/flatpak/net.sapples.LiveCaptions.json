@@ -65,8 +65,8 @@
                 {
                     "type" : "file",
                     "dest-filename" : "aprilv0_en-us.april",
-                    "url" : "https://april.sapples.net/aprilv0_en-us.april",
-                    "sha256" : "f5a30f888e797769b1b7de143c05d2c92a1702c263b5b71d62fd2028cede5627"
+                    "url" : "https://april.sapples.net/april-english-dev-01110_en.april",
+                    "sha256" : "77eb95d0fa4f7708a37e868c2265301ee6c42dcb25e63ca63eea3d9cbadbc1f3"
                 }
             ],
             "build-commands" : [
