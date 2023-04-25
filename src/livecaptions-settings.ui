@@ -244,7 +244,7 @@
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Report Accuracy Issue</property>
-                <property name="subtitle" translatable="no">https://github.com/abb128/LiveCaptions/issues/1</property>
+                <property name="subtitle" translatable="no">https://github.com/abb128/LiveCaptions/issues/48</property>
                 <property name="activatable">True</property>
                 <signal name="activated" handler="report_cb" swapped="yes"/>
                 <child>

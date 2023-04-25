@@ -108,7 +108,7 @@ static void about_cb(LiveCaptionsSettings *self) {
 static void report_cb(LiveCaptionsSettings *self) {
     gtk_show_uri(
         GTK_WINDOW(self),
-        "https://github.com/abb128/LiveCaptions/issues/1",
+        "https://github.com/abb128/LiveCaptions/issues/48",
         GDK_CURRENT_TIME
     );
 }
