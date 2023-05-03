@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ONNX_ROOT: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
     steps:
     - uses: actions/checkout@v1
       with:
