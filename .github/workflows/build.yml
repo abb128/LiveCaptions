@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ONNX_ROOT: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
+      ONNXRuntime_ROOT_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
       ONNXRuntime_INCLUDE_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/include
       ONNXRuntime_LIBRARY: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
       LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
@@ -27,6 +28,7 @@ jobs:
       env:
         CC: gcc
         ONNX_ROOT: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
+        ONNXRuntime_ROOT_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
         ONNXRuntime_INCLUDE_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/include/
         ONNXRuntime_LIBRARY: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib/
         LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib/
