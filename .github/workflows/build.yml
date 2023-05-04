@@ -16,3 +16,7 @@ jobs:
       with:
         manifest-path: build-aux/flatpak/net.sapples.LiveCaptions.json
         cache-key: flatpak-builder-${{ github.sha }}
+    - uses: actions/upload-artifact@v3
+      with:
+        name: folder
+        path: .
