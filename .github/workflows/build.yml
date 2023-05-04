@@ -18,7 +18,8 @@ jobs:
         submodules: recursive
     - uses: actions/setup-python@v1
       with:
-        python-version: '3.x'
+        python-version: '3.9'
+    - run: pip install --upgrade pip
     - run: pip install meson ninja onnxruntime
     - name: Download ONNX
       run: |
