@@ -1,37 +1,17 @@
-name: ci_meson
+name: CI
 
 on: [push, pull_request]
 
 jobs:
-
-  linux:
+  flatpak:
+    name: "Flatpak"
     runs-on: ubuntu-latest
-    env:
-      ONNX_ROOT: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
-      ONNXRuntime_ROOT_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
-      ONNXRuntime_INCLUDE_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/include
-      ONNXRuntime_LIBRARY: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-44
+      options: --privileged
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.1
       with:
-        submodules: recursive
-    - uses: actions/setup-python@v1
-      with:
-        python-version: '3.9'
-    - run: pip install --upgrade pip
-    - run: pip install meson ninja onnxruntime
-    - name: Download ONNX
-      run: |
-        wget https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz
-        tar -xf onnxruntime-linux-x64-1.13.1.tgz
-    - run: meson setup builddir
-      env:
-        CC: gcc
-        ONNX_ROOT: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
-        ONNXRuntime_ROOT_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
-        ONNXRuntime_INCLUDE_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/include/
-        ONNXRuntime_LIBRARY: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib/
-        LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib/
-    - run: meson devenv -C builddir
-    - run: ninja
+        manifest-path: build-aux/flatpak/net.sapples.LiveCaptions.json
+        cache-key: flatpak-builder-${{ github.sha }}
