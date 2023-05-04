@@ -6,11 +6,6 @@ jobs:
 
   linux:
     runs-on: ubuntu-latest
-    env:
-      ONNX_ROOT: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
-      ONNXRuntime_INCLUDE_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/include
-      ONNXRuntime_LIBRARY: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
     steps:
     - uses: actions/checkout@v1
       with:
@@ -26,8 +21,24 @@ jobs:
     - run: meson setup builddir
       env:
         CC: gcc
+        ONNX_ROOT: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
+        ONNXRuntime_INCLUDE_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/include
+        ONNXRuntime_LIBRARY: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
+        LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
     - run: meson devenv -C builddir
+      env:
+        CC: gcc
+        ONNX_ROOT: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
+        ONNXRuntime_INCLUDE_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/include
+        ONNXRuntime_LIBRARY: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
+        LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
     - run: ninja
+      env:
+        CC: gcc
+        ONNX_ROOT: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/
+        ONNXRuntime_INCLUDE_DIR: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/include
+        ONNXRuntime_LIBRARY: $GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
+        LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$GITHUB_WORKSPACE/onnxruntime-linux-x64-1.13.1/lib
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
