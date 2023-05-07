@@ -67,39 +67,36 @@ _changed_property_free (ChangedProperty *data)
 static gboolean
 _g_strv_equal0 (gchar **a, gchar **b)
 {
-  gboolean ret = FALSE;
-  guint n;
-  if (a == NULL && b == NULL)
-    {
-      ret = TRUE;
-      goto out;
+    guint i, n = 0;
+
+    if (a == b)
+        return TRUE;
+
+    while (a && a[n] && b && b[n]) {
+        n++;
     }
-  if (a == NULL || b == NULL)
-    goto out;
-  if (g_strv_length (a) != g_strv_length (b))
-    goto out;
-  for (n = 0; a[n] != NULL; n++)
-    if (g_strcmp0 (a[n], b[n]) != 0)
-      goto out;
-  ret = TRUE;
-out:
-  return ret;
+
+    if (a && a[n] == NULL && b && b[n] == NULL) {
+        for (i = 0; i < n; i++) {
+            gboolean cmp = (g_strcmp0(a[i], b[i]) == 0);
+            if (!cmp) {
+                return FALSE;
+            }
+        }
+        return TRUE;
+    }
+
+    return FALSE;
 }
 
 static gboolean
 _g_variant_equal0 (GVariant *a, GVariant *b)
 {
-  gboolean ret = FALSE;
   if (a == NULL && b == NULL)
-    {
-      ret = TRUE;
-      goto out;
-    }
+    return TRUE;
   if (a == NULL || b == NULL)
-    goto out;
-  ret = g_variant_equal (a, b);
-out:
-  return ret;
+    return FALSE;
+  return g_variant_equal (a, b);
 }
 
 G_GNUC_UNUSED static gboolean
@@ -317,7 +314,7 @@ dblcap_external_default_init (DBLCapExternalIface *iface)
  *
  * Returns: The property value.
  */
-gboolean 
+gboolean
 dblcap_external_get_keep_above (DBLCapExternal *object)
 {
   return DBLCAP_EXTERNAL_GET_IFACE (object)->get_keep_above (object);
@@ -387,11 +384,10 @@ dblcap_external_call_allow_keep_above_finish (
   GVariant *_ret;
   _ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, error);
   if (_ret == NULL)
-    goto _out;
+    return _ret != NULL;
   g_variant_get (_ret,
                  "()");
   g_variant_unref (_ret);
-_out:
   return _ret != NULL;
 }
 
@@ -422,11 +418,10 @@ dblcap_external_call_allow_keep_above_sync (
     cancellable,
     error);
   if (_ret == NULL)
-    goto _out;
+    return _ret != NULL;
   g_variant_get (_ret,
                  "()");
   g_variant_unref (_ret);
-_out:
   return _ret != NULL;
 }
 
@@ -525,7 +520,7 @@ dblcap_external_proxy_set_property_cb (GDBusProxy *proxy,
   if (!_ret)
     {
       g_warning ("Error setting property '%s' on interface net.sapples.LiveCaptions.External: %s (%s, %d)",
-                 info->parent_struct.name, 
+                 info->parent_struct.name,
                  error->message, g_quark_to_string (error->domain), error->code);
       g_error_free (error);
     }
@@ -625,7 +620,7 @@ dblcap_external_proxy_g_properties_changed (GDBusProxy *_proxy,
     }
 }
 
-static gboolean 
+static gboolean
 dblcap_external_proxy_get_keep_above (DBLCapExternal *object)
 {
   DBLCapExternalProxy *proxy = DBLCAP_EXTERNAL_PROXY (object);
@@ -1047,7 +1042,7 @@ dblcap_external_skeleton_dbus_interface_get_properties (GDBusInterfaceSkeleton *
   guint n;
   g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
   if (_dblcap_external_interface_info.parent_struct.properties == NULL)
-    goto out;
+    return g_variant_builder_end (&builder);
   for (n = 0; _dblcap_external_interface_info.parent_struct.properties[n] != NULL; n++)
     {
       GDBusPropertyInfo *info = _dblcap_external_interface_info.parent_struct.properties[n];
@@ -1063,7 +1058,6 @@ dblcap_external_skeleton_dbus_interface_get_properties (GDBusInterfaceSkeleton *
             }
         }
     }
-out:
   return g_variant_builder_end (&builder);
 }
 
@@ -1272,7 +1266,7 @@ dblcap_external_skeleton_init (DBLCapExternalSkeleton *skeleton)
   g_value_init (&skeleton->priv->properties[0], G_TYPE_BOOLEAN);
 }
 
-static gboolean 
+static gboolean
 dblcap_external_skeleton_get_keep_above (DBLCapExternal *object)
 {
   DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (object);
