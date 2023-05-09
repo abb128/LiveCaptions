@@ -35,7 +35,7 @@ jobs:
       uses: docker/setup-qemu-action@v2
       with:
         platforms: arm64
-    - run: flatpak install org.gnome.Sdk/aarch64
+    - run: flatpak install gnome-nightly org.gnome.Sdk/aarch64
     - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.1
       with:
         manifest-path: build-aux/flatpak/net.sapples.LiveCaptions.json
