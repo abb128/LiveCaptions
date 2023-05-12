@@ -23,6 +23,7 @@ Features:
 
 Running this requires a somewhat-decent CPU that can perform realtime captioning, especially if you want to be doing other tasks (such as video decode) while running Live Captions. It has been tested working on:
 * Intel i7-2670QM (2011)
+* Intel i7-7820HQ (2017)
 * Intel i5-8265U (2018)
 * AMD Ryzen 5 1600 (2017)
 * Steam Deck
