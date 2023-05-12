@@ -57,18 +57,17 @@ You can build this easily with GNOME Builder. After cloning, open the project di
 If you are using Flatpak GNOME Builder and experience issues running this (for example, some cryptic X Window System error), please try using your distro's native packaged version of GNOME Builder instead of Flatpak (e.g. `sudo apt install gnome-builder`).
 
 ## Option 2: Building from the terminal (not as easy)
-First you must [download ONNXRuntime v1.13.1 (Linux)](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz) or [ONNXRuntime v.1.13.1 (OSX)](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-osx-x86_64-1.13.1.tgz), extract it somewhere, and set the environment variables to point to it:
+First you must [download ONNXRuntime v1.13.1 (Linux)](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz) or [ONNXRuntime v.1.13.1 (OSX)](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-osx-x86_64-1.13.1.tgz), extract it somewhere, and set the environment variables to point to it.
+
+Linux:
 ```
 $ export ONNX_ROOT=/path/to/onnxruntime-linux-x64-1.13.1/
-```
-
-Now, on Linux, do this:
-```
 $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/onnxruntime-linux-x64-1.13.1/lib
 ```
 
 or, on Mac:
 ```
+$ export ONNX_ROOT=/path/to/onnxruntime-osx-x86_64-1.13.1/
 $ cp /path/to/onnxruntime-osx-x86_64-1.13.1/lib/libonnxruntime.1.13.1.dylib /usr/local/lib/libonnxruntime.1.13.1.dylib
 $ cp /path/to/onnxruntime-osx-x86_64-1.13.1/lib/libonnxruntime.dylib /usr/local/lib/libonnxruntime.dylib
 ```
