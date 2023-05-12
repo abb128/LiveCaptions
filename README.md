@@ -104,3 +104,5 @@ $ export APRIL_MODEL_PATH=`pwd`/aprilv0_en-us.april
 ```
 
 You should now be able to run the app with `src/livecaptions`
+
+If you're on MacOS, now, go to security settings and confirm the prompt which asks to allow `libonnxruntime`, then, the application should work as intended.
