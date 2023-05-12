@@ -51,8 +51,8 @@ void history_init(void){
 
 static struct history_entry *allocate_new_entry(size_t tokens_count) {
     active_session.entries_count += 1;
-    active_session.entries = reallocarray(active_session.entries,
-        active_session.entries_count, sizeof(struct history_entry));
+    active_session.entries = realloc(active_session.entries,
+        active_session.entries_count * sizeof(struct history_entry));
 
     struct history_entry *entry = &active_session.entries[active_session.entries_count - 1];
 
