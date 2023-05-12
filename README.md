@@ -23,6 +23,7 @@ Features:
 
 Running this requires a somewhat-decent CPU that can perform realtime captioning, especially if you want to be doing other tasks (such as video decode) while running Live Captions. It has been tested working on:
 * Intel i7-2670QM (2011)
+* Intel i7-7820HQ (2017)
 * Intel i5-8265U (2018)
 * AMD Ryzen 5 1600 (2017)
 * Steam Deck
@@ -57,13 +58,37 @@ You can build this easily with GNOME Builder. After cloning, open the project di
 If you are using Flatpak GNOME Builder and experience issues running this (for example, some cryptic X Window System error), please try using your distro's native packaged version of GNOME Builder instead of Flatpak (e.g. `sudo apt install gnome-builder`).
 
 ## Option 2: Building from the terminal (not as easy)
-First you must [download ONNXRuntime v1.13.1](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz), extract it somewhere, and set the environment variables to point to it:
+First you must [download ONNXRuntime v1.13.1 (Linux)](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz) or [ONNXRuntime v.1.13.1 (OSX)](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-osx-x86_64-1.13.1.tgz), extract it somewhere, and set the environment variables to point to it.
+
+Linux:
 ```
 $ export ONNX_ROOT=/path/to/onnxruntime-linux-x64-1.13.1/
 $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/onnxruntime-linux-x64-1.13.1/lib
 ```
 
+or, on Mac:
+```
+$ export ONNX_ROOT=/path/to/onnxruntime-osx-x86_64-1.13.1/
+$ cp /path/to/onnxruntime-osx-x86_64-1.13.1/lib/libonnxruntime.1.13.1.dylib /usr/local/lib/libonnxruntime.1.13.1.dylib
+$ cp /path/to/onnxruntime-osx-x86_64-1.13.1/lib/libonnxruntime.dylib /usr/local/lib/libonnxruntime.dylib
+```
+
 Alternatively you should also be able to locally build and install ONNXRuntime, in which case that step shouldn't be necessary.
+
+You will also need the following prerequisites:
+```
+pulseaudio
+libadwaita
+meson
+ninja
+```
+
+If you're on macOS, you may have to run the following command for Pulseaudio to be registered as a background service:
+```
+brew services restart pulseaudio
+```
+
+and to stop it, just change `restart` for stop.
 
 To set up a build, run these commands:
 ```
@@ -80,3 +105,5 @@ $ export APRIL_MODEL_PATH=`pwd`/aprilv0_en-us.april
 ```
 
 You should now be able to run the app with `src/livecaptions`
+
+If you're on MacOS, now, go to security settings and confirm the prompt which asks to allow `libonnxruntime`, then, the application should work as intended.

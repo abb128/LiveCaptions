@@ -127,6 +127,7 @@ static void add_session(LiveCaptionsHistoryWindow *self, const struct history_se
 
     FilterMode filter_mode = filter_profanity ? FILTER_PROFANITY : (filter_slurs ? FILTER_SLURS : FILTER_NONE);
     struct token_capitalizer tcap;
+    extern void token_capitalizer_init(struct token_capitalizer *tc);
     token_capitalizer_init(&tcap);
 
     for(size_t i_1=0; i_1<session->entries_count; i_1++){
