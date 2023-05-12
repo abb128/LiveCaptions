@@ -3,7 +3,7 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    april-asr.url = "github:nekowinston/april-asr/7baa7b6bff823e7f3672813922ae141b7b5d6d1d";
+    april-asr.url = "github:nekowinston/april-asr/9979ff5065f85c6b603f04c3579ace24ab32db8d";
     april-asr-model = {
       url = "https://april.sapples.net/april-english-dev-01110_en.april";
       flake = false;
@@ -18,16 +18,7 @@
   }:
     flake-utils.lib.eachDefaultSystem (
       system: let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            (
-              final: prev: {
-                aprilasr = april-asr.packages.${prev.system};
-              }
-            )
-          ];
-        };
+        pkgs = import nixpkgs {inherit system;};
         inherit (pkgs) lib;
         inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
       in {
@@ -39,22 +30,19 @@
               makeWrapper
               meson
               ninja
+              pkg-config
               wrapGAppsHook
             ];
             buildInputs = with pkgs; [
-              cmake
-              pkgconfig
               appstream-glib # appstream-util
+              april-asr.packages.${system}.april-asr # april-asr
               desktop-file-utils # desktop-file-utils
               gettext # msgfmt
               glib # glib-compile-schemas
               libadwaita # libadwaita-1
               libpulseaudio # libpulse
-              aprilasr.april-asr
-              aprilasr.onnxruntime_1_14
             ];
             patchPhase = ''
-              # remove lines containing april
               sed -i "/april/d" meson.build
               sed -i "s/april_lib/dependency('aprilasr')/" src/meson.build
             '';
