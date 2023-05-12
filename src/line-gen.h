@@ -37,6 +37,7 @@ struct token_capitalizer {
     bool force_next_cap;
 };
 
+void token_capitalizer_init(struct token_capitalizer *tc);
 bool token_capitalizer_next(struct token_capitalizer *tc, const char *token, int flags, const char *subsequent_token, int subsequent_flags);
 void token_capitalizer_finish(struct token_capitalizer *tc);
 void token_capitalizer_rewind(struct token_capitalizer *tc);
