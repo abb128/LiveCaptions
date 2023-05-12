@@ -58,23 +58,27 @@ You can build this easily with GNOME Builder. After cloning, open the project di
 If you are using Flatpak GNOME Builder and experience issues running this (for example, some cryptic X Window System error), please try using your distro's native packaged version of GNOME Builder instead of Flatpak (e.g. `sudo apt install gnome-builder`).
 
 ## Option 2: Building from the terminal (not as easy)
-First you must [download ONNXRuntime v1.13.1 (Linux)](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-linux-x64-1.13.1.tgz) or [ONNXRuntime v.1.13.1 (OSX)](https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-osx-x86_64-1.13.1.tgz), extract it somewhere, and set the environment variables to point to it.
+First you must [download ONNXRuntime v1.14.1 (Linux)](https://github.com/microsoft/onnxruntime/releases/download/v1.14.1/onnxruntime-linux-x64-1.14.1.tgz) or [ONNXRuntime v.1.14.1 (Mac OS x86)](https://github.com/microsoft/onnxruntime/releases/download/v1.14.1/onnxruntime-osx-x86_64-1.14.1.tgz), extract it somewhere, and set the environment variables to point to it.
+
+### Make ONNX available
 
 Linux:
 ```
-$ export ONNX_ROOT=/path/to/onnxruntime-linux-x64-1.13.1/
-$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/onnxruntime-linux-x64-1.13.1/lib
-```
-
-or, on Mac:
-```
-$ export ONNX_ROOT=/path/to/onnxruntime-osx-x86_64-1.13.1/
-$ cp /path/to/onnxruntime-osx-x86_64-1.13.1/lib/libonnxruntime.1.13.1.dylib /usr/local/lib/libonnxruntime.1.13.1.dylib
-$ cp /path/to/onnxruntime-osx-x86_64-1.13.1/lib/libonnxruntime.dylib /usr/local/lib/libonnxruntime.dylib
+$ export ONNX_ROOT=/path/to/onnxruntime-linux-x64-1.14.1/
+$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/onnxruntime-linux-x64-1.14.1/lib
 ```
 
 Alternatively you should also be able to locally build and install ONNXRuntime, in which case that step shouldn't be necessary.
 
+
+Mac OS:
+```
+$ export ONNX_ROOT=/path/to/onnxruntime-osx-x86_64-1.14.1/
+$ cp /path/to/onnxruntime-osx-x86_64-1.14.1/lib/libonnxruntime.1.14.1.dylib /usr/local/lib/libonnxruntime.1.14.1.dylib
+$ cp /path/to/onnxruntime-osx-x86_64-1.14.1/lib/libonnxruntime.dylib /usr/local/lib/libonnxruntime.dylib
+```
+
+### Other dependencies
 You will also need the following prerequisites:
 ```
 pulseaudio
@@ -90,18 +94,24 @@ brew services restart pulseaudio
 
 and to stop it, just change `restart` for stop.
 
+
+### Set up the build
+
 To set up a build, run these commands:
 ```
 $ meson setup builddir
 $ meson devenv -C builddir
 ```
 
+
+### Build and run
+
 Now you can build the application by running `ninja`.
 
 Before being able to run the app, you must also download the model and export `APRIL_MODEL_PATH` to where the model is. For example:
 ```
-$ wget https://april.sapples.net/aprilv0_en-us.april
-$ export APRIL_MODEL_PATH=`pwd`/aprilv0_en-us.april
+$ wget https://april.sapples.net/april-english-dev-01110_en.april
+$ export APRIL_MODEL_PATH=`pwd`/april-english-dev-01110_en.april
 ```
 
 You should now be able to run the app with `src/livecaptions`
