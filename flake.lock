@@ -3,21 +3,20 @@
     "april-asr": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs",
-        "nixpkgs-onnxruntime114": "nixpkgs-onnxruntime114"
+        "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1683931363,
-        "narHash": "sha256-2USL/D4OtW8HBdM3Okz1zN2k+ZD6Cq9NBbIFrbDwKSk=",
+        "lastModified": 1684033667,
+        "narHash": "sha256-XtGLLK9i6pIMcmOmM1XI3/i9EQr7qaHIPlzOaXfgEPE=",
         "owner": "nekowinston",
         "repo": "april-asr",
-        "rev": "9979ff5065f85c6b603f04c3579ace24ab32db8d",
+        "rev": "496d052752bb4f47675a74a034aaf4a237d4fb76",
         "type": "github"
       },
       "original": {
         "owner": "nekowinston",
         "repo": "april-asr",
-        "rev": "9979ff5065f85c6b603f04c3579ace24ab32db8d",
+        "rev": "496d052752bb4f47675a74a034aaf4a237d4fb76",
         "type": "github"
       }
     },
@@ -82,22 +81,6 @@
         "owner": "nixos",
         "ref": "nixos-unstable",
         "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-onnxruntime114": {
-      "locked": {
-        "lastModified": 1682978478,
-        "narHash": "sha256-rGt4RjtnKCnwbMk/Na/N5KWOyduIFj+Ig3ACEJR8nnA=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "c7d48290f9da479dcab26eac5db6299739c595c2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "c7d48290f9da479dcab26eac5db6299739c595c2",
         "type": "github"
       }
     },

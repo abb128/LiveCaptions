@@ -3,7 +3,7 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    april-asr.url = "github:nekowinston/april-asr/9979ff5065f85c6b603f04c3579ace24ab32db8d";
+    april-asr.url = "github:nekowinston/april-asr/496d052752bb4f47675a74a034aaf4a237d4fb76";
     april-asr-model = {
       url = "https://april.sapples.net/april-english-dev-01110_en.april";
       flake = false;
