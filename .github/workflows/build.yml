@@ -17,27 +17,3 @@ jobs:
       with:
         manifest-path: build-aux/flatpak/net.sapples.LiveCaptions.json
         cache-key: flatpak-builder-${{ github.sha }}
-  aarch64:
-    name: "aarch64"
-    runs-on: ubuntu-latest
-    container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-nightly
-      options: --privileged
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-    - name: Install deps
-      run: |
-        dnf -y install docker
-    - name: Set up QEMU
-      id: qemu
-      uses: docker/setup-qemu-action@v2
-      with:
-        platforms: arm64
-    - run: flatpak install gnome-nightly org.gnome.Sdk/aarch64
-    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.1
-      with:
-        manifest-path: build-aux/flatpak/net.sapples.LiveCaptions.json
-        cache-key: flatpak-builder-${{ github.sha }}
-        arch: aarch64
