@@ -213,6 +213,10 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
 
     g_idle_add(deferred_update_keep_above, self);
     g_timeout_add_seconds(5, show_relevant_slow_warning, self);
+
+    // GTK adds solid-csd class when the compositor does not support window shadows
+    // This adds a very ugly thick border, so we remove it
+    gtk_widget_remove_css_class(GTK_WIDGET(self), "solid-csd");
 }
 
 static gboolean hide_slow_warning_after_some_time(void *userdata) {
