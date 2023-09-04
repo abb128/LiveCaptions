@@ -4,7 +4,7 @@
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     april-asr = {
-      url = "https://april.sapples.net/aprilv0_en-us.april";
+      url = "https://april.sapples.net/april-english-dev-01110_en.april";
       flake = false;
     };
   };
