@@ -422,11 +422,11 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
 
-    g_settings_bind(self->settings, "text-uppercase", self->text_upper_switch, "state", G_SETTINGS_BIND_DEFAULT);
-    g_settings_bind(self->settings, "fade-text", self->fade_text_switch, "state", G_SETTINGS_BIND_DEFAULT);
-    g_settings_bind(self->settings, "filter-profanity", self->filter_profanity_switch, "state", G_SETTINGS_BIND_DEFAULT);
-    g_settings_bind(self->settings, "filter-slurs", self->filter_slurs_switch, "state", G_SETTINGS_BIND_DEFAULT);
-    g_settings_bind(self->settings, "save-history", self->save_history_switch, "state", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "text-uppercase", self->text_upper_switch, "active", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "fade-text", self->fade_text_switch, "active", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "filter-profanity", self->filter_profanity_switch, "active", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "filter-slurs", self->filter_slurs_switch, "active", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "save-history", self->save_history_switch, "active", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "line-width", self->line_width_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "window-transparency", self->window_transparency_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
 
@@ -442,7 +442,7 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
 
     if(is_keep_above_supported(GTK_WINDOW(self))) {
         adw_action_row_set_activatable_widget(self->keep_above_switch_ar, GTK_WIDGET(self->keep_above_switch));
-        g_settings_bind(self->settings, "keep-on-top", self->keep_above_switch, "state", G_SETTINGS_BIND_DEFAULT);
+        g_settings_bind(self->settings, "keep-on-top", self->keep_above_switch, "active", G_SETTINGS_BIND_DEFAULT);
 
         gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch_ar), true);
         gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch), true);
