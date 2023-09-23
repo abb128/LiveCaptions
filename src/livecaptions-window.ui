@@ -11,6 +11,17 @@
     <property name="resizable">False</property>
     <property name="title">Live Captions</property>
 
+    <child>
+      <object class="GtkShortcutController">
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">&lt;Control&gt;comma</property>
+            <property name="action">action(app.preferences)</property>
+          </object>
+        </child>
+      </object>
+    </child>
+
     <child type="titlebar">
       <object class="GtkWindowHandle" id="main">
         <style>
