@@ -33,20 +33,11 @@ struct _LiveCaptionsSettings {
     GtkSwitch *fade_text_switch;
 
     AdwActionRow *font_button_ar;
-    AdwActionRow *text_upper_switch_ar;
-    AdwActionRow *fade_text_switch_ar;
 
-    GtkSwitch *filter_profanity_switch;
-    AdwActionRow *filter_profanity_switch_ar;
-
-    GtkSwitch *filter_slurs_switch;
-    AdwActionRow *filter_slurs_switch_ar;
-    
-    GtkSwitch *save_history_switch;
-    AdwActionRow *save_history_switch_ar;
-
-    GtkSwitch *keep_above_switch;
-    AdwActionRow *keep_above_switch_ar;
+    AdwSwitchRow *filter_profanity_switch;
+    AdwSwitchRow *filter_slurs_switch;
+    AdwSwitchRow *save_history_switch;
+    AdwSwitchRow *keep_above_switch;
 
     GtkScale *line_width_scale;
     GtkAdjustment *line_width_adjustment;

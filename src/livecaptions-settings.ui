@@ -18,15 +18,8 @@
             <property name="title" translatable="yes">Keep Above</property>
 
             <child>
-              <object class="AdwActionRow" id="keep_above_switch_ar">
+              <object class="AdwSwitchRow" id="keep_above_switch">
                 <property name="title" translatable="yes">Keep Captions Window on Top</property>
-
-                <child type="suffix">
-                  <object class="GtkSwitch" id="keep_above_switch">
-                    <property name="visible">True</property>
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
 
@@ -62,29 +55,15 @@
             </child>
 
             <child>
-              <object class="AdwActionRow" id="text_upper_switch_ar">
+              <object class="AdwSwitchRow" id="text_upper_switch">
                 <property name="title" translatable="yes">Show Text in Uppercase</property>
-
-                <child type="suffix">
-                  <object class="GtkSwitch" id="text_upper_switch">
-                    <property name="visible">True</property>
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
 
 
             <child>
-              <object class="AdwActionRow" id="fade_text_switch_ar">
+              <object class="AdwSwitchRow" id="fade_text_switch">
                 <property name="title" translatable="yes">Fade Text based on Confidence</property>
-
-                <child type="suffix">
-                  <object class="GtkSwitch" id="fade_text_switch">
-                    <property name="visible">True</property>
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
 
@@ -140,16 +119,9 @@
             <property name="title" translatable="yes">History</property>
 
             <child>
-              <object class="AdwActionRow" id="save_history_switch_ar">
+              <object class="AdwSwitchRow" id="save_history_switch">
                 <property name="title" translatable="yes">Save History</property>
                 <property name="subtitle" translatable="yes">If disabled, session history will be lost when app is closed</property>
-
-                <child type="suffix">
-                  <object class="GtkSwitch" id="save_history_switch">
-                    <property name="visible">True</property>
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
 
@@ -175,28 +147,14 @@
             <property name="title" translatable="yes">Filtering</property>
 
             <child>
-              <object class="AdwActionRow" id="filter_slurs_switch_ar">
+              <object class="AdwSwitchRow" id="filter_slurs_switch">
                 <property name="title" translatable="yes">Filter Slurs</property>
-
-                <child type="suffix">
-                  <object class="GtkSwitch" id="filter_slurs_switch">
-                    <property name="visible">True</property>
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
 
             <child>
-              <object class="AdwActionRow" id="filter_profanity_switch_ar">
+              <object class="AdwSwitchRow" id="filter_profanity_switch">
                 <property name="title" translatable="yes">Filter Profanity</property>
-
-                <child type="suffix">
-                  <object class="GtkSwitch" id="filter_profanity_switch">
-                    <property name="visible">True</property>
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
           </object>
