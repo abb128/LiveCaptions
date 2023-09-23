@@ -182,22 +182,12 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, font_button_ar);
     
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, text_upper_switch);
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, text_upper_switch_ar);
     
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, fade_text_switch);
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, fade_text_switch_ar);
-
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_profanity_switch);
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_profanity_switch_ar);
-
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch);
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, filter_slurs_switch_ar);
-
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, save_history_switch);
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, save_history_switch_ar);
-
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, keep_above_switch);
-    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, keep_above_switch_ar);
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_scale);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_adjustment);
@@ -414,11 +404,6 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     adw_action_row_set_activatable_widget(self->font_button_ar, GTK_WIDGET(self->font_button));
-    adw_action_row_set_activatable_widget(self->text_upper_switch_ar, GTK_WIDGET(self->text_upper_switch));
-    adw_action_row_set_activatable_widget(self->fade_text_switch_ar, GTK_WIDGET(self->fade_text_switch));
-    adw_action_row_set_activatable_widget(self->filter_profanity_switch_ar, GTK_WIDGET(self->filter_profanity_switch));
-    adw_action_row_set_activatable_widget(self->filter_slurs_switch_ar, GTK_WIDGET(self->filter_slurs_switch));
-    adw_action_row_set_activatable_widget(self->save_history_switch_ar, GTK_WIDGET(self->save_history_switch));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
 
@@ -441,21 +426,16 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     gtk_label_set_text(self->benchmark_label, benchmark_result);
 
     if(is_keep_above_supported(GTK_WINDOW(self))) {
-        adw_action_row_set_activatable_widget(self->keep_above_switch_ar, GTK_WIDGET(self->keep_above_switch));
         g_settings_bind(self->settings, "keep-on-top", self->keep_above_switch, "active", G_SETTINGS_BIND_DEFAULT);
-
-        gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch_ar), true);
         gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch), true);
 
         g_idle_add(deferred_update_keep_above, self);
 
         gtk_label_set_label(self->keep_above_instructions, "");
     } else {
-        adw_action_row_set_subtitle(self->keep_above_switch_ar, _("Your compositor does not support this setting. Read below for manual instructions"));
-        gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch_ar), false);
+        adw_action_row_set_subtitle(ADW_ACTION_ROW(self->keep_above_switch), _("Your compositor does not support this setting. Read below for manual instructions"));
         gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch), false);
-
-        gtk_switch_set_state(self->keep_above_switch, false);
+        adw_switch_row_set_active(self->keep_above_switch, false);
 
         const char *always_on_top_text = get_always_on_top_tip_text();
         gtk_label_set_label(self->keep_above_instructions, always_on_top_text);
