@@ -56,7 +56,6 @@
                   <object class="GtkFontButton" id="font_button">
                     <property name="valign">center</property>
                     <property name="use-font">True</property>
-                    <property name="use-size">True</property>
                   </object>
                 </child>
               </object>
