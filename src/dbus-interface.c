@@ -157,8 +157,8 @@ _g_value_equal (const GValue *a, const GValue *b)
  */
 
 /**
- * SECTION:DBLCapExternal
- * @title: DBLCapExternal
+ * SECTION:DBLCapNetSapplesLiveCaptionsExternal
+ * @title: DBLCapNetSapplesLiveCaptionsExternal
  * @short_description: Generated C code for the net.sapples.LiveCaptions.External D-Bus interface
  *
  * This section contains code for working with the <link linkend="gdbus-interface-net-sapples-LiveCaptions-External.top_of_page">net.sapples.LiveCaptions.External</link> D-Bus interface in C.
@@ -166,7 +166,7 @@ _g_value_equal (const GValue *a, const GValue *b)
 
 /* ---- Introspection data for net.sapples.LiveCaptions.External ---- */
 
-static const _ExtendedGDBusMethodInfo _dblcap_external_method_info_allow_keep_above =
+static const _ExtendedGDBusMethodInfo _dblcap_net_sapples_live_captions_external_method_info_allow_keep_above =
 {
   {
     -1,
@@ -179,13 +179,47 @@ static const _ExtendedGDBusMethodInfo _dblcap_external_method_info_allow_keep_ab
   FALSE
 };
 
-static const GDBusMethodInfo * const _dblcap_external_method_info_pointers[] =
+static const GDBusMethodInfo * const _dblcap_net_sapples_live_captions_external_method_info_pointers[] =
 {
-  &_dblcap_external_method_info_allow_keep_above.parent_struct,
+  &_dblcap_net_sapples_live_captions_external_method_info_allow_keep_above.parent_struct,
   NULL
 };
 
-static const _ExtendedGDBusPropertyInfo _dblcap_external_property_info_keep_above =
+static const _ExtendedGDBusArgInfo _dblcap_net_sapples_live_captions_external_signal_info_text_stream_ARG_text =
+{
+  {
+    -1,
+    (gchar *) "text",
+    (gchar *) "s",
+    NULL
+  },
+  FALSE
+};
+
+static const GDBusArgInfo * const _dblcap_net_sapples_live_captions_external_signal_info_text_stream_ARG_pointers[] =
+{
+  &_dblcap_net_sapples_live_captions_external_signal_info_text_stream_ARG_text.parent_struct,
+  NULL
+};
+
+static const _ExtendedGDBusSignalInfo _dblcap_net_sapples_live_captions_external_signal_info_text_stream =
+{
+  {
+    -1,
+    (gchar *) "TextStream",
+    (GDBusArgInfo **) &_dblcap_net_sapples_live_captions_external_signal_info_text_stream_ARG_pointers,
+    NULL
+  },
+  "text-stream"
+};
+
+static const GDBusSignalInfo * const _dblcap_net_sapples_live_captions_external_signal_info_pointers[] =
+{
+  &_dblcap_net_sapples_live_captions_external_signal_info_text_stream.parent_struct,
+  NULL
+};
+
+static const _ExtendedGDBusPropertyInfo _dblcap_net_sapples_live_captions_external_property_info_keep_above =
 {
   {
     -1,
@@ -199,95 +233,113 @@ static const _ExtendedGDBusPropertyInfo _dblcap_external_property_info_keep_abov
   TRUE
 };
 
-static const GDBusPropertyInfo * const _dblcap_external_property_info_pointers[] =
+static const _ExtendedGDBusPropertyInfo _dblcap_net_sapples_live_captions_external_property_info_text_stream_active =
 {
-  &_dblcap_external_property_info_keep_above.parent_struct,
+  {
+    -1,
+    (gchar *) "TextStreamActive",
+    (gchar *) "b",
+    G_DBUS_PROPERTY_INFO_FLAGS_READABLE,
+    NULL
+  },
+  "text-stream-active",
+  FALSE,
+  TRUE
+};
+
+static const GDBusPropertyInfo * const _dblcap_net_sapples_live_captions_external_property_info_pointers[] =
+{
+  &_dblcap_net_sapples_live_captions_external_property_info_keep_above.parent_struct,
+  &_dblcap_net_sapples_live_captions_external_property_info_text_stream_active.parent_struct,
   NULL
 };
 
-static const _ExtendedGDBusInterfaceInfo _dblcap_external_interface_info =
+static const _ExtendedGDBusInterfaceInfo _dblcap_net_sapples_live_captions_external_interface_info =
 {
   {
     -1,
     (gchar *) "net.sapples.LiveCaptions.External",
-    (GDBusMethodInfo **) &_dblcap_external_method_info_pointers,
-    NULL,
-    (GDBusPropertyInfo **) &_dblcap_external_property_info_pointers,
+    (GDBusMethodInfo **) &_dblcap_net_sapples_live_captions_external_method_info_pointers,
+    (GDBusSignalInfo **) &_dblcap_net_sapples_live_captions_external_signal_info_pointers,
+    (GDBusPropertyInfo **) &_dblcap_net_sapples_live_captions_external_property_info_pointers,
     NULL
   },
-  "external",
+  "net-sapples-live-captions-external",
 };
 
 
 /**
- * dblcap_external_interface_info:
+ * dblcap_net_sapples_live_captions_external_interface_info:
  *
  * Gets a machine-readable description of the <link linkend="gdbus-interface-net-sapples-LiveCaptions-External.top_of_page">net.sapples.LiveCaptions.External</link> D-Bus interface.
  *
  * Returns: (transfer none): A #GDBusInterfaceInfo. Do not free.
  */
 GDBusInterfaceInfo *
-dblcap_external_interface_info (void)
+dblcap_net_sapples_live_captions_external_interface_info (void)
 {
-  return (GDBusInterfaceInfo *) &_dblcap_external_interface_info.parent_struct;
+  return (GDBusInterfaceInfo *) &_dblcap_net_sapples_live_captions_external_interface_info.parent_struct;
 }
 
 /**
- * dblcap_external_override_properties:
+ * dblcap_net_sapples_live_captions_external_override_properties:
  * @klass: The class structure for a #GObject derived class.
  * @property_id_begin: The property id to assign to the first overridden property.
  *
- * Overrides all #GObject properties in the #DBLCapExternal interface for a concrete class.
+ * Overrides all #GObject properties in the #DBLCapNetSapplesLiveCaptionsExternal interface for a concrete class.
  * The properties are overridden in the order they are defined.
  *
  * Returns: The last property id.
  */
 guint
-dblcap_external_override_properties (GObjectClass *klass, guint property_id_begin)
+dblcap_net_sapples_live_captions_external_override_properties (GObjectClass *klass, guint property_id_begin)
 {
   g_object_class_override_property (klass, property_id_begin++, "keep-above");
+  g_object_class_override_property (klass, property_id_begin++, "text-stream-active");
   return property_id_begin - 1;
 }
 
 
 
 /**
- * DBLCapExternal:
+ * DBLCapNetSapplesLiveCaptionsExternal:
  *
  * Abstract interface type for the D-Bus interface <link linkend="gdbus-interface-net-sapples-LiveCaptions-External.top_of_page">net.sapples.LiveCaptions.External</link>.
  */
 
 /**
- * DBLCapExternalIface:
+ * DBLCapNetSapplesLiveCaptionsExternalIface:
  * @parent_iface: The parent interface.
- * @handle_allow_keep_above: Handler for the #DBLCapExternal::handle-allow-keep-above signal.
- * @get_keep_above: Getter for the #DBLCapExternal:keep-above property.
+ * @handle_allow_keep_above: Handler for the #DBLCapNetSapplesLiveCaptionsExternal::handle-allow-keep-above signal.
+ * @get_keep_above: Getter for the #DBLCapNetSapplesLiveCaptionsExternal:keep-above property.
+ * @get_text_stream_active: Getter for the #DBLCapNetSapplesLiveCaptionsExternal:text-stream-active property.
+ * @text_stream: Handler for the #DBLCapNetSapplesLiveCaptionsExternal::text-stream signal.
  *
  * Virtual table for the D-Bus interface <link linkend="gdbus-interface-net-sapples-LiveCaptions-External.top_of_page">net.sapples.LiveCaptions.External</link>.
  */
 
-typedef DBLCapExternalIface DBLCapExternalInterface;
-G_DEFINE_INTERFACE (DBLCapExternal, dblcap_external, G_TYPE_OBJECT)
+typedef DBLCapNetSapplesLiveCaptionsExternalIface DBLCapNetSapplesLiveCaptionsExternalInterface;
+G_DEFINE_INTERFACE (DBLCapNetSapplesLiveCaptionsExternal, dblcap_net_sapples_live_captions_external, G_TYPE_OBJECT)
 
 static void
-dblcap_external_default_init (DBLCapExternalIface *iface)
+dblcap_net_sapples_live_captions_external_default_init (DBLCapNetSapplesLiveCaptionsExternalIface *iface)
 {
   /* GObject signals for incoming D-Bus method calls: */
   /**
-   * DBLCapExternal::handle-allow-keep-above:
-   * @object: A #DBLCapExternal.
+   * DBLCapNetSapplesLiveCaptionsExternal::handle-allow-keep-above:
+   * @object: A #DBLCapNetSapplesLiveCaptionsExternal.
    * @invocation: A #GDBusMethodInvocation.
    *
    * Signal emitted when a remote caller is invoking the <link linkend="gdbus-method-net-sapples-LiveCaptions-External.AllowKeepAbove">AllowKeepAbove()</link> D-Bus method.
    *
-   * If a signal handler returns %TRUE, it means the signal handler will handle the invocation (e.g. take a reference to @invocation and eventually call dblcap_external_complete_allow_keep_above() or e.g. g_dbus_method_invocation_return_error() on it) and no other signal handlers will run. If no signal handler handles the invocation, the %G_DBUS_ERROR_UNKNOWN_METHOD error is returned.
+   * If a signal handler returns %TRUE, it means the signal handler will handle the invocation (e.g. take a reference to @invocation and eventually call dblcap_net_sapples_live_captions_external_complete_allow_keep_above() or e.g. g_dbus_method_invocation_return_error() on it) and no other signal handlers will run. If no signal handler handles the invocation, the %G_DBUS_ERROR_UNKNOWN_METHOD error is returned.
    *
    * Returns: %G_DBUS_METHOD_INVOCATION_HANDLED or %TRUE if the invocation was handled, %G_DBUS_METHOD_INVOCATION_UNHANDLED or %FALSE to let other signal handlers run.
    */
   g_signal_new ("handle-allow-keep-above",
     G_TYPE_FROM_INTERFACE (iface),
     G_SIGNAL_RUN_LAST,
-    G_STRUCT_OFFSET (DBLCapExternalIface, handle_allow_keep_above),
+    G_STRUCT_OFFSET (DBLCapNetSapplesLiveCaptionsExternalIface, handle_allow_keep_above),
     g_signal_accumulator_true_handled,
     NULL,
     g_cclosure_marshal_generic,
@@ -295,9 +347,29 @@ dblcap_external_default_init (DBLCapExternalIface *iface)
     1,
     G_TYPE_DBUS_METHOD_INVOCATION);
 
+  /* GObject signals for received D-Bus signals: */
+  /**
+   * DBLCapNetSapplesLiveCaptionsExternal::text-stream:
+   * @object: A #DBLCapNetSapplesLiveCaptionsExternal.
+   * @arg_text: Argument.
+   *
+   * On the client-side, this signal is emitted whenever the D-Bus signal <link linkend="gdbus-signal-net-sapples-LiveCaptions-External.TextStream">"TextStream"</link> is received.
+   *
+   * On the service-side, this signal can be used with e.g. g_signal_emit_by_name() to make the object emit the D-Bus signal.
+   */
+  g_signal_new ("text-stream",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (DBLCapNetSapplesLiveCaptionsExternalIface, text_stream),
+    NULL,
+    NULL,
+    g_cclosure_marshal_generic,
+    G_TYPE_NONE,
+    1, G_TYPE_STRING);
+
   /* GObject properties for D-Bus properties: */
   /**
-   * DBLCapExternal:keep-above:
+   * DBLCapNetSapplesLiveCaptionsExternal:keep-above:
    *
    * Represents the D-Bus property <link linkend="gdbus-property-net-sapples-LiveCaptions-External.KeepAbove">"KeepAbove"</link>.
    *
@@ -305,11 +377,20 @@ dblcap_external_default_init (DBLCapExternalIface *iface)
    */
   g_object_interface_install_property (iface,
     g_param_spec_boolean ("keep-above", "KeepAbove", "KeepAbove", FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  /**
+   * DBLCapNetSapplesLiveCaptionsExternal:text-stream-active:
+   *
+   * Represents the D-Bus property <link linkend="gdbus-property-net-sapples-LiveCaptions-External.TextStreamActive">"TextStreamActive"</link>.
+   *
+   * Since the D-Bus property for this #GObject property is readable but not writable, it is meaningful to read from it on both the client- and service-side. It is only meaningful, however, to write to it on the service-side.
+   */
+  g_object_interface_install_property (iface,
+    g_param_spec_boolean ("text-stream-active", "TextStreamActive", "TextStreamActive", FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 /**
- * dblcap_external_get_keep_above: (skip)
- * @object: A #DBLCapExternal.
+ * dblcap_net_sapples_live_captions_external_get_keep_above: (skip)
+ * @object: A #DBLCapNetSapplesLiveCaptionsExternal.
  *
  * Gets the value of the <link linkend="gdbus-property-net-sapples-LiveCaptions-External.KeepAbove">"KeepAbove"</link> D-Bus property.
  *
@@ -318,14 +399,14 @@ dblcap_external_default_init (DBLCapExternalIface *iface)
  * Returns: The property value.
  */
 gboolean 
-dblcap_external_get_keep_above (DBLCapExternal *object)
+dblcap_net_sapples_live_captions_external_get_keep_above (DBLCapNetSapplesLiveCaptionsExternal *object)
 {
-  return DBLCAP_EXTERNAL_GET_IFACE (object)->get_keep_above (object);
+  return DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_GET_IFACE (object)->get_keep_above (object);
 }
 
 /**
- * dblcap_external_set_keep_above: (skip)
- * @object: A #DBLCapExternal.
+ * dblcap_net_sapples_live_captions_external_set_keep_above: (skip)
+ * @object: A #DBLCapNetSapplesLiveCaptionsExternal.
  * @value: The value to set.
  *
  * Sets the <link linkend="gdbus-property-net-sapples-LiveCaptions-External.KeepAbove">"KeepAbove"</link> D-Bus property to @value.
@@ -333,27 +414,73 @@ dblcap_external_get_keep_above (DBLCapExternal *object)
  * Since this D-Bus property is not writable, it is only meaningful to use this function on the service-side.
  */
 void
-dblcap_external_set_keep_above (DBLCapExternal *object, gboolean value)
+dblcap_net_sapples_live_captions_external_set_keep_above (DBLCapNetSapplesLiveCaptionsExternal *object, gboolean value)
 {
   g_object_set (G_OBJECT (object), "keep-above", value, NULL);
 }
 
 /**
- * dblcap_external_call_allow_keep_above:
- * @proxy: A #DBLCapExternalProxy.
+ * dblcap_net_sapples_live_captions_external_get_text_stream_active: (skip)
+ * @object: A #DBLCapNetSapplesLiveCaptionsExternal.
+ *
+ * Gets the value of the <link linkend="gdbus-property-net-sapples-LiveCaptions-External.TextStreamActive">"TextStreamActive"</link> D-Bus property.
+ *
+ * Since this D-Bus property is readable, it is meaningful to use this function on both the client- and service-side.
+ *
+ * Returns: The property value.
+ */
+gboolean 
+dblcap_net_sapples_live_captions_external_get_text_stream_active (DBLCapNetSapplesLiveCaptionsExternal *object)
+{
+  return DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_GET_IFACE (object)->get_text_stream_active (object);
+}
+
+/**
+ * dblcap_net_sapples_live_captions_external_set_text_stream_active: (skip)
+ * @object: A #DBLCapNetSapplesLiveCaptionsExternal.
+ * @value: The value to set.
+ *
+ * Sets the <link linkend="gdbus-property-net-sapples-LiveCaptions-External.TextStreamActive">"TextStreamActive"</link> D-Bus property to @value.
+ *
+ * Since this D-Bus property is not writable, it is only meaningful to use this function on the service-side.
+ */
+void
+dblcap_net_sapples_live_captions_external_set_text_stream_active (DBLCapNetSapplesLiveCaptionsExternal *object, gboolean value)
+{
+  g_object_set (G_OBJECT (object), "text-stream-active", value, NULL);
+}
+
+/**
+ * dblcap_net_sapples_live_captions_external_emit_text_stream:
+ * @object: A #DBLCapNetSapplesLiveCaptionsExternal.
+ * @arg_text: Argument to pass with the signal.
+ *
+ * Emits the <link linkend="gdbus-signal-net-sapples-LiveCaptions-External.TextStream">"TextStream"</link> D-Bus signal.
+ */
+void
+dblcap_net_sapples_live_captions_external_emit_text_stream (
+    DBLCapNetSapplesLiveCaptionsExternal *object,
+    const gchar *arg_text)
+{
+  g_signal_emit_by_name (object, "text-stream", arg_text);
+}
+
+/**
+ * dblcap_net_sapples_live_captions_external_call_allow_keep_above:
+ * @proxy: A #DBLCapNetSapplesLiveCaptionsExternalProxy.
  * @cancellable: (nullable): A #GCancellable or %NULL.
  * @callback: A #GAsyncReadyCallback to call when the request is satisfied or %NULL.
  * @user_data: User data to pass to @callback.
  *
  * Asynchronously invokes the <link linkend="gdbus-method-net-sapples-LiveCaptions-External.AllowKeepAbove">AllowKeepAbove()</link> D-Bus method on @proxy.
  * When the operation is finished, @callback will be invoked in the thread-default main loop of the thread you are calling this method from (see g_main_context_push_thread_default()).
- * You can then call dblcap_external_call_allow_keep_above_finish() to get the result of the operation.
+ * You can then call dblcap_net_sapples_live_captions_external_call_allow_keep_above_finish() to get the result of the operation.
  *
- * See dblcap_external_call_allow_keep_above_sync() for the synchronous, blocking version of this method.
+ * See dblcap_net_sapples_live_captions_external_call_allow_keep_above_sync() for the synchronous, blocking version of this method.
  */
 void
-dblcap_external_call_allow_keep_above (
-    DBLCapExternal *proxy,
+dblcap_net_sapples_live_captions_external_call_allow_keep_above (
+    DBLCapNetSapplesLiveCaptionsExternal *proxy,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data)
@@ -369,18 +496,18 @@ dblcap_external_call_allow_keep_above (
 }
 
 /**
- * dblcap_external_call_allow_keep_above_finish:
- * @proxy: A #DBLCapExternalProxy.
- * @res: The #GAsyncResult obtained from the #GAsyncReadyCallback passed to dblcap_external_call_allow_keep_above().
+ * dblcap_net_sapples_live_captions_external_call_allow_keep_above_finish:
+ * @proxy: A #DBLCapNetSapplesLiveCaptionsExternalProxy.
+ * @res: The #GAsyncResult obtained from the #GAsyncReadyCallback passed to dblcap_net_sapples_live_captions_external_call_allow_keep_above().
  * @error: Return location for error or %NULL.
  *
- * Finishes an operation started with dblcap_external_call_allow_keep_above().
+ * Finishes an operation started with dblcap_net_sapples_live_captions_external_call_allow_keep_above().
  *
  * Returns: (skip): %TRUE if the call succeeded, %FALSE if @error is set.
  */
 gboolean
-dblcap_external_call_allow_keep_above_finish (
-    DBLCapExternal *proxy,
+dblcap_net_sapples_live_captions_external_call_allow_keep_above_finish (
+    DBLCapNetSapplesLiveCaptionsExternal *proxy,
     GAsyncResult *res,
     GError **error)
 {
@@ -396,20 +523,20 @@ _out:
 }
 
 /**
- * dblcap_external_call_allow_keep_above_sync:
- * @proxy: A #DBLCapExternalProxy.
+ * dblcap_net_sapples_live_captions_external_call_allow_keep_above_sync:
+ * @proxy: A #DBLCapNetSapplesLiveCaptionsExternalProxy.
  * @cancellable: (nullable): A #GCancellable or %NULL.
  * @error: Return location for error or %NULL.
  *
  * Synchronously invokes the <link linkend="gdbus-method-net-sapples-LiveCaptions-External.AllowKeepAbove">AllowKeepAbove()</link> D-Bus method on @proxy. The calling thread is blocked until a reply is received.
  *
- * See dblcap_external_call_allow_keep_above() for the asynchronous version of this method.
+ * See dblcap_net_sapples_live_captions_external_call_allow_keep_above() for the asynchronous version of this method.
  *
  * Returns: (skip): %TRUE if the call succeeded, %FALSE if @error is set.
  */
 gboolean
-dblcap_external_call_allow_keep_above_sync (
-    DBLCapExternal *proxy,
+dblcap_net_sapples_live_captions_external_call_allow_keep_above_sync (
+    DBLCapNetSapplesLiveCaptionsExternal *proxy,
     GCancellable *cancellable,
     GError **error)
 {
@@ -431,8 +558,8 @@ _out:
 }
 
 /**
- * dblcap_external_complete_allow_keep_above:
- * @object: A #DBLCapExternal.
+ * dblcap_net_sapples_live_captions_external_complete_allow_keep_above:
+ * @object: A #DBLCapNetSapplesLiveCaptionsExternal.
  * @invocation: (transfer full): A #GDBusMethodInvocation.
  *
  * Helper function used in service implementations to finish handling invocations of the <link linkend="gdbus-method-net-sapples-LiveCaptions-External.AllowKeepAbove">AllowKeepAbove()</link> D-Bus method. If you instead want to finish handling an invocation by returning an error, use g_dbus_method_invocation_return_error() or similar.
@@ -440,8 +567,8 @@ _out:
  * This method will free @invocation, you cannot use it afterwards.
  */
 void
-dblcap_external_complete_allow_keep_above (
-    DBLCapExternal *object G_GNUC_UNUSED,
+dblcap_net_sapples_live_captions_external_complete_allow_keep_above (
+    DBLCapNetSapplesLiveCaptionsExternal *object G_GNUC_UNUSED,
     GDBusMethodInvocation *invocation)
 {
   g_dbus_method_invocation_return_value (invocation,
@@ -451,53 +578,53 @@ dblcap_external_complete_allow_keep_above (
 /* ------------------------------------------------------------------------ */
 
 /**
- * DBLCapExternalProxy:
+ * DBLCapNetSapplesLiveCaptionsExternalProxy:
  *
- * The #DBLCapExternalProxy structure contains only private data and should only be accessed using the provided API.
+ * The #DBLCapNetSapplesLiveCaptionsExternalProxy structure contains only private data and should only be accessed using the provided API.
  */
 
 /**
- * DBLCapExternalProxyClass:
+ * DBLCapNetSapplesLiveCaptionsExternalProxyClass:
  * @parent_class: The parent class.
  *
- * Class structure for #DBLCapExternalProxy.
+ * Class structure for #DBLCapNetSapplesLiveCaptionsExternalProxy.
  */
 
-struct _DBLCapExternalProxyPrivate
+struct _DBLCapNetSapplesLiveCaptionsExternalProxyPrivate
 {
   GData *qdata;
 };
 
-static void dblcap_external_proxy_iface_init (DBLCapExternalIface *iface);
+static void dblcap_net_sapples_live_captions_external_proxy_iface_init (DBLCapNetSapplesLiveCaptionsExternalIface *iface);
 
 #if GLIB_VERSION_MAX_ALLOWED >= GLIB_VERSION_2_38
-G_DEFINE_TYPE_WITH_CODE (DBLCapExternalProxy, dblcap_external_proxy, G_TYPE_DBUS_PROXY,
-                         G_ADD_PRIVATE (DBLCapExternalProxy)
-                         G_IMPLEMENT_INTERFACE (DBLCAP_TYPE_EXTERNAL, dblcap_external_proxy_iface_init))
+G_DEFINE_TYPE_WITH_CODE (DBLCapNetSapplesLiveCaptionsExternalProxy, dblcap_net_sapples_live_captions_external_proxy, G_TYPE_DBUS_PROXY,
+                         G_ADD_PRIVATE (DBLCapNetSapplesLiveCaptionsExternalProxy)
+                         G_IMPLEMENT_INTERFACE (DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL, dblcap_net_sapples_live_captions_external_proxy_iface_init))
 
 #else
-G_DEFINE_TYPE_WITH_CODE (DBLCapExternalProxy, dblcap_external_proxy, G_TYPE_DBUS_PROXY,
-                         G_IMPLEMENT_INTERFACE (DBLCAP_TYPE_EXTERNAL, dblcap_external_proxy_iface_init))
+G_DEFINE_TYPE_WITH_CODE (DBLCapNetSapplesLiveCaptionsExternalProxy, dblcap_net_sapples_live_captions_external_proxy, G_TYPE_DBUS_PROXY,
+                         G_IMPLEMENT_INTERFACE (DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL, dblcap_net_sapples_live_captions_external_proxy_iface_init))
 
 #endif
 static void
-dblcap_external_proxy_finalize (GObject *object)
+dblcap_net_sapples_live_captions_external_proxy_finalize (GObject *object)
 {
-  DBLCapExternalProxy *proxy = DBLCAP_EXTERNAL_PROXY (object);
+  DBLCapNetSapplesLiveCaptionsExternalProxy *proxy = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY (object);
   g_datalist_clear (&proxy->priv->qdata);
-  G_OBJECT_CLASS (dblcap_external_proxy_parent_class)->finalize (object);
+  G_OBJECT_CLASS (dblcap_net_sapples_live_captions_external_proxy_parent_class)->finalize (object);
 }
 
 static void
-dblcap_external_proxy_get_property (GObject      *object,
+dblcap_net_sapples_live_captions_external_proxy_get_property (GObject      *object,
   guint         prop_id,
   GValue       *value,
   GParamSpec   *pspec G_GNUC_UNUSED)
 {
   const _ExtendedGDBusPropertyInfo *info;
   GVariant *variant;
-  g_assert (prop_id != 0 && prop_id - 1 < 1);
-  info = (const _ExtendedGDBusPropertyInfo *) _dblcap_external_property_info_pointers[prop_id - 1];
+  g_assert (prop_id != 0 && prop_id - 1 < 2);
+  info = (const _ExtendedGDBusPropertyInfo *) _dblcap_net_sapples_live_captions_external_property_info_pointers[prop_id - 1];
   variant = g_dbus_proxy_get_cached_property (G_DBUS_PROXY (object), info->parent_struct.name);
   if (info->use_gvariant)
     {
@@ -513,7 +640,7 @@ dblcap_external_proxy_get_property (GObject      *object,
 }
 
 static void
-dblcap_external_proxy_set_property_cb (GDBusProxy *proxy,
+dblcap_net_sapples_live_captions_external_proxy_set_property_cb (GDBusProxy *proxy,
   GAsyncResult *res,
   gpointer      user_data)
 {
@@ -536,27 +663,27 @@ dblcap_external_proxy_set_property_cb (GDBusProxy *proxy,
 }
 
 static void
-dblcap_external_proxy_set_property (GObject      *object,
+dblcap_net_sapples_live_captions_external_proxy_set_property (GObject      *object,
   guint         prop_id,
   const GValue *value,
   GParamSpec   *pspec G_GNUC_UNUSED)
 {
   const _ExtendedGDBusPropertyInfo *info;
   GVariant *variant;
-  g_assert (prop_id != 0 && prop_id - 1 < 1);
-  info = (const _ExtendedGDBusPropertyInfo *) _dblcap_external_property_info_pointers[prop_id - 1];
+  g_assert (prop_id != 0 && prop_id - 1 < 2);
+  info = (const _ExtendedGDBusPropertyInfo *) _dblcap_net_sapples_live_captions_external_property_info_pointers[prop_id - 1];
   variant = g_dbus_gvalue_to_gvariant (value, G_VARIANT_TYPE (info->parent_struct.signature));
   g_dbus_proxy_call (G_DBUS_PROXY (object),
     "org.freedesktop.DBus.Properties.Set",
     g_variant_new ("(ssv)", "net.sapples.LiveCaptions.External", info->parent_struct.name, variant),
     G_DBUS_CALL_FLAGS_NONE,
     -1,
-    NULL, (GAsyncReadyCallback) dblcap_external_proxy_set_property_cb, (GDBusPropertyInfo *) &info->parent_struct);
+    NULL, (GAsyncReadyCallback) dblcap_net_sapples_live_captions_external_proxy_set_property_cb, (GDBusPropertyInfo *) &info->parent_struct);
   g_variant_unref (variant);
 }
 
 static void
-dblcap_external_proxy_g_signal (GDBusProxy *proxy,
+dblcap_net_sapples_live_captions_external_proxy_g_signal (GDBusProxy *proxy,
   const gchar *sender_name G_GNUC_UNUSED,
   const gchar *signal_name,
   GVariant *parameters)
@@ -568,12 +695,12 @@ dblcap_external_proxy_g_signal (GDBusProxy *proxy,
   gsize num_params;
   gsize n;
   guint signal_id;
-  info = (_ExtendedGDBusSignalInfo *) g_dbus_interface_info_lookup_signal ((GDBusInterfaceInfo *) &_dblcap_external_interface_info.parent_struct, signal_name);
+  info = (_ExtendedGDBusSignalInfo *) g_dbus_interface_info_lookup_signal ((GDBusInterfaceInfo *) &_dblcap_net_sapples_live_captions_external_interface_info.parent_struct, signal_name);
   if (info == NULL)
     return;
   num_params = g_variant_n_children (parameters);
   paramv = g_new0 (GValue, num_params + 1);
-  g_value_init (&paramv[0], DBLCAP_TYPE_EXTERNAL);
+  g_value_init (&paramv[0], DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL);
   g_value_set_object (&paramv[0], proxy);
   g_variant_iter_init (&iter, parameters);
   n = 1;
@@ -590,7 +717,7 @@ dblcap_external_proxy_g_signal (GDBusProxy *proxy,
         g_dbus_gvariant_to_gvalue (child, &paramv[n++]);
       g_variant_unref (child);
     }
-  signal_id = g_signal_lookup (info->signal_name, DBLCAP_TYPE_EXTERNAL);
+  signal_id = g_signal_lookup (info->signal_name, DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL);
   g_signal_emitv (paramv, signal_id, 0, NULL);
   for (n = 0; n < num_params + 1; n++)
     g_value_unset (&paramv[n]);
@@ -598,11 +725,11 @@ dblcap_external_proxy_g_signal (GDBusProxy *proxy,
 }
 
 static void
-dblcap_external_proxy_g_properties_changed (GDBusProxy *_proxy,
+dblcap_net_sapples_live_captions_external_proxy_g_properties_changed (GDBusProxy *_proxy,
   GVariant *changed_properties,
   const gchar *const *invalidated_properties)
 {
-  DBLCapExternalProxy *proxy = DBLCAP_EXTERNAL_PROXY (_proxy);
+  DBLCapNetSapplesLiveCaptionsExternalProxy *proxy = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY (_proxy);
   guint n;
   const gchar *key;
   GVariantIter *iter;
@@ -610,7 +737,7 @@ dblcap_external_proxy_g_properties_changed (GDBusProxy *_proxy,
   g_variant_get (changed_properties, "a{sv}", &iter);
   while (g_variant_iter_next (iter, "{&sv}", &key, NULL))
     {
-      info = (_ExtendedGDBusPropertyInfo *) g_dbus_interface_info_lookup_property ((GDBusInterfaceInfo *) &_dblcap_external_interface_info.parent_struct, key);
+      info = (_ExtendedGDBusPropertyInfo *) g_dbus_interface_info_lookup_property ((GDBusInterfaceInfo *) &_dblcap_net_sapples_live_captions_external_interface_info.parent_struct, key);
       g_datalist_remove_data (&proxy->priv->qdata, key);
       if (info != NULL)
         g_object_notify (G_OBJECT (proxy), info->hyphen_name);
@@ -618,7 +745,7 @@ dblcap_external_proxy_g_properties_changed (GDBusProxy *_proxy,
   g_variant_iter_free (iter);
   for (n = 0; invalidated_properties[n] != NULL; n++)
     {
-      info = (_ExtendedGDBusPropertyInfo *) g_dbus_interface_info_lookup_property ((GDBusInterfaceInfo *) &_dblcap_external_interface_info.parent_struct, invalidated_properties[n]);
+      info = (_ExtendedGDBusPropertyInfo *) g_dbus_interface_info_lookup_property ((GDBusInterfaceInfo *) &_dblcap_net_sapples_live_captions_external_interface_info.parent_struct, invalidated_properties[n]);
       g_datalist_remove_data (&proxy->priv->qdata, invalidated_properties[n]);
       if (info != NULL)
         g_object_notify (G_OBJECT (proxy), info->hyphen_name);
@@ -626,9 +753,9 @@ dblcap_external_proxy_g_properties_changed (GDBusProxy *_proxy,
 }
 
 static gboolean 
-dblcap_external_proxy_get_keep_above (DBLCapExternal *object)
+dblcap_net_sapples_live_captions_external_proxy_get_keep_above (DBLCapNetSapplesLiveCaptionsExternal *object)
 {
-  DBLCapExternalProxy *proxy = DBLCAP_EXTERNAL_PROXY (object);
+  DBLCapNetSapplesLiveCaptionsExternalProxy *proxy = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY (object);
   GVariant *variant;
   gboolean value = 0;
   variant = g_dbus_proxy_get_cached_property (G_DBUS_PROXY (proxy), "KeepAbove");
@@ -640,48 +767,64 @@ dblcap_external_proxy_get_keep_above (DBLCapExternal *object)
   return value;
 }
 
-static void
-dblcap_external_proxy_init (DBLCapExternalProxy *proxy)
+static gboolean 
+dblcap_net_sapples_live_captions_external_proxy_get_text_stream_active (DBLCapNetSapplesLiveCaptionsExternal *object)
 {
-#if GLIB_VERSION_MAX_ALLOWED >= GLIB_VERSION_2_38
-  proxy->priv = dblcap_external_proxy_get_instance_private (proxy);
-#else
-  proxy->priv = G_TYPE_INSTANCE_GET_PRIVATE (proxy, DBLCAP_TYPE_EXTERNAL_PROXY, DBLCapExternalProxyPrivate);
-#endif
-
-  g_dbus_proxy_set_interface_info (G_DBUS_PROXY (proxy), dblcap_external_interface_info ());
+  DBLCapNetSapplesLiveCaptionsExternalProxy *proxy = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY (object);
+  GVariant *variant;
+  gboolean value = 0;
+  variant = g_dbus_proxy_get_cached_property (G_DBUS_PROXY (proxy), "TextStreamActive");
+  if (variant != NULL)
+    {
+      value = g_variant_get_boolean (variant);
+      g_variant_unref (variant);
+    }
+  return value;
 }
 
 static void
-dblcap_external_proxy_class_init (DBLCapExternalProxyClass *klass)
+dblcap_net_sapples_live_captions_external_proxy_init (DBLCapNetSapplesLiveCaptionsExternalProxy *proxy)
+{
+#if GLIB_VERSION_MAX_ALLOWED >= GLIB_VERSION_2_38
+  proxy->priv = dblcap_net_sapples_live_captions_external_proxy_get_instance_private (proxy);
+#else
+  proxy->priv = G_TYPE_INSTANCE_GET_PRIVATE (proxy, DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY, DBLCapNetSapplesLiveCaptionsExternalProxyPrivate);
+#endif
+
+  g_dbus_proxy_set_interface_info (G_DBUS_PROXY (proxy), dblcap_net_sapples_live_captions_external_interface_info ());
+}
+
+static void
+dblcap_net_sapples_live_captions_external_proxy_class_init (DBLCapNetSapplesLiveCaptionsExternalProxyClass *klass)
 {
   GObjectClass *gobject_class;
   GDBusProxyClass *proxy_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
-  gobject_class->finalize     = dblcap_external_proxy_finalize;
-  gobject_class->get_property = dblcap_external_proxy_get_property;
-  gobject_class->set_property = dblcap_external_proxy_set_property;
+  gobject_class->finalize     = dblcap_net_sapples_live_captions_external_proxy_finalize;
+  gobject_class->get_property = dblcap_net_sapples_live_captions_external_proxy_get_property;
+  gobject_class->set_property = dblcap_net_sapples_live_captions_external_proxy_set_property;
 
   proxy_class = G_DBUS_PROXY_CLASS (klass);
-  proxy_class->g_signal = dblcap_external_proxy_g_signal;
-  proxy_class->g_properties_changed = dblcap_external_proxy_g_properties_changed;
+  proxy_class->g_signal = dblcap_net_sapples_live_captions_external_proxy_g_signal;
+  proxy_class->g_properties_changed = dblcap_net_sapples_live_captions_external_proxy_g_properties_changed;
 
-  dblcap_external_override_properties (gobject_class, 1);
+  dblcap_net_sapples_live_captions_external_override_properties (gobject_class, 1);
 
 #if GLIB_VERSION_MAX_ALLOWED < GLIB_VERSION_2_38
-  g_type_class_add_private (klass, sizeof (DBLCapExternalProxyPrivate));
+  g_type_class_add_private (klass, sizeof (DBLCapNetSapplesLiveCaptionsExternalProxyPrivate));
 #endif
 }
 
 static void
-dblcap_external_proxy_iface_init (DBLCapExternalIface *iface)
+dblcap_net_sapples_live_captions_external_proxy_iface_init (DBLCapNetSapplesLiveCaptionsExternalIface *iface)
 {
-  iface->get_keep_above = dblcap_external_proxy_get_keep_above;
+  iface->get_keep_above = dblcap_net_sapples_live_captions_external_proxy_get_keep_above;
+  iface->get_text_stream_active = dblcap_net_sapples_live_captions_external_proxy_get_text_stream_active;
 }
 
 /**
- * dblcap_external_proxy_new:
+ * dblcap_net_sapples_live_captions_external_proxy_new:
  * @connection: A #GDBusConnection.
  * @flags: Flags from the #GDBusProxyFlags enumeration.
  * @name: (nullable): A bus name (well-known or unique) or %NULL if @connection is not a message bus connection.
@@ -693,12 +836,12 @@ dblcap_external_proxy_iface_init (DBLCapExternalIface *iface)
  * Asynchronously creates a proxy for the D-Bus interface <link linkend="gdbus-interface-net-sapples-LiveCaptions-External.top_of_page">net.sapples.LiveCaptions.External</link>. See g_dbus_proxy_new() for more details.
  *
  * When the operation is finished, @callback will be invoked in the thread-default main loop of the thread you are calling this method from (see g_main_context_push_thread_default()).
- * You can then call dblcap_external_proxy_new_finish() to get the result of the operation.
+ * You can then call dblcap_net_sapples_live_captions_external_proxy_new_finish() to get the result of the operation.
  *
- * See dblcap_external_proxy_new_sync() for the synchronous, blocking version of this constructor.
+ * See dblcap_net_sapples_live_captions_external_proxy_new_sync() for the synchronous, blocking version of this constructor.
  */
 void
-dblcap_external_proxy_new (
+dblcap_net_sapples_live_captions_external_proxy_new (
     GDBusConnection     *connection,
     GDBusProxyFlags      flags,
     const gchar         *name,
@@ -707,20 +850,20 @@ dblcap_external_proxy_new (
     GAsyncReadyCallback  callback,
     gpointer             user_data)
 {
-  g_async_initable_new_async (DBLCAP_TYPE_EXTERNAL_PROXY, G_PRIORITY_DEFAULT, cancellable, callback, user_data, "g-flags", flags, "g-name", name, "g-connection", connection, "g-object-path", object_path, "g-interface-name", "net.sapples.LiveCaptions.External", NULL);
+  g_async_initable_new_async (DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY, G_PRIORITY_DEFAULT, cancellable, callback, user_data, "g-flags", flags, "g-name", name, "g-connection", connection, "g-object-path", object_path, "g-interface-name", "net.sapples.LiveCaptions.External", NULL);
 }
 
 /**
- * dblcap_external_proxy_new_finish:
- * @res: The #GAsyncResult obtained from the #GAsyncReadyCallback passed to dblcap_external_proxy_new().
+ * dblcap_net_sapples_live_captions_external_proxy_new_finish:
+ * @res: The #GAsyncResult obtained from the #GAsyncReadyCallback passed to dblcap_net_sapples_live_captions_external_proxy_new().
  * @error: Return location for error or %NULL
  *
- * Finishes an operation started with dblcap_external_proxy_new().
+ * Finishes an operation started with dblcap_net_sapples_live_captions_external_proxy_new().
  *
- * Returns: (transfer full) (type DBLCapExternalProxy): The constructed proxy object or %NULL if @error is set.
+ * Returns: (transfer full) (type DBLCapNetSapplesLiveCaptionsExternalProxy): The constructed proxy object or %NULL if @error is set.
  */
-DBLCapExternal *
-dblcap_external_proxy_new_finish (
+DBLCapNetSapplesLiveCaptionsExternal *
+dblcap_net_sapples_live_captions_external_proxy_new_finish (
     GAsyncResult        *res,
     GError             **error)
 {
@@ -730,13 +873,13 @@ dblcap_external_proxy_new_finish (
   ret = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object), res, error);
   g_object_unref (source_object);
   if (ret != NULL)
-    return DBLCAP_EXTERNAL (ret);
+    return DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL (ret);
   else
     return NULL;
 }
 
 /**
- * dblcap_external_proxy_new_sync:
+ * dblcap_net_sapples_live_captions_external_proxy_new_sync:
  * @connection: A #GDBusConnection.
  * @flags: Flags from the #GDBusProxyFlags enumeration.
  * @name: (nullable): A bus name (well-known or unique) or %NULL if @connection is not a message bus connection.
@@ -748,12 +891,12 @@ dblcap_external_proxy_new_finish (
  *
  * The calling thread is blocked until a reply is received.
  *
- * See dblcap_external_proxy_new() for the asynchronous version of this constructor.
+ * See dblcap_net_sapples_live_captions_external_proxy_new() for the asynchronous version of this constructor.
  *
- * Returns: (transfer full) (type DBLCapExternalProxy): The constructed proxy object or %NULL if @error is set.
+ * Returns: (transfer full) (type DBLCapNetSapplesLiveCaptionsExternalProxy): The constructed proxy object or %NULL if @error is set.
  */
-DBLCapExternal *
-dblcap_external_proxy_new_sync (
+DBLCapNetSapplesLiveCaptionsExternal *
+dblcap_net_sapples_live_captions_external_proxy_new_sync (
     GDBusConnection     *connection,
     GDBusProxyFlags      flags,
     const gchar         *name,
@@ -762,16 +905,16 @@ dblcap_external_proxy_new_sync (
     GError             **error)
 {
   GInitable *ret;
-  ret = g_initable_new (DBLCAP_TYPE_EXTERNAL_PROXY, cancellable, error, "g-flags", flags, "g-name", name, "g-connection", connection, "g-object-path", object_path, "g-interface-name", "net.sapples.LiveCaptions.External", NULL);
+  ret = g_initable_new (DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY, cancellable, error, "g-flags", flags, "g-name", name, "g-connection", connection, "g-object-path", object_path, "g-interface-name", "net.sapples.LiveCaptions.External", NULL);
   if (ret != NULL)
-    return DBLCAP_EXTERNAL (ret);
+    return DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL (ret);
   else
     return NULL;
 }
 
 
 /**
- * dblcap_external_proxy_new_for_bus:
+ * dblcap_net_sapples_live_captions_external_proxy_new_for_bus:
  * @bus_type: A #GBusType.
  * @flags: Flags from the #GDBusProxyFlags enumeration.
  * @name: A bus name (well-known or unique).
@@ -780,15 +923,15 @@ dblcap_external_proxy_new_sync (
  * @callback: A #GAsyncReadyCallback to call when the request is satisfied.
  * @user_data: User data to pass to @callback.
  *
- * Like dblcap_external_proxy_new() but takes a #GBusType instead of a #GDBusConnection.
+ * Like dblcap_net_sapples_live_captions_external_proxy_new() but takes a #GBusType instead of a #GDBusConnection.
  *
  * When the operation is finished, @callback will be invoked in the thread-default main loop of the thread you are calling this method from (see g_main_context_push_thread_default()).
- * You can then call dblcap_external_proxy_new_for_bus_finish() to get the result of the operation.
+ * You can then call dblcap_net_sapples_live_captions_external_proxy_new_for_bus_finish() to get the result of the operation.
  *
- * See dblcap_external_proxy_new_for_bus_sync() for the synchronous, blocking version of this constructor.
+ * See dblcap_net_sapples_live_captions_external_proxy_new_for_bus_sync() for the synchronous, blocking version of this constructor.
  */
 void
-dblcap_external_proxy_new_for_bus (
+dblcap_net_sapples_live_captions_external_proxy_new_for_bus (
     GBusType             bus_type,
     GDBusProxyFlags      flags,
     const gchar         *name,
@@ -797,20 +940,20 @@ dblcap_external_proxy_new_for_bus (
     GAsyncReadyCallback  callback,
     gpointer             user_data)
 {
-  g_async_initable_new_async (DBLCAP_TYPE_EXTERNAL_PROXY, G_PRIORITY_DEFAULT, cancellable, callback, user_data, "g-flags", flags, "g-name", name, "g-bus-type", bus_type, "g-object-path", object_path, "g-interface-name", "net.sapples.LiveCaptions.External", NULL);
+  g_async_initable_new_async (DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY, G_PRIORITY_DEFAULT, cancellable, callback, user_data, "g-flags", flags, "g-name", name, "g-bus-type", bus_type, "g-object-path", object_path, "g-interface-name", "net.sapples.LiveCaptions.External", NULL);
 }
 
 /**
- * dblcap_external_proxy_new_for_bus_finish:
- * @res: The #GAsyncResult obtained from the #GAsyncReadyCallback passed to dblcap_external_proxy_new_for_bus().
+ * dblcap_net_sapples_live_captions_external_proxy_new_for_bus_finish:
+ * @res: The #GAsyncResult obtained from the #GAsyncReadyCallback passed to dblcap_net_sapples_live_captions_external_proxy_new_for_bus().
  * @error: Return location for error or %NULL
  *
- * Finishes an operation started with dblcap_external_proxy_new_for_bus().
+ * Finishes an operation started with dblcap_net_sapples_live_captions_external_proxy_new_for_bus().
  *
- * Returns: (transfer full) (type DBLCapExternalProxy): The constructed proxy object or %NULL if @error is set.
+ * Returns: (transfer full) (type DBLCapNetSapplesLiveCaptionsExternalProxy): The constructed proxy object or %NULL if @error is set.
  */
-DBLCapExternal *
-dblcap_external_proxy_new_for_bus_finish (
+DBLCapNetSapplesLiveCaptionsExternal *
+dblcap_net_sapples_live_captions_external_proxy_new_for_bus_finish (
     GAsyncResult        *res,
     GError             **error)
 {
@@ -820,13 +963,13 @@ dblcap_external_proxy_new_for_bus_finish (
   ret = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object), res, error);
   g_object_unref (source_object);
   if (ret != NULL)
-    return DBLCAP_EXTERNAL (ret);
+    return DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL (ret);
   else
     return NULL;
 }
 
 /**
- * dblcap_external_proxy_new_for_bus_sync:
+ * dblcap_net_sapples_live_captions_external_proxy_new_for_bus_sync:
  * @bus_type: A #GBusType.
  * @flags: Flags from the #GDBusProxyFlags enumeration.
  * @name: A bus name (well-known or unique).
@@ -834,16 +977,16 @@ dblcap_external_proxy_new_for_bus_finish (
  * @cancellable: (nullable): A #GCancellable or %NULL.
  * @error: Return location for error or %NULL
  *
- * Like dblcap_external_proxy_new_sync() but takes a #GBusType instead of a #GDBusConnection.
+ * Like dblcap_net_sapples_live_captions_external_proxy_new_sync() but takes a #GBusType instead of a #GDBusConnection.
  *
  * The calling thread is blocked until a reply is received.
  *
- * See dblcap_external_proxy_new_for_bus() for the asynchronous version of this constructor.
+ * See dblcap_net_sapples_live_captions_external_proxy_new_for_bus() for the asynchronous version of this constructor.
  *
- * Returns: (transfer full) (type DBLCapExternalProxy): The constructed proxy object or %NULL if @error is set.
+ * Returns: (transfer full) (type DBLCapNetSapplesLiveCaptionsExternalProxy): The constructed proxy object or %NULL if @error is set.
  */
-DBLCapExternal *
-dblcap_external_proxy_new_for_bus_sync (
+DBLCapNetSapplesLiveCaptionsExternal *
+dblcap_net_sapples_live_captions_external_proxy_new_for_bus_sync (
     GBusType             bus_type,
     GDBusProxyFlags      flags,
     const gchar         *name,
@@ -852,9 +995,9 @@ dblcap_external_proxy_new_for_bus_sync (
     GError             **error)
 {
   GInitable *ret;
-  ret = g_initable_new (DBLCAP_TYPE_EXTERNAL_PROXY, cancellable, error, "g-flags", flags, "g-name", name, "g-bus-type", bus_type, "g-object-path", object_path, "g-interface-name", "net.sapples.LiveCaptions.External", NULL);
+  ret = g_initable_new (DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY, cancellable, error, "g-flags", flags, "g-name", name, "g-bus-type", bus_type, "g-object-path", object_path, "g-interface-name", "net.sapples.LiveCaptions.External", NULL);
   if (ret != NULL)
-    return DBLCAP_EXTERNAL (ret);
+    return DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL (ret);
   else
     return NULL;
 }
@@ -863,19 +1006,19 @@ dblcap_external_proxy_new_for_bus_sync (
 /* ------------------------------------------------------------------------ */
 
 /**
- * DBLCapExternalSkeleton:
+ * DBLCapNetSapplesLiveCaptionsExternalSkeleton:
  *
- * The #DBLCapExternalSkeleton structure contains only private data and should only be accessed using the provided API.
+ * The #DBLCapNetSapplesLiveCaptionsExternalSkeleton structure contains only private data and should only be accessed using the provided API.
  */
 
 /**
- * DBLCapExternalSkeletonClass:
+ * DBLCapNetSapplesLiveCaptionsExternalSkeletonClass:
  * @parent_class: The parent class.
  *
- * Class structure for #DBLCapExternalSkeleton.
+ * Class structure for #DBLCapNetSapplesLiveCaptionsExternalSkeleton.
  */
 
-struct _DBLCapExternalSkeletonPrivate
+struct _DBLCapNetSapplesLiveCaptionsExternalSkeletonPrivate
 {
   GValue *properties;
   GList *changed_properties;
@@ -885,7 +1028,7 @@ struct _DBLCapExternalSkeletonPrivate
 };
 
 static void
-_dblcap_external_skeleton_handle_method_call (
+_dblcap_net_sapples_live_captions_external_skeleton_handle_method_call (
   GDBusConnection *connection G_GNUC_UNUSED,
   const gchar *sender G_GNUC_UNUSED,
   const gchar *object_path G_GNUC_UNUSED,
@@ -895,7 +1038,7 @@ _dblcap_external_skeleton_handle_method_call (
   GDBusMethodInvocation *invocation,
   gpointer user_data)
 {
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (user_data);
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (user_data);
   _ExtendedGDBusMethodInfo *info;
   GVariantIter iter;
   GVariant *child;
@@ -910,7 +1053,7 @@ _dblcap_external_skeleton_handle_method_call (
   num_params = g_variant_n_children (parameters);
   num_extra = info->pass_fdlist ? 3 : 2;  paramv = g_new0 (GValue, num_params + num_extra);
   n = 0;
-  g_value_init (&paramv[n], DBLCAP_TYPE_EXTERNAL);
+  g_value_init (&paramv[n], DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL);
   g_value_set_object (&paramv[n++], skeleton);
   g_value_init (&paramv[n], G_TYPE_DBUS_METHOD_INVOCATION);
   g_value_set_object (&paramv[n++], invocation);
@@ -937,7 +1080,7 @@ _dblcap_external_skeleton_handle_method_call (
         g_dbus_gvariant_to_gvalue (child, &paramv[n++]);
       g_variant_unref (child);
     }
-  signal_id = g_signal_lookup (info->signal_name, DBLCAP_TYPE_EXTERNAL);
+  signal_id = g_signal_lookup (info->signal_name, DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL);
   g_value_init (&return_value, G_TYPE_BOOLEAN);
   g_signal_emitv (paramv, signal_id, 0, &return_value);
   if (!g_value_get_boolean (&return_value))
@@ -949,7 +1092,7 @@ _dblcap_external_skeleton_handle_method_call (
 }
 
 static GVariant *
-_dblcap_external_skeleton_handle_get_property (
+_dblcap_net_sapples_live_captions_external_skeleton_handle_get_property (
   GDBusConnection *connection G_GNUC_UNUSED,
   const gchar *sender G_GNUC_UNUSED,
   const gchar *object_path G_GNUC_UNUSED,
@@ -958,13 +1101,13 @@ _dblcap_external_skeleton_handle_get_property (
   GError **error,
   gpointer user_data)
 {
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (user_data);
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (user_data);
   GValue value = G_VALUE_INIT;
   GParamSpec *pspec;
   _ExtendedGDBusPropertyInfo *info;
   GVariant *ret;
   ret = NULL;
-  info = (_ExtendedGDBusPropertyInfo *) g_dbus_interface_info_lookup_property ((GDBusInterfaceInfo *) &_dblcap_external_interface_info.parent_struct, property_name);
+  info = (_ExtendedGDBusPropertyInfo *) g_dbus_interface_info_lookup_property ((GDBusInterfaceInfo *) &_dblcap_net_sapples_live_captions_external_interface_info.parent_struct, property_name);
   g_assert (info != NULL);
   pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (skeleton), info->hyphen_name);
   if (pspec == NULL)
@@ -982,7 +1125,7 @@ _dblcap_external_skeleton_handle_get_property (
 }
 
 static gboolean
-_dblcap_external_skeleton_handle_set_property (
+_dblcap_net_sapples_live_captions_external_skeleton_handle_set_property (
   GDBusConnection *connection G_GNUC_UNUSED,
   const gchar *sender G_GNUC_UNUSED,
   const gchar *object_path G_GNUC_UNUSED,
@@ -992,13 +1135,13 @@ _dblcap_external_skeleton_handle_set_property (
   GError **error,
   gpointer user_data)
 {
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (user_data);
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (user_data);
   GValue value = G_VALUE_INIT;
   GParamSpec *pspec;
   _ExtendedGDBusPropertyInfo *info;
   gboolean ret;
   ret = FALSE;
-  info = (_ExtendedGDBusPropertyInfo *) g_dbus_interface_info_lookup_property ((GDBusInterfaceInfo *) &_dblcap_external_interface_info.parent_struct, property_name);
+  info = (_ExtendedGDBusPropertyInfo *) g_dbus_interface_info_lookup_property ((GDBusInterfaceInfo *) &_dblcap_net_sapples_live_captions_external_interface_info.parent_struct, property_name);
   g_assert (info != NULL);
   pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (skeleton), info->hyphen_name);
   if (pspec == NULL)
@@ -1018,43 +1161,43 @@ _dblcap_external_skeleton_handle_set_property (
   return ret;
 }
 
-static const GDBusInterfaceVTable _dblcap_external_skeleton_vtable =
+static const GDBusInterfaceVTable _dblcap_net_sapples_live_captions_external_skeleton_vtable =
 {
-  _dblcap_external_skeleton_handle_method_call,
-  _dblcap_external_skeleton_handle_get_property,
-  _dblcap_external_skeleton_handle_set_property,
+  _dblcap_net_sapples_live_captions_external_skeleton_handle_method_call,
+  _dblcap_net_sapples_live_captions_external_skeleton_handle_get_property,
+  _dblcap_net_sapples_live_captions_external_skeleton_handle_set_property,
   {NULL}
 };
 
 static GDBusInterfaceInfo *
-dblcap_external_skeleton_dbus_interface_get_info (GDBusInterfaceSkeleton *skeleton G_GNUC_UNUSED)
+dblcap_net_sapples_live_captions_external_skeleton_dbus_interface_get_info (GDBusInterfaceSkeleton *skeleton G_GNUC_UNUSED)
 {
-  return dblcap_external_interface_info ();
+  return dblcap_net_sapples_live_captions_external_interface_info ();
 }
 
 static GDBusInterfaceVTable *
-dblcap_external_skeleton_dbus_interface_get_vtable (GDBusInterfaceSkeleton *skeleton G_GNUC_UNUSED)
+dblcap_net_sapples_live_captions_external_skeleton_dbus_interface_get_vtable (GDBusInterfaceSkeleton *skeleton G_GNUC_UNUSED)
 {
-  return (GDBusInterfaceVTable *) &_dblcap_external_skeleton_vtable;
+  return (GDBusInterfaceVTable *) &_dblcap_net_sapples_live_captions_external_skeleton_vtable;
 }
 
 static GVariant *
-dblcap_external_skeleton_dbus_interface_get_properties (GDBusInterfaceSkeleton *_skeleton)
+dblcap_net_sapples_live_captions_external_skeleton_dbus_interface_get_properties (GDBusInterfaceSkeleton *_skeleton)
 {
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (_skeleton);
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (_skeleton);
 
   GVariantBuilder builder;
   guint n;
   g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
-  if (_dblcap_external_interface_info.parent_struct.properties == NULL)
+  if (_dblcap_net_sapples_live_captions_external_interface_info.parent_struct.properties == NULL)
     goto out;
-  for (n = 0; _dblcap_external_interface_info.parent_struct.properties[n] != NULL; n++)
+  for (n = 0; _dblcap_net_sapples_live_captions_external_interface_info.parent_struct.properties[n] != NULL; n++)
     {
-      GDBusPropertyInfo *info = _dblcap_external_interface_info.parent_struct.properties[n];
+      GDBusPropertyInfo *info = _dblcap_net_sapples_live_captions_external_interface_info.parent_struct.properties[n];
       if (info->flags & G_DBUS_PROPERTY_INFO_FLAGS_READABLE)
         {
           GVariant *value;
-          value = _dblcap_external_skeleton_handle_get_property (g_dbus_interface_skeleton_get_connection (G_DBUS_INTERFACE_SKELETON (skeleton)), NULL, g_dbus_interface_skeleton_get_object_path (G_DBUS_INTERFACE_SKELETON (skeleton)), "net.sapples.LiveCaptions.External", info->name, NULL, skeleton);
+          value = _dblcap_net_sapples_live_captions_external_skeleton_handle_get_property (g_dbus_interface_skeleton_get_connection (G_DBUS_INTERFACE_SKELETON (skeleton)), NULL, g_dbus_interface_skeleton_get_object_path (G_DBUS_INTERFACE_SKELETON (skeleton)), "net.sapples.LiveCaptions.External", info->name, NULL, skeleton);
           if (value != NULL)
             {
               g_variant_take_ref (value);
@@ -1067,12 +1210,12 @@ out:
   return g_variant_builder_end (&builder);
 }
 
-static gboolean _dblcap_external_emit_changed (gpointer user_data);
+static gboolean _dblcap_net_sapples_live_captions_external_emit_changed (gpointer user_data);
 
 static void
-dblcap_external_skeleton_dbus_interface_flush (GDBusInterfaceSkeleton *_skeleton)
+dblcap_net_sapples_live_captions_external_skeleton_dbus_interface_flush (GDBusInterfaceSkeleton *_skeleton)
 {
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (_skeleton);
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (_skeleton);
   gboolean emit_changed = FALSE;
 
   g_mutex_lock (&skeleton->priv->lock);
@@ -1085,26 +1228,50 @@ dblcap_external_skeleton_dbus_interface_flush (GDBusInterfaceSkeleton *_skeleton
   g_mutex_unlock (&skeleton->priv->lock);
 
   if (emit_changed)
-    _dblcap_external_emit_changed (skeleton);
+    _dblcap_net_sapples_live_captions_external_emit_changed (skeleton);
 }
 
-static void dblcap_external_skeleton_iface_init (DBLCapExternalIface *iface);
+static void
+_dblcap_net_sapples_live_captions_external_on_signal_text_stream (
+    DBLCapNetSapplesLiveCaptionsExternal *object,
+    const gchar *arg_text)
+{
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (object);
+
+  GList      *connections, *l;
+  GVariant   *signal_variant;
+  connections = g_dbus_interface_skeleton_get_connections (G_DBUS_INTERFACE_SKELETON (skeleton));
+
+  signal_variant = g_variant_ref_sink (g_variant_new ("(s)",
+                   arg_text));
+  for (l = connections; l != NULL; l = l->next)
+    {
+      GDBusConnection *connection = l->data;
+      g_dbus_connection_emit_signal (connection,
+        NULL, g_dbus_interface_skeleton_get_object_path (G_DBUS_INTERFACE_SKELETON (skeleton)), "net.sapples.LiveCaptions.External", "TextStream",
+        signal_variant, NULL);
+    }
+  g_variant_unref (signal_variant);
+  g_list_free_full (connections, g_object_unref);
+}
+
+static void dblcap_net_sapples_live_captions_external_skeleton_iface_init (DBLCapNetSapplesLiveCaptionsExternalIface *iface);
 #if GLIB_VERSION_MAX_ALLOWED >= GLIB_VERSION_2_38
-G_DEFINE_TYPE_WITH_CODE (DBLCapExternalSkeleton, dblcap_external_skeleton, G_TYPE_DBUS_INTERFACE_SKELETON,
-                         G_ADD_PRIVATE (DBLCapExternalSkeleton)
-                         G_IMPLEMENT_INTERFACE (DBLCAP_TYPE_EXTERNAL, dblcap_external_skeleton_iface_init))
+G_DEFINE_TYPE_WITH_CODE (DBLCapNetSapplesLiveCaptionsExternalSkeleton, dblcap_net_sapples_live_captions_external_skeleton, G_TYPE_DBUS_INTERFACE_SKELETON,
+                         G_ADD_PRIVATE (DBLCapNetSapplesLiveCaptionsExternalSkeleton)
+                         G_IMPLEMENT_INTERFACE (DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL, dblcap_net_sapples_live_captions_external_skeleton_iface_init))
 
 #else
-G_DEFINE_TYPE_WITH_CODE (DBLCapExternalSkeleton, dblcap_external_skeleton, G_TYPE_DBUS_INTERFACE_SKELETON,
-                         G_IMPLEMENT_INTERFACE (DBLCAP_TYPE_EXTERNAL, dblcap_external_skeleton_iface_init))
+G_DEFINE_TYPE_WITH_CODE (DBLCapNetSapplesLiveCaptionsExternalSkeleton, dblcap_net_sapples_live_captions_external_skeleton, G_TYPE_DBUS_INTERFACE_SKELETON,
+                         G_IMPLEMENT_INTERFACE (DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL, dblcap_net_sapples_live_captions_external_skeleton_iface_init))
 
 #endif
 static void
-dblcap_external_skeleton_finalize (GObject *object)
+dblcap_net_sapples_live_captions_external_skeleton_finalize (GObject *object)
 {
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (object);
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (object);
   guint n;
-  for (n = 0; n < 1; n++)
+  for (n = 0; n < 2; n++)
     g_value_unset (&skeleton->priv->properties[n]);
   g_free (skeleton->priv->properties);
   g_list_free_full (skeleton->priv->changed_properties, (GDestroyNotify) _changed_property_free);
@@ -1112,26 +1279,26 @@ dblcap_external_skeleton_finalize (GObject *object)
     g_source_destroy (skeleton->priv->changed_properties_idle_source);
   g_main_context_unref (skeleton->priv->context);
   g_mutex_clear (&skeleton->priv->lock);
-  G_OBJECT_CLASS (dblcap_external_skeleton_parent_class)->finalize (object);
+  G_OBJECT_CLASS (dblcap_net_sapples_live_captions_external_skeleton_parent_class)->finalize (object);
 }
 
 static void
-dblcap_external_skeleton_get_property (GObject      *object,
+dblcap_net_sapples_live_captions_external_skeleton_get_property (GObject      *object,
   guint         prop_id,
   GValue       *value,
   GParamSpec   *pspec G_GNUC_UNUSED)
 {
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (object);
-  g_assert (prop_id != 0 && prop_id - 1 < 1);
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (object);
+  g_assert (prop_id != 0 && prop_id - 1 < 2);
   g_mutex_lock (&skeleton->priv->lock);
   g_value_copy (&skeleton->priv->properties[prop_id - 1], value);
   g_mutex_unlock (&skeleton->priv->lock);
 }
 
 static gboolean
-_dblcap_external_emit_changed (gpointer user_data)
+_dblcap_net_sapples_live_captions_external_emit_changed (gpointer user_data)
 {
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (user_data);
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (user_data);
   GList *l;
   GVariantBuilder builder;
   GVariantBuilder invalidated_builder;
@@ -1189,7 +1356,7 @@ _dblcap_external_emit_changed (gpointer user_data)
 }
 
 static void
-_dblcap_external_schedule_emit_changed (DBLCapExternalSkeleton *skeleton, const _ExtendedGDBusPropertyInfo *info, guint prop_id, const GValue *orig_value)
+_dblcap_net_sapples_live_captions_external_schedule_emit_changed (DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton, const _ExtendedGDBusPropertyInfo *info, guint prop_id, const GValue *orig_value)
 {
   ChangedProperty *cp;
   GList *l;
@@ -1215,18 +1382,18 @@ _dblcap_external_schedule_emit_changed (DBLCapExternalSkeleton *skeleton, const 
 }
 
 static void
-dblcap_external_skeleton_notify (GObject      *object,
+dblcap_net_sapples_live_captions_external_skeleton_notify (GObject      *object,
   GParamSpec *pspec G_GNUC_UNUSED)
 {
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (object);
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (object);
   g_mutex_lock (&skeleton->priv->lock);
   if (skeleton->priv->changed_properties != NULL &&
       skeleton->priv->changed_properties_idle_source == NULL)
     {
       skeleton->priv->changed_properties_idle_source = g_idle_source_new ();
       g_source_set_priority (skeleton->priv->changed_properties_idle_source, G_PRIORITY_DEFAULT);
-      g_source_set_callback (skeleton->priv->changed_properties_idle_source, _dblcap_external_emit_changed, g_object_ref (skeleton), (GDestroyNotify) g_object_unref);
-      g_source_set_name (skeleton->priv->changed_properties_idle_source, "[generated] _dblcap_external_emit_changed");
+      g_source_set_callback (skeleton->priv->changed_properties_idle_source, _dblcap_net_sapples_live_captions_external_emit_changed, g_object_ref (skeleton), (GDestroyNotify) g_object_unref);
+      g_source_set_name (skeleton->priv->changed_properties_idle_source, "[generated] _dblcap_net_sapples_live_captions_external_emit_changed");
       g_source_attach (skeleton->priv->changed_properties_idle_source, skeleton->priv->context);
       g_source_unref (skeleton->priv->changed_properties_idle_source);
     }
@@ -1234,22 +1401,22 @@ dblcap_external_skeleton_notify (GObject      *object,
 }
 
 static void
-dblcap_external_skeleton_set_property (GObject      *object,
+dblcap_net_sapples_live_captions_external_skeleton_set_property (GObject      *object,
   guint         prop_id,
   const GValue *value,
   GParamSpec   *pspec)
 {
   const _ExtendedGDBusPropertyInfo *info;
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (object);
-  g_assert (prop_id != 0 && prop_id - 1 < 1);
-  info = (const _ExtendedGDBusPropertyInfo *) _dblcap_external_property_info_pointers[prop_id - 1];
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (object);
+  g_assert (prop_id != 0 && prop_id - 1 < 2);
+  info = (const _ExtendedGDBusPropertyInfo *) _dblcap_net_sapples_live_captions_external_property_info_pointers[prop_id - 1];
   g_mutex_lock (&skeleton->priv->lock);
   g_object_freeze_notify (object);
   if (!_g_value_equal (value, &skeleton->priv->properties[prop_id - 1]))
     {
       if (g_dbus_interface_skeleton_get_connection (G_DBUS_INTERFACE_SKELETON (skeleton)) != NULL &&
           info->emits_changed_signal)
-        _dblcap_external_schedule_emit_changed (skeleton, info, prop_id, &skeleton->priv->properties[prop_id - 1]);
+        _dblcap_net_sapples_live_captions_external_schedule_emit_changed (skeleton, info, prop_id, &skeleton->priv->properties[prop_id - 1]);
       g_value_copy (value, &skeleton->priv->properties[prop_id - 1]);
       g_object_notify_by_pspec (object, pspec);
     }
@@ -1258,24 +1425,25 @@ dblcap_external_skeleton_set_property (GObject      *object,
 }
 
 static void
-dblcap_external_skeleton_init (DBLCapExternalSkeleton *skeleton)
+dblcap_net_sapples_live_captions_external_skeleton_init (DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton)
 {
 #if GLIB_VERSION_MAX_ALLOWED >= GLIB_VERSION_2_38
-  skeleton->priv = dblcap_external_skeleton_get_instance_private (skeleton);
+  skeleton->priv = dblcap_net_sapples_live_captions_external_skeleton_get_instance_private (skeleton);
 #else
-  skeleton->priv = G_TYPE_INSTANCE_GET_PRIVATE (skeleton, DBLCAP_TYPE_EXTERNAL_SKELETON, DBLCapExternalSkeletonPrivate);
+  skeleton->priv = G_TYPE_INSTANCE_GET_PRIVATE (skeleton, DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON, DBLCapNetSapplesLiveCaptionsExternalSkeletonPrivate);
 #endif
 
   g_mutex_init (&skeleton->priv->lock);
   skeleton->priv->context = g_main_context_ref_thread_default ();
-  skeleton->priv->properties = g_new0 (GValue, 1);
+  skeleton->priv->properties = g_new0 (GValue, 2);
   g_value_init (&skeleton->priv->properties[0], G_TYPE_BOOLEAN);
+  g_value_init (&skeleton->priv->properties[1], G_TYPE_BOOLEAN);
 }
 
 static gboolean 
-dblcap_external_skeleton_get_keep_above (DBLCapExternal *object)
+dblcap_net_sapples_live_captions_external_skeleton_get_keep_above (DBLCapNetSapplesLiveCaptionsExternal *object)
 {
-  DBLCapExternalSkeleton *skeleton = DBLCAP_EXTERNAL_SKELETON (object);
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (object);
   gboolean value;
   g_mutex_lock (&skeleton->priv->lock);
   value = g_value_get_boolean (&(skeleton->priv->properties[0]));
@@ -1283,612 +1451,61 @@ dblcap_external_skeleton_get_keep_above (DBLCapExternal *object)
   return value;
 }
 
+static gboolean 
+dblcap_net_sapples_live_captions_external_skeleton_get_text_stream_active (DBLCapNetSapplesLiveCaptionsExternal *object)
+{
+  DBLCapNetSapplesLiveCaptionsExternalSkeleton *skeleton = DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (object);
+  gboolean value;
+  g_mutex_lock (&skeleton->priv->lock);
+  value = g_value_get_boolean (&(skeleton->priv->properties[1]));
+  g_mutex_unlock (&skeleton->priv->lock);
+  return value;
+}
+
 static void
-dblcap_external_skeleton_class_init (DBLCapExternalSkeletonClass *klass)
+dblcap_net_sapples_live_captions_external_skeleton_class_init (DBLCapNetSapplesLiveCaptionsExternalSkeletonClass *klass)
 {
   GObjectClass *gobject_class;
   GDBusInterfaceSkeletonClass *skeleton_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
-  gobject_class->finalize = dblcap_external_skeleton_finalize;
-  gobject_class->get_property = dblcap_external_skeleton_get_property;
-  gobject_class->set_property = dblcap_external_skeleton_set_property;
-  gobject_class->notify       = dblcap_external_skeleton_notify;
+  gobject_class->finalize = dblcap_net_sapples_live_captions_external_skeleton_finalize;
+  gobject_class->get_property = dblcap_net_sapples_live_captions_external_skeleton_get_property;
+  gobject_class->set_property = dblcap_net_sapples_live_captions_external_skeleton_set_property;
+  gobject_class->notify       = dblcap_net_sapples_live_captions_external_skeleton_notify;
 
 
-  dblcap_external_override_properties (gobject_class, 1);
+  dblcap_net_sapples_live_captions_external_override_properties (gobject_class, 1);
 
   skeleton_class = G_DBUS_INTERFACE_SKELETON_CLASS (klass);
-  skeleton_class->get_info = dblcap_external_skeleton_dbus_interface_get_info;
-  skeleton_class->get_properties = dblcap_external_skeleton_dbus_interface_get_properties;
-  skeleton_class->flush = dblcap_external_skeleton_dbus_interface_flush;
-  skeleton_class->get_vtable = dblcap_external_skeleton_dbus_interface_get_vtable;
+  skeleton_class->get_info = dblcap_net_sapples_live_captions_external_skeleton_dbus_interface_get_info;
+  skeleton_class->get_properties = dblcap_net_sapples_live_captions_external_skeleton_dbus_interface_get_properties;
+  skeleton_class->flush = dblcap_net_sapples_live_captions_external_skeleton_dbus_interface_flush;
+  skeleton_class->get_vtable = dblcap_net_sapples_live_captions_external_skeleton_dbus_interface_get_vtable;
 
 #if GLIB_VERSION_MAX_ALLOWED < GLIB_VERSION_2_38
-  g_type_class_add_private (klass, sizeof (DBLCapExternalSkeletonPrivate));
+  g_type_class_add_private (klass, sizeof (DBLCapNetSapplesLiveCaptionsExternalSkeletonPrivate));
 #endif
 }
 
 static void
-dblcap_external_skeleton_iface_init (DBLCapExternalIface *iface)
+dblcap_net_sapples_live_captions_external_skeleton_iface_init (DBLCapNetSapplesLiveCaptionsExternalIface *iface)
 {
-  iface->get_keep_above = dblcap_external_skeleton_get_keep_above;
+  iface->text_stream = _dblcap_net_sapples_live_captions_external_on_signal_text_stream;
+  iface->get_keep_above = dblcap_net_sapples_live_captions_external_skeleton_get_keep_above;
+  iface->get_text_stream_active = dblcap_net_sapples_live_captions_external_skeleton_get_text_stream_active;
 }
 
 /**
- * dblcap_external_skeleton_new:
+ * dblcap_net_sapples_live_captions_external_skeleton_new:
  *
  * Creates a skeleton object for the D-Bus interface <link linkend="gdbus-interface-net-sapples-LiveCaptions-External.top_of_page">net.sapples.LiveCaptions.External</link>.
  *
- * Returns: (transfer full) (type DBLCapExternalSkeleton): The skeleton object.
+ * Returns: (transfer full) (type DBLCapNetSapplesLiveCaptionsExternalSkeleton): The skeleton object.
  */
-DBLCapExternal *
-dblcap_external_skeleton_new (void)
+DBLCapNetSapplesLiveCaptionsExternal *
+dblcap_net_sapples_live_captions_external_skeleton_new (void)
 {
-  return DBLCAP_EXTERNAL (g_object_new (DBLCAP_TYPE_EXTERNAL_SKELETON, NULL));
+  return DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL (g_object_new (DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON, NULL));
 }
-
-/* ------------------------------------------------------------------------
- * Code for Object, ObjectProxy and ObjectSkeleton
- * ------------------------------------------------------------------------
- */
-
-/**
- * SECTION:DBLCapObject
- * @title: DBLCapObject
- * @short_description: Specialized GDBusObject types
- *
- * This section contains the #DBLCapObject, #DBLCapObjectProxy, and #DBLCapObjectSkeleton types which make it easier to work with objects implementing generated types for D-Bus interfaces.
- */
-
-/**
- * DBLCapObject:
- *
- * The #DBLCapObject type is a specialized container of interfaces.
- */
-
-/**
- * DBLCapObjectIface:
- * @parent_iface: The parent interface.
- *
- * Virtual table for the #DBLCapObject interface.
- */
-
-typedef DBLCapObjectIface DBLCapObjectInterface;
-G_DEFINE_INTERFACE_WITH_CODE (DBLCapObject, dblcap_object, G_TYPE_OBJECT, g_type_interface_add_prerequisite (g_define_type_id, G_TYPE_DBUS_OBJECT);)
-
-static void
-dblcap_object_default_init (DBLCapObjectIface *iface)
-{
-  /**
-   * DBLCapObject:external:
-   *
-   * The #DBLCapExternal instance corresponding to the D-Bus interface <link linkend="gdbus-interface-net-sapples-LiveCaptions-External.top_of_page">net.sapples.LiveCaptions.External</link>, if any.
-   *
-   * Connect to the #GObject::notify signal to get informed of property changes.
-   */
-  g_object_interface_install_property (iface, g_param_spec_object ("external", "external", "external", DBLCAP_TYPE_EXTERNAL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-}
-
-/**
- * dblcap_object_get_external:
- * @object: A #DBLCapObject.
- *
- * Gets the #DBLCapExternal instance for the D-Bus interface <link linkend="gdbus-interface-net-sapples-LiveCaptions-External.top_of_page">net.sapples.LiveCaptions.External</link> on @object, if any.
- *
- * Returns: (transfer full) (nullable): A #DBLCapExternal that must be freed with g_object_unref() or %NULL if @object does not implement the interface.
- */
-DBLCapExternal *dblcap_object_get_external (DBLCapObject *object)
-{
-  GDBusInterface *ret;
-  ret = g_dbus_object_get_interface (G_DBUS_OBJECT (object), "net.sapples.LiveCaptions.External");
-  if (ret == NULL)
-    return NULL;
-  return DBLCAP_EXTERNAL (ret);
-}
-
-
-/**
- * dblcap_object_peek_external: (skip)
- * @object: A #DBLCapObject.
- *
- * Like dblcap_object_get_external() but doesn't increase the reference count on the returned object.
- *
- * It is not safe to use the returned object if you are on another thread than the one where the #GDBusObjectManagerClient or #GDBusObjectManagerServer for @object is running.
- *
- * Returns: (transfer none) (nullable): A #DBLCapExternal or %NULL if @object does not implement the interface. Do not free the returned object, it is owned by @object.
- */
-DBLCapExternal *dblcap_object_peek_external (DBLCapObject *object)
-{
-  GDBusInterface *ret;
-  ret = g_dbus_object_get_interface (G_DBUS_OBJECT (object), "net.sapples.LiveCaptions.External");
-  if (ret == NULL)
-    return NULL;
-  g_object_unref (ret);
-  return DBLCAP_EXTERNAL (ret);
-}
-
-
-static void
-dblcap_object_notify (GDBusObject *object, GDBusInterface *interface)
-{
-  _ExtendedGDBusInterfaceInfo *info = (_ExtendedGDBusInterfaceInfo *) g_dbus_interface_get_info (interface);
-  /* info can be NULL if the other end is using a D-Bus interface we don't know
-   * anything about, for example old generated code in this process talking to
-   * newer generated code in the other process. */
-  if (info != NULL)
-    g_object_notify (G_OBJECT (object), info->hyphen_name);
-}
-
-/**
- * DBLCapObjectProxy:
- *
- * The #DBLCapObjectProxy structure contains only private data and should only be accessed using the provided API.
- */
-
-/**
- * DBLCapObjectProxyClass:
- * @parent_class: The parent class.
- *
- * Class structure for #DBLCapObjectProxy.
- */
-
-static void
-dblcap_object_proxy__dblcap_object_iface_init (DBLCapObjectIface *iface G_GNUC_UNUSED)
-{
-}
-
-static void
-dblcap_object_proxy__g_dbus_object_iface_init (GDBusObjectIface *iface)
-{
-  iface->interface_added = dblcap_object_notify;
-  iface->interface_removed = dblcap_object_notify;
-}
-
-
-G_DEFINE_TYPE_WITH_CODE (DBLCapObjectProxy, dblcap_object_proxy, G_TYPE_DBUS_OBJECT_PROXY,
-                         G_IMPLEMENT_INTERFACE (DBLCAP_TYPE_OBJECT, dblcap_object_proxy__dblcap_object_iface_init)
-                         G_IMPLEMENT_INTERFACE (G_TYPE_DBUS_OBJECT, dblcap_object_proxy__g_dbus_object_iface_init))
-
-static void
-dblcap_object_proxy_init (DBLCapObjectProxy *object G_GNUC_UNUSED)
-{
-}
-
-static void
-dblcap_object_proxy_set_property (GObject      *gobject,
-  guint         prop_id,
-  const GValue *value G_GNUC_UNUSED,
-  GParamSpec   *pspec)
-{
-  G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, prop_id, pspec);
-}
-
-static void
-dblcap_object_proxy_get_property (GObject      *gobject,
-  guint         prop_id,
-  GValue       *value,
-  GParamSpec   *pspec)
-{
-  DBLCapObjectProxy *object = DBLCAP_OBJECT_PROXY (gobject);
-  GDBusInterface *interface;
-
-  switch (prop_id)
-    {
-    case 1:
-      interface = g_dbus_object_get_interface (G_DBUS_OBJECT (object), "net.sapples.LiveCaptions.External");
-      g_value_take_object (value, interface);
-      break;
-
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, prop_id, pspec);
-      break;
-  }
-}
-
-static void
-dblcap_object_proxy_class_init (DBLCapObjectProxyClass *klass)
-{
-  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  gobject_class->set_property = dblcap_object_proxy_set_property;
-  gobject_class->get_property = dblcap_object_proxy_get_property;
-
-  g_object_class_override_property (gobject_class, 1, "external");
-}
-
-/**
- * dblcap_object_proxy_new:
- * @connection: A #GDBusConnection.
- * @object_path: An object path.
- *
- * Creates a new proxy object.
- *
- * Returns: (transfer full): The proxy object.
- */
-DBLCapObjectProxy *
-dblcap_object_proxy_new (GDBusConnection *connection,
-  const gchar *object_path)
-{
-  g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
-  g_return_val_if_fail (g_variant_is_object_path (object_path), NULL);
-  return DBLCAP_OBJECT_PROXY (g_object_new (DBLCAP_TYPE_OBJECT_PROXY, "g-connection", connection, "g-object-path", object_path, NULL));
-}
-
-/**
- * DBLCapObjectSkeleton:
- *
- * The #DBLCapObjectSkeleton structure contains only private data and should only be accessed using the provided API.
- */
-
-/**
- * DBLCapObjectSkeletonClass:
- * @parent_class: The parent class.
- *
- * Class structure for #DBLCapObjectSkeleton.
- */
-
-static void
-dblcap_object_skeleton__dblcap_object_iface_init (DBLCapObjectIface *iface G_GNUC_UNUSED)
-{
-}
-
-
-static void
-dblcap_object_skeleton__g_dbus_object_iface_init (GDBusObjectIface *iface)
-{
-  iface->interface_added = dblcap_object_notify;
-  iface->interface_removed = dblcap_object_notify;
-}
-
-G_DEFINE_TYPE_WITH_CODE (DBLCapObjectSkeleton, dblcap_object_skeleton, G_TYPE_DBUS_OBJECT_SKELETON,
-                         G_IMPLEMENT_INTERFACE (DBLCAP_TYPE_OBJECT, dblcap_object_skeleton__dblcap_object_iface_init)
-                         G_IMPLEMENT_INTERFACE (G_TYPE_DBUS_OBJECT, dblcap_object_skeleton__g_dbus_object_iface_init))
-
-static void
-dblcap_object_skeleton_init (DBLCapObjectSkeleton *object G_GNUC_UNUSED)
-{
-}
-
-static void
-dblcap_object_skeleton_set_property (GObject      *gobject,
-  guint         prop_id,
-  const GValue *value,
-  GParamSpec   *pspec)
-{
-  DBLCapObjectSkeleton *object = DBLCAP_OBJECT_SKELETON (gobject);
-  GDBusInterfaceSkeleton *interface;
-
-  switch (prop_id)
-    {
-    case 1:
-      interface = g_value_get_object (value);
-      if (interface != NULL)
-        {
-          g_warn_if_fail (DBLCAP_IS_EXTERNAL (interface));
-          g_dbus_object_skeleton_add_interface (G_DBUS_OBJECT_SKELETON (object), interface);
-        }
-      else
-        {
-          g_dbus_object_skeleton_remove_interface_by_name (G_DBUS_OBJECT_SKELETON (object), "net.sapples.LiveCaptions.External");
-        }
-      break;
-
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, prop_id, pspec);
-      break;
-  }
-}
-
-static void
-dblcap_object_skeleton_get_property (GObject      *gobject,
-  guint         prop_id,
-  GValue       *value,
-  GParamSpec   *pspec)
-{
-  DBLCapObjectSkeleton *object = DBLCAP_OBJECT_SKELETON (gobject);
-  GDBusInterface *interface;
-
-  switch (prop_id)
-    {
-    case 1:
-      interface = g_dbus_object_get_interface (G_DBUS_OBJECT (object), "net.sapples.LiveCaptions.External");
-      g_value_take_object (value, interface);
-      break;
-
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, prop_id, pspec);
-      break;
-  }
-}
-
-static void
-dblcap_object_skeleton_class_init (DBLCapObjectSkeletonClass *klass)
-{
-  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  gobject_class->set_property = dblcap_object_skeleton_set_property;
-  gobject_class->get_property = dblcap_object_skeleton_get_property;
-
-  g_object_class_override_property (gobject_class, 1, "external");
-}
-
-/**
- * dblcap_object_skeleton_new:
- * @object_path: An object path.
- *
- * Creates a new skeleton object.
- *
- * Returns: (transfer full): The skeleton object.
- */
-DBLCapObjectSkeleton *
-dblcap_object_skeleton_new (const gchar *object_path)
-{
-  g_return_val_if_fail (g_variant_is_object_path (object_path), NULL);
-  return DBLCAP_OBJECT_SKELETON (g_object_new (DBLCAP_TYPE_OBJECT_SKELETON, "g-object-path", object_path, NULL));
-}
-
-/**
- * dblcap_object_skeleton_set_external:
- * @object: A #DBLCapObjectSkeleton.
- * @interface_: (nullable): A #DBLCapExternal or %NULL to clear the interface.
- *
- * Sets the #DBLCapExternal instance for the D-Bus interface <link linkend="gdbus-interface-net-sapples-LiveCaptions-External.top_of_page">net.sapples.LiveCaptions.External</link> on @object.
- */
-void dblcap_object_skeleton_set_external (DBLCapObjectSkeleton *object, DBLCapExternal *interface_)
-{
-  g_object_set (G_OBJECT (object), "external", interface_, NULL);
-}
-
-
-/* ------------------------------------------------------------------------
- * Code for ObjectManager client
- * ------------------------------------------------------------------------
- */
-
-/**
- * SECTION:DBLCapObjectManagerClient
- * @title: DBLCapObjectManagerClient
- * @short_description: Generated GDBusObjectManagerClient type
- *
- * This section contains a #GDBusObjectManagerClient that uses dblcap_object_manager_client_get_proxy_type() as the #GDBusProxyTypeFunc.
- */
-
-/**
- * DBLCapObjectManagerClient:
- *
- * The #DBLCapObjectManagerClient structure contains only private data and should only be accessed using the provided API.
- */
-
-/**
- * DBLCapObjectManagerClientClass:
- * @parent_class: The parent class.
- *
- * Class structure for #DBLCapObjectManagerClient.
- */
-
-G_DEFINE_TYPE (DBLCapObjectManagerClient, dblcap_object_manager_client, G_TYPE_DBUS_OBJECT_MANAGER_CLIENT)
-
-static void
-dblcap_object_manager_client_init (DBLCapObjectManagerClient *manager G_GNUC_UNUSED)
-{
-}
-
-static void
-dblcap_object_manager_client_class_init (DBLCapObjectManagerClientClass *klass G_GNUC_UNUSED)
-{
-}
-
-/**
- * dblcap_object_manager_client_get_proxy_type:
- * @manager: A #GDBusObjectManagerClient.
- * @object_path: The object path of the remote object (unused).
- * @interface_name: (nullable): Interface name of the remote object or %NULL to get the object proxy #GType.
- * @user_data: User data (unused).
- *
- * A #GDBusProxyTypeFunc that maps @interface_name to the generated #GDBusObjectProxy derived and #GDBusProxy derived types.
- *
- * Returns: A #GDBusProxy derived #GType if @interface_name is not %NULL, otherwise the #GType for #DBLCapObjectProxy.
- */
-GType
-dblcap_object_manager_client_get_proxy_type (GDBusObjectManagerClient *manager G_GNUC_UNUSED, const gchar *object_path G_GNUC_UNUSED, const gchar *interface_name, gpointer user_data G_GNUC_UNUSED)
-{
-  static gsize once_init_value = 0;
-  static GHashTable *lookup_hash;
-  GType ret;
-
-  if (interface_name == NULL)
-    return DBLCAP_TYPE_OBJECT_PROXY;
-  if (g_once_init_enter (&once_init_value))
-    {
-      lookup_hash = g_hash_table_new (g_str_hash, g_str_equal);
-      g_hash_table_insert (lookup_hash, (gpointer) "net.sapples.LiveCaptions.External", GSIZE_TO_POINTER (DBLCAP_TYPE_EXTERNAL_PROXY));
-      g_once_init_leave (&once_init_value, 1);
-    }
-  ret = (GType) GPOINTER_TO_SIZE (g_hash_table_lookup (lookup_hash, interface_name));
-  if (ret == (GType) 0)
-    ret = G_TYPE_DBUS_PROXY;
-  return ret;
-}
-
-/**
- * dblcap_object_manager_client_new:
- * @connection: A #GDBusConnection.
- * @flags: Flags from the #GDBusObjectManagerClientFlags enumeration.
- * @name: (nullable): A bus name (well-known or unique) or %NULL if @connection is not a message bus connection.
- * @object_path: An object path.
- * @cancellable: (nullable): A #GCancellable or %NULL.
- * @callback: A #GAsyncReadyCallback to call when the request is satisfied.
- * @user_data: User data to pass to @callback.
- *
- * Asynchronously creates #GDBusObjectManagerClient using dblcap_object_manager_client_get_proxy_type() as the #GDBusProxyTypeFunc. See g_dbus_object_manager_client_new() for more details.
- *
- * When the operation is finished, @callback will be invoked in the thread-default main loop of the thread you are calling this method from (see g_main_context_push_thread_default()).
- * You can then call dblcap_object_manager_client_new_finish() to get the result of the operation.
- *
- * See dblcap_object_manager_client_new_sync() for the synchronous, blocking version of this constructor.
- */
-void
-dblcap_object_manager_client_new (
-    GDBusConnection        *connection,
-    GDBusObjectManagerClientFlags  flags,
-    const gchar            *name,
-    const gchar            *object_path,
-    GCancellable           *cancellable,
-    GAsyncReadyCallback     callback,
-    gpointer                user_data)
-{
-  g_async_initable_new_async (DBLCAP_TYPE_OBJECT_MANAGER_CLIENT, G_PRIORITY_DEFAULT, cancellable, callback, user_data, "flags", flags, "name", name, "connection", connection, "object-path", object_path, "get-proxy-type-func", dblcap_object_manager_client_get_proxy_type, NULL);
-}
-
-/**
- * dblcap_object_manager_client_new_finish:
- * @res: The #GAsyncResult obtained from the #GAsyncReadyCallback passed to dblcap_object_manager_client_new().
- * @error: Return location for error or %NULL
- *
- * Finishes an operation started with dblcap_object_manager_client_new().
- *
- * Returns: (transfer full) (type DBLCapObjectManagerClient): The constructed object manager client or %NULL if @error is set.
- */
-GDBusObjectManager *
-dblcap_object_manager_client_new_finish (
-    GAsyncResult        *res,
-    GError             **error)
-{
-  GObject *ret;
-  GObject *source_object;
-  source_object = g_async_result_get_source_object (res);
-  ret = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object), res, error);
-  g_object_unref (source_object);
-  if (ret != NULL)
-    return G_DBUS_OBJECT_MANAGER (ret);
-  else
-    return NULL;
-}
-
-/**
- * dblcap_object_manager_client_new_sync:
- * @connection: A #GDBusConnection.
- * @flags: Flags from the #GDBusObjectManagerClientFlags enumeration.
- * @name: (nullable): A bus name (well-known or unique) or %NULL if @connection is not a message bus connection.
- * @object_path: An object path.
- * @cancellable: (nullable): A #GCancellable or %NULL.
- * @error: Return location for error or %NULL
- *
- * Synchronously creates #GDBusObjectManagerClient using dblcap_object_manager_client_get_proxy_type() as the #GDBusProxyTypeFunc. See g_dbus_object_manager_client_new_sync() for more details.
- *
- * The calling thread is blocked until a reply is received.
- *
- * See dblcap_object_manager_client_new() for the asynchronous version of this constructor.
- *
- * Returns: (transfer full) (type DBLCapObjectManagerClient): The constructed object manager client or %NULL if @error is set.
- */
-GDBusObjectManager *
-dblcap_object_manager_client_new_sync (
-    GDBusConnection        *connection,
-    GDBusObjectManagerClientFlags  flags,
-    const gchar            *name,
-    const gchar            *object_path,
-    GCancellable           *cancellable,
-    GError                **error)
-{
-  GInitable *ret;
-  ret = g_initable_new (DBLCAP_TYPE_OBJECT_MANAGER_CLIENT, cancellable, error, "flags", flags, "name", name, "connection", connection, "object-path", object_path, "get-proxy-type-func", dblcap_object_manager_client_get_proxy_type, NULL);
-  if (ret != NULL)
-    return G_DBUS_OBJECT_MANAGER (ret);
-  else
-    return NULL;
-}
-
-
-/**
- * dblcap_object_manager_client_new_for_bus:
- * @bus_type: A #GBusType.
- * @flags: Flags from the #GDBusObjectManagerClientFlags enumeration.
- * @name: A bus name (well-known or unique).
- * @object_path: An object path.
- * @cancellable: (nullable): A #GCancellable or %NULL.
- * @callback: A #GAsyncReadyCallback to call when the request is satisfied.
- * @user_data: User data to pass to @callback.
- *
- * Like dblcap_object_manager_client_new() but takes a #GBusType instead of a #GDBusConnection.
- *
- * When the operation is finished, @callback will be invoked in the thread-default main loop of the thread you are calling this method from (see g_main_context_push_thread_default()).
- * You can then call dblcap_object_manager_client_new_for_bus_finish() to get the result of the operation.
- *
- * See dblcap_object_manager_client_new_for_bus_sync() for the synchronous, blocking version of this constructor.
- */
-void
-dblcap_object_manager_client_new_for_bus (
-    GBusType                bus_type,
-    GDBusObjectManagerClientFlags  flags,
-    const gchar            *name,
-    const gchar            *object_path,
-    GCancellable           *cancellable,
-    GAsyncReadyCallback     callback,
-    gpointer                user_data)
-{
-  g_async_initable_new_async (DBLCAP_TYPE_OBJECT_MANAGER_CLIENT, G_PRIORITY_DEFAULT, cancellable, callback, user_data, "flags", flags, "name", name, "bus-type", bus_type, "object-path", object_path, "get-proxy-type-func", dblcap_object_manager_client_get_proxy_type, NULL);
-}
-
-/**
- * dblcap_object_manager_client_new_for_bus_finish:
- * @res: The #GAsyncResult obtained from the #GAsyncReadyCallback passed to dblcap_object_manager_client_new_for_bus().
- * @error: Return location for error or %NULL
- *
- * Finishes an operation started with dblcap_object_manager_client_new_for_bus().
- *
- * Returns: (transfer full) (type DBLCapObjectManagerClient): The constructed object manager client or %NULL if @error is set.
- */
-GDBusObjectManager *
-dblcap_object_manager_client_new_for_bus_finish (
-    GAsyncResult        *res,
-    GError             **error)
-{
-  GObject *ret;
-  GObject *source_object;
-  source_object = g_async_result_get_source_object (res);
-  ret = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object), res, error);
-  g_object_unref (source_object);
-  if (ret != NULL)
-    return G_DBUS_OBJECT_MANAGER (ret);
-  else
-    return NULL;
-}
-
-/**
- * dblcap_object_manager_client_new_for_bus_sync:
- * @bus_type: A #GBusType.
- * @flags: Flags from the #GDBusObjectManagerClientFlags enumeration.
- * @name: A bus name (well-known or unique).
- * @object_path: An object path.
- * @cancellable: (nullable): A #GCancellable or %NULL.
- * @error: Return location for error or %NULL
- *
- * Like dblcap_object_manager_client_new_sync() but takes a #GBusType instead of a #GDBusConnection.
- *
- * The calling thread is blocked until a reply is received.
- *
- * See dblcap_object_manager_client_new_for_bus() for the asynchronous version of this constructor.
- *
- * Returns: (transfer full) (type DBLCapObjectManagerClient): The constructed object manager client or %NULL if @error is set.
- */
-GDBusObjectManager *
-dblcap_object_manager_client_new_for_bus_sync (
-    GBusType                bus_type,
-    GDBusObjectManagerClientFlags  flags,
-    const gchar            *name,
-    const gchar            *object_path,
-    GCancellable           *cancellable,
-    GError                **error)
-{
-  GInitable *ret;
-  ret = g_initable_new (DBLCAP_TYPE_OBJECT_MANAGER_CLIENT, cancellable, error, "flags", flags, "name", name, "bus-type", bus_type, "object-path", object_path, "get-proxy-type-func", dblcap_object_manager_client_get_proxy_type, NULL);
-  if (ret != NULL)
-    return G_DBUS_OBJECT_MANAGER (ret);
-  else
-    return NULL;
-}
-
 

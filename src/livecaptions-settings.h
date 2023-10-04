@@ -38,6 +38,7 @@ struct _LiveCaptionsSettings {
     AdwSwitchRow *filter_slurs_switch;
     AdwSwitchRow *save_history_switch;
     AdwSwitchRow *keep_above_switch;
+    AdwActionRow *text_stream_switch;
 
     GtkScale *line_width_scale;
     GtkAdjustment *line_width_adjustment;

@@ -62,6 +62,7 @@ struct line_generator {
     ssize_t active_start_of_lines[AC_LINE_COUNT];
 
     char output[AC_LINE_MAX * AC_LINE_COUNT];
+    char plaintext[AC_LINE_MAX * AC_LINE_COUNT];
 
     PangoLayout *layout;
     int max_text_width;
@@ -76,3 +77,4 @@ void line_generator_finalize(struct line_generator *lg);
 void line_generator_break(struct line_generator *lg);
 void line_generator_set_text(struct line_generator *lg, GtkLabel *lbl);
 void line_generator_set_language(struct line_generator *lg, const char* language);
+const char *line_generator_get_plaintext(struct line_generator *lg);

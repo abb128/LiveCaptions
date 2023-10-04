@@ -34,6 +34,7 @@
 #include "asrproc.h"
 #include "line-gen.h"
 #include "livecaptions-window.h"
+#include "livecaptions-application.h"
 #include "history.h"
 #include "common.h"
 
@@ -55,6 +56,7 @@ struct asr_thread_i {
 
     size_t layout_counter;
 
+    volatile bool text_stream_active;
     volatile bool pause;
 
     bool errored;
@@ -80,6 +82,12 @@ static gboolean main_thread_update_label(void *userdata){
 
     g_mutex_lock(&data->text_mutex);
     line_generator_set_text(&data->line, data->window->label);
+    
+    if(data->text_stream_active) {
+        LiveCaptionsApplication *application = LIVECAPTIONS_APPLICATION(gtk_window_get_application(GTK_WINDOW(data->window)));
+        livecaptions_application_stream_text(application, line_generator_get_plaintext(&data->line));
+    }
+
     g_mutex_unlock(&data->text_mutex);
 
     return G_SOURCE_REMOVE;
@@ -169,6 +177,10 @@ void asr_thread_pause(asr_thread thread, bool pause) {
     thread->pause = pause;
 }
 
+void asr_thread_set_text_stream_active(asr_thread thread, bool active) {
+    thread->text_stream_active = active;
+}
+
 int asr_thread_samplerate(asr_thread thread) {
     return aam_get_sample_rate(thread->model);
 }
@@ -192,6 +204,8 @@ asr_thread create_asr_thread(const char *model_path){
     g_mutex_init(&data->text_mutex);
 
     data->thread_id = g_thread_new("lcap-audiothread", run_asr_thread, data);
+
+    data->text_stream_active = false;
 
     return data;
 }

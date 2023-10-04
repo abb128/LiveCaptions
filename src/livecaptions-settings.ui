@@ -192,6 +192,19 @@
           </object>
         </child>
 
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="description" translatable="yes"></property>
+            <property name="title" translatable="yes">Experimental</property>
+
+            <child>
+              <object class="AdwSwitchRow" id="text_stream_switch">
+                <property name="title" translatable="yes">Enable D-Bus Text Stream</property>
+              </object>
+            </child>
+            
+          </object>
+        </child>
 
         <child>
           <object class="AdwPreferencesGroup">

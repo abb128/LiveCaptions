@@ -327,3 +327,38 @@ void line_generator_set_language(struct line_generator *lg, const char* language
     lg->is_english = (language[0] == 'e') && (language[1] == 'n');
     lg->tcap.is_english = lg->is_english;
 }
+
+const char *line_generator_get_plaintext(struct line_generator *lg) {
+    bool use_fade = g_settings_get_boolean(settings, "fade-text");
+
+    char *head = &lg->plaintext[0];
+    *head = '\0';
+
+    for(int i=AC_LINE_COUNT-1; i>=0; i--) {
+        struct line *curr = &lg->lines[REL_LINE_IDX(lg->current_line, -i)];
+
+        if(!use_fade) {
+            head += sprintf(head, "%s", curr->text);
+        } else {
+            // HACK: We need to remove the <span...></span> tags
+            bool inside_markup = false;
+            for(int j=0; j<curr->head; j++) {
+                if(curr->text[j] == '<') {
+                    inside_markup = true;
+                    continue;
+                }else if(curr->text[j] == '>') {
+                    inside_markup = false;
+                    continue;
+                }else if(inside_markup) {
+                    continue;
+                }
+
+                head += sprintf(head, "%c", curr->text[j]);
+            }
+        }
+
+        if(i != 0) head += sprintf(head, "\n");
+    }
+
+    return &lg->plaintext[0];
+}

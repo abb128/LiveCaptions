@@ -68,5 +68,10 @@
             <default>'/app/LiveCaptions/models/aprilv0_en-us.april'</default>
             <summary>Currently active model</summary>
         </key>
+
+        <key name="text-stream-active" type="b">
+            <default>false</default>
+            <summary>Enable DBus API for external applications to use caption output</summary>
+        </key>
     </schema>
 </schemalist>

@@ -96,6 +96,9 @@ static void livecaptions_application_activate(GApplication *app) {
 
         LiveCaptionsWindow *lc_window = LIVECAPTIONS_WINDOW(window);
         asr_thread_set_main_window(self->asr, lc_window);
+
+        asr_thread_set_text_stream_active(self->asr, g_settings_get_boolean(self->settings, "text-stream-active"));
+        
         gtk_label_set_text(lc_window->label, " \n ");
 
         self->window = lc_window;
@@ -112,7 +115,7 @@ static void livecaptions_application_activate(GApplication *app) {
     init_audio(self);
 }
 
-static gboolean on_handle_allow_keep_above(DBLCapExternal *dbus_external,
+static gboolean on_handle_allow_keep_above(DBLCapNetSapplesLiveCaptionsExternal *dbus_external,
                                            GDBusMethodInvocation *invocation,
                                            gpointer user_data)
 {
@@ -120,7 +123,7 @@ static gboolean on_handle_allow_keep_above(DBLCapExternal *dbus_external,
 
     override_keep_above_system(true);
 
-    dblcap_external_complete_allow_keep_above(dbus_external, invocation);
+    dblcap_net_sapples_live_captions_external_complete_allow_keep_above(dbus_external, invocation);
     return TRUE;
 }
 
@@ -132,7 +135,7 @@ livecaptions_application_dbus_register(GApplication     *app,
 {
     LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(app);
  
-    self->dbus_external = dblcap_external_skeleton_new();
+    self->dbus_external = dblcap_net_sapples_live_captions_external_skeleton_new();
 
     gboolean success = g_dbus_interface_skeleton_export(
         G_DBUS_INTERFACE_SKELETON(self->dbus_external),
@@ -148,9 +151,14 @@ livecaptions_application_dbus_register(GApplication     *app,
     }
 
 
-    dblcap_external_set_keep_above(
+    dblcap_net_sapples_live_captions_external_set_keep_above(
         self->dbus_external,
         g_settings_get_boolean(self->settings, "keep-on-top")
+    );
+
+    dblcap_net_sapples_live_captions_external_set_text_stream_active(
+        self->dbus_external,
+        g_settings_get_boolean(self->settings, "text-stream-active")
     );
 
     g_signal_connect(self->dbus_external, "handle-allow-keep-above", G_CALLBACK(on_handle_allow_keep_above), self);
@@ -265,10 +273,20 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
         }
     }else if(g_str_equal(key, "keep-on-top")){
         if(self->dbus_external) {
-            dblcap_external_set_keep_above(
+            dblcap_net_sapples_live_captions_external_set_keep_above(
                 self->dbus_external,
                 g_settings_get_boolean(self->settings, "keep-on-top")
             );
+        }
+    }else if(g_str_equal(key, "text-stream-active")){
+        if(self->dbus_external) {
+            gboolean active = g_settings_get_boolean(self->settings, "text-stream-active");
+            dblcap_net_sapples_live_captions_external_set_text_stream_active(
+                self->dbus_external,
+                active
+            );
+
+            asr_thread_set_text_stream_active(self->asr, active);
         }
     }
 }
@@ -347,4 +365,11 @@ void livecaptions_application_finish_setup(LiveCaptionsApplication *self, gdoubl
         g_settings_set_double(self->settings, "benchmark", result);
 
     asr_thread_pause(self->asr, false);
+}
+
+void livecaptions_application_stream_text(LiveCaptionsApplication *self, const char* text) {
+    // printf("\n\n----\nSTREAM TEXT:\n%s", text);
+    if(self->dbus_external) {
+        dblcap_net_sapples_live_captions_external_emit_text_stream(self->dbus_external, text);
+    }
 }

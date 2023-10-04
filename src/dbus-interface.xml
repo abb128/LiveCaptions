@@ -10,5 +10,10 @@
 
         <!-- This is synced with the keep above setting in the application. -->
         <property name="KeepAbove" type="b" access="read" />
+
+        <property name="TextStreamActive" type="b" access="read" />
+        <signal name="TextStream">
+          <arg name="text" type="s"/>
+        </signal>
     </interface>
 </node>

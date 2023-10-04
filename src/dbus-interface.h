@@ -17,97 +17,114 @@ G_BEGIN_DECLS
 /* ------------------------------------------------------------------------ */
 /* Declarations for net.sapples.LiveCaptions.External */
 
-#define DBLCAP_TYPE_EXTERNAL (dblcap_external_get_type ())
-#define DBLCAP_EXTERNAL(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), DBLCAP_TYPE_EXTERNAL, DBLCapExternal))
-#define DBLCAP_IS_EXTERNAL(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), DBLCAP_TYPE_EXTERNAL))
-#define DBLCAP_EXTERNAL_GET_IFACE(o) (G_TYPE_INSTANCE_GET_INTERFACE ((o), DBLCAP_TYPE_EXTERNAL, DBLCapExternalIface))
+#define DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL (dblcap_net_sapples_live_captions_external_get_type ())
+#define DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL, DBLCapNetSapplesLiveCaptionsExternal))
+#define DBLCAP_IS_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL))
+#define DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_GET_IFACE(o) (G_TYPE_INSTANCE_GET_INTERFACE ((o), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL, DBLCapNetSapplesLiveCaptionsExternalIface))
 
-struct _DBLCapExternal;
-typedef struct _DBLCapExternal DBLCapExternal;
-typedef struct _DBLCapExternalIface DBLCapExternalIface;
+struct _DBLCapNetSapplesLiveCaptionsExternal;
+typedef struct _DBLCapNetSapplesLiveCaptionsExternal DBLCapNetSapplesLiveCaptionsExternal;
+typedef struct _DBLCapNetSapplesLiveCaptionsExternalIface DBLCapNetSapplesLiveCaptionsExternalIface;
 
-struct _DBLCapExternalIface
+struct _DBLCapNetSapplesLiveCaptionsExternalIface
 {
   GTypeInterface parent_iface;
 
 
+
   gboolean (*handle_allow_keep_above) (
-    DBLCapExternal *object,
+    DBLCapNetSapplesLiveCaptionsExternal *object,
     GDBusMethodInvocation *invocation);
 
-  gboolean  (*get_keep_above) (DBLCapExternal *object);
+  gboolean  (*get_keep_above) (DBLCapNetSapplesLiveCaptionsExternal *object);
+
+  gboolean  (*get_text_stream_active) (DBLCapNetSapplesLiveCaptionsExternal *object);
+
+  void (*text_stream) (
+    DBLCapNetSapplesLiveCaptionsExternal *object,
+    const gchar *arg_text);
 
 };
 
-GType dblcap_external_get_type (void) G_GNUC_CONST;
+GType dblcap_net_sapples_live_captions_external_get_type (void) G_GNUC_CONST;
 
-GDBusInterfaceInfo *dblcap_external_interface_info (void);
-guint dblcap_external_override_properties (GObjectClass *klass, guint property_id_begin);
+GDBusInterfaceInfo *dblcap_net_sapples_live_captions_external_interface_info (void);
+guint dblcap_net_sapples_live_captions_external_override_properties (GObjectClass *klass, guint property_id_begin);
 
 
 /* D-Bus method call completion functions: */
-void dblcap_external_complete_allow_keep_above (
-    DBLCapExternal *object,
+void dblcap_net_sapples_live_captions_external_complete_allow_keep_above (
+    DBLCapNetSapplesLiveCaptionsExternal *object,
     GDBusMethodInvocation *invocation);
+
+
+
+/* D-Bus signal emissions functions: */
+void dblcap_net_sapples_live_captions_external_emit_text_stream (
+    DBLCapNetSapplesLiveCaptionsExternal *object,
+    const gchar *arg_text);
 
 
 
 /* D-Bus method calls: */
-void dblcap_external_call_allow_keep_above (
-    DBLCapExternal *proxy,
+void dblcap_net_sapples_live_captions_external_call_allow_keep_above (
+    DBLCapNetSapplesLiveCaptionsExternal *proxy,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data);
 
-gboolean dblcap_external_call_allow_keep_above_finish (
-    DBLCapExternal *proxy,
+gboolean dblcap_net_sapples_live_captions_external_call_allow_keep_above_finish (
+    DBLCapNetSapplesLiveCaptionsExternal *proxy,
     GAsyncResult *res,
     GError **error);
 
-gboolean dblcap_external_call_allow_keep_above_sync (
-    DBLCapExternal *proxy,
+gboolean dblcap_net_sapples_live_captions_external_call_allow_keep_above_sync (
+    DBLCapNetSapplesLiveCaptionsExternal *proxy,
     GCancellable *cancellable,
     GError **error);
 
 
 
 /* D-Bus property accessors: */
-gboolean dblcap_external_get_keep_above (DBLCapExternal *object);
-void dblcap_external_set_keep_above (DBLCapExternal *object, gboolean value);
+gboolean dblcap_net_sapples_live_captions_external_get_keep_above (DBLCapNetSapplesLiveCaptionsExternal *object);
+void dblcap_net_sapples_live_captions_external_set_keep_above (DBLCapNetSapplesLiveCaptionsExternal *object, gboolean value);
+
+gboolean dblcap_net_sapples_live_captions_external_get_text_stream_active (DBLCapNetSapplesLiveCaptionsExternal *object);
+void dblcap_net_sapples_live_captions_external_set_text_stream_active (DBLCapNetSapplesLiveCaptionsExternal *object, gboolean value);
 
 
 /* ---- */
 
-#define DBLCAP_TYPE_EXTERNAL_PROXY (dblcap_external_proxy_get_type ())
-#define DBLCAP_EXTERNAL_PROXY(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), DBLCAP_TYPE_EXTERNAL_PROXY, DBLCapExternalProxy))
-#define DBLCAP_EXTERNAL_PROXY_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), DBLCAP_TYPE_EXTERNAL_PROXY, DBLCapExternalProxyClass))
-#define DBLCAP_EXTERNAL_PROXY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), DBLCAP_TYPE_EXTERNAL_PROXY, DBLCapExternalProxyClass))
-#define DBLCAP_IS_EXTERNAL_PROXY(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), DBLCAP_TYPE_EXTERNAL_PROXY))
-#define DBLCAP_IS_EXTERNAL_PROXY_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), DBLCAP_TYPE_EXTERNAL_PROXY))
+#define DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY (dblcap_net_sapples_live_captions_external_proxy_get_type ())
+#define DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY, DBLCapNetSapplesLiveCaptionsExternalProxy))
+#define DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY, DBLCapNetSapplesLiveCaptionsExternalProxyClass))
+#define DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY, DBLCapNetSapplesLiveCaptionsExternalProxyClass))
+#define DBLCAP_IS_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY))
+#define DBLCAP_IS_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_PROXY))
 
-typedef struct _DBLCapExternalProxy DBLCapExternalProxy;
-typedef struct _DBLCapExternalProxyClass DBLCapExternalProxyClass;
-typedef struct _DBLCapExternalProxyPrivate DBLCapExternalProxyPrivate;
+typedef struct _DBLCapNetSapplesLiveCaptionsExternalProxy DBLCapNetSapplesLiveCaptionsExternalProxy;
+typedef struct _DBLCapNetSapplesLiveCaptionsExternalProxyClass DBLCapNetSapplesLiveCaptionsExternalProxyClass;
+typedef struct _DBLCapNetSapplesLiveCaptionsExternalProxyPrivate DBLCapNetSapplesLiveCaptionsExternalProxyPrivate;
 
-struct _DBLCapExternalProxy
+struct _DBLCapNetSapplesLiveCaptionsExternalProxy
 {
   /*< private >*/
   GDBusProxy parent_instance;
-  DBLCapExternalProxyPrivate *priv;
+  DBLCapNetSapplesLiveCaptionsExternalProxyPrivate *priv;
 };
 
-struct _DBLCapExternalProxyClass
+struct _DBLCapNetSapplesLiveCaptionsExternalProxyClass
 {
   GDBusProxyClass parent_class;
 };
 
-GType dblcap_external_proxy_get_type (void) G_GNUC_CONST;
+GType dblcap_net_sapples_live_captions_external_proxy_get_type (void) G_GNUC_CONST;
 
 #if GLIB_CHECK_VERSION(2, 44, 0)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (DBLCapExternalProxy, g_object_unref)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (DBLCapNetSapplesLiveCaptionsExternalProxy, g_object_unref)
 #endif
 
-void dblcap_external_proxy_new (
+void dblcap_net_sapples_live_captions_external_proxy_new (
     GDBusConnection     *connection,
     GDBusProxyFlags      flags,
     const gchar         *name,
@@ -115,10 +132,10 @@ void dblcap_external_proxy_new (
     GCancellable        *cancellable,
     GAsyncReadyCallback  callback,
     gpointer             user_data);
-DBLCapExternal *dblcap_external_proxy_new_finish (
+DBLCapNetSapplesLiveCaptionsExternal *dblcap_net_sapples_live_captions_external_proxy_new_finish (
     GAsyncResult        *res,
     GError             **error);
-DBLCapExternal *dblcap_external_proxy_new_sync (
+DBLCapNetSapplesLiveCaptionsExternal *dblcap_net_sapples_live_captions_external_proxy_new_sync (
     GDBusConnection     *connection,
     GDBusProxyFlags      flags,
     const gchar         *name,
@@ -126,7 +143,7 @@ DBLCapExternal *dblcap_external_proxy_new_sync (
     GCancellable        *cancellable,
     GError             **error);
 
-void dblcap_external_proxy_new_for_bus (
+void dblcap_net_sapples_live_captions_external_proxy_new_for_bus (
     GBusType             bus_type,
     GDBusProxyFlags      flags,
     const gchar         *name,
@@ -134,10 +151,10 @@ void dblcap_external_proxy_new_for_bus (
     GCancellable        *cancellable,
     GAsyncReadyCallback  callback,
     gpointer             user_data);
-DBLCapExternal *dblcap_external_proxy_new_for_bus_finish (
+DBLCapNetSapplesLiveCaptionsExternal *dblcap_net_sapples_live_captions_external_proxy_new_for_bus_finish (
     GAsyncResult        *res,
     GError             **error);
-DBLCapExternal *dblcap_external_proxy_new_for_bus_sync (
+DBLCapNetSapplesLiveCaptionsExternal *dblcap_net_sapples_live_captions_external_proxy_new_for_bus_sync (
     GBusType             bus_type,
     GDBusProxyFlags      flags,
     const gchar         *name,
@@ -148,192 +165,36 @@ DBLCapExternal *dblcap_external_proxy_new_for_bus_sync (
 
 /* ---- */
 
-#define DBLCAP_TYPE_EXTERNAL_SKELETON (dblcap_external_skeleton_get_type ())
-#define DBLCAP_EXTERNAL_SKELETON(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), DBLCAP_TYPE_EXTERNAL_SKELETON, DBLCapExternalSkeleton))
-#define DBLCAP_EXTERNAL_SKELETON_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), DBLCAP_TYPE_EXTERNAL_SKELETON, DBLCapExternalSkeletonClass))
-#define DBLCAP_EXTERNAL_SKELETON_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), DBLCAP_TYPE_EXTERNAL_SKELETON, DBLCapExternalSkeletonClass))
-#define DBLCAP_IS_EXTERNAL_SKELETON(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), DBLCAP_TYPE_EXTERNAL_SKELETON))
-#define DBLCAP_IS_EXTERNAL_SKELETON_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), DBLCAP_TYPE_EXTERNAL_SKELETON))
+#define DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON (dblcap_net_sapples_live_captions_external_skeleton_get_type ())
+#define DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON, DBLCapNetSapplesLiveCaptionsExternalSkeleton))
+#define DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON, DBLCapNetSapplesLiveCaptionsExternalSkeletonClass))
+#define DBLCAP_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON, DBLCapNetSapplesLiveCaptionsExternalSkeletonClass))
+#define DBLCAP_IS_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON))
+#define DBLCAP_IS_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), DBLCAP_TYPE_NET_SAPPLES_LIVE_CAPTIONS_EXTERNAL_SKELETON))
 
-typedef struct _DBLCapExternalSkeleton DBLCapExternalSkeleton;
-typedef struct _DBLCapExternalSkeletonClass DBLCapExternalSkeletonClass;
-typedef struct _DBLCapExternalSkeletonPrivate DBLCapExternalSkeletonPrivate;
+typedef struct _DBLCapNetSapplesLiveCaptionsExternalSkeleton DBLCapNetSapplesLiveCaptionsExternalSkeleton;
+typedef struct _DBLCapNetSapplesLiveCaptionsExternalSkeletonClass DBLCapNetSapplesLiveCaptionsExternalSkeletonClass;
+typedef struct _DBLCapNetSapplesLiveCaptionsExternalSkeletonPrivate DBLCapNetSapplesLiveCaptionsExternalSkeletonPrivate;
 
-struct _DBLCapExternalSkeleton
+struct _DBLCapNetSapplesLiveCaptionsExternalSkeleton
 {
   /*< private >*/
   GDBusInterfaceSkeleton parent_instance;
-  DBLCapExternalSkeletonPrivate *priv;
+  DBLCapNetSapplesLiveCaptionsExternalSkeletonPrivate *priv;
 };
 
-struct _DBLCapExternalSkeletonClass
+struct _DBLCapNetSapplesLiveCaptionsExternalSkeletonClass
 {
   GDBusInterfaceSkeletonClass parent_class;
 };
 
-GType dblcap_external_skeleton_get_type (void) G_GNUC_CONST;
+GType dblcap_net_sapples_live_captions_external_skeleton_get_type (void) G_GNUC_CONST;
 
 #if GLIB_CHECK_VERSION(2, 44, 0)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (DBLCapExternalSkeleton, g_object_unref)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (DBLCapNetSapplesLiveCaptionsExternalSkeleton, g_object_unref)
 #endif
 
-DBLCapExternal *dblcap_external_skeleton_new (void);
-
-
-/* ---- */
-
-#define DBLCAP_TYPE_OBJECT (dblcap_object_get_type ())
-#define DBLCAP_OBJECT(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), DBLCAP_TYPE_OBJECT, DBLCapObject))
-#define DBLCAP_IS_OBJECT(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), DBLCAP_TYPE_OBJECT))
-#define DBLCAP_OBJECT_GET_IFACE(o) (G_TYPE_INSTANCE_GET_INTERFACE ((o), DBLCAP_TYPE_OBJECT, DBLCapObject))
-
-struct _DBLCapObject;
-typedef struct _DBLCapObject DBLCapObject;
-typedef struct _DBLCapObjectIface DBLCapObjectIface;
-
-struct _DBLCapObjectIface
-{
-  GTypeInterface parent_iface;
-};
-
-GType dblcap_object_get_type (void) G_GNUC_CONST;
-
-DBLCapExternal *dblcap_object_get_external (DBLCapObject *object);
-DBLCapExternal *dblcap_object_peek_external (DBLCapObject *object);
-
-#define DBLCAP_TYPE_OBJECT_PROXY (dblcap_object_proxy_get_type ())
-#define DBLCAP_OBJECT_PROXY(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), DBLCAP_TYPE_OBJECT_PROXY, DBLCapObjectProxy))
-#define DBLCAP_OBJECT_PROXY_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), DBLCAP_TYPE_OBJECT_PROXY, DBLCapObjectProxyClass))
-#define DBLCAP_OBJECT_PROXY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), DBLCAP_TYPE_OBJECT_PROXY, DBLCapObjectProxyClass))
-#define DBLCAP_IS_OBJECT_PROXY(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), DBLCAP_TYPE_OBJECT_PROXY))
-#define DBLCAP_IS_OBJECT_PROXY_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), DBLCAP_TYPE_OBJECT_PROXY))
-
-typedef struct _DBLCapObjectProxy DBLCapObjectProxy;
-typedef struct _DBLCapObjectProxyClass DBLCapObjectProxyClass;
-typedef struct _DBLCapObjectProxyPrivate DBLCapObjectProxyPrivate;
-
-struct _DBLCapObjectProxy
-{
-  /*< private >*/
-  GDBusObjectProxy parent_instance;
-  DBLCapObjectProxyPrivate *priv;
-};
-
-struct _DBLCapObjectProxyClass
-{
-  GDBusObjectProxyClass parent_class;
-};
-
-GType dblcap_object_proxy_get_type (void) G_GNUC_CONST;
-
-#if GLIB_CHECK_VERSION(2, 44, 0)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (DBLCapObjectProxy, g_object_unref)
-#endif
-
-DBLCapObjectProxy *dblcap_object_proxy_new (GDBusConnection *connection, const gchar *object_path);
-
-#define DBLCAP_TYPE_OBJECT_SKELETON (dblcap_object_skeleton_get_type ())
-#define DBLCAP_OBJECT_SKELETON(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), DBLCAP_TYPE_OBJECT_SKELETON, DBLCapObjectSkeleton))
-#define DBLCAP_OBJECT_SKELETON_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), DBLCAP_TYPE_OBJECT_SKELETON, DBLCapObjectSkeletonClass))
-#define DBLCAP_OBJECT_SKELETON_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), DBLCAP_TYPE_OBJECT_SKELETON, DBLCapObjectSkeletonClass))
-#define DBLCAP_IS_OBJECT_SKELETON(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), DBLCAP_TYPE_OBJECT_SKELETON))
-#define DBLCAP_IS_OBJECT_SKELETON_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), DBLCAP_TYPE_OBJECT_SKELETON))
-
-typedef struct _DBLCapObjectSkeleton DBLCapObjectSkeleton;
-typedef struct _DBLCapObjectSkeletonClass DBLCapObjectSkeletonClass;
-typedef struct _DBLCapObjectSkeletonPrivate DBLCapObjectSkeletonPrivate;
-
-struct _DBLCapObjectSkeleton
-{
-  /*< private >*/
-  GDBusObjectSkeleton parent_instance;
-  DBLCapObjectSkeletonPrivate *priv;
-};
-
-struct _DBLCapObjectSkeletonClass
-{
-  GDBusObjectSkeletonClass parent_class;
-};
-
-GType dblcap_object_skeleton_get_type (void) G_GNUC_CONST;
-
-#if GLIB_CHECK_VERSION(2, 44, 0)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (DBLCapObjectSkeleton, g_object_unref)
-#endif
-
-DBLCapObjectSkeleton *dblcap_object_skeleton_new (const gchar *object_path);
-void dblcap_object_skeleton_set_external (DBLCapObjectSkeleton *object, DBLCapExternal *interface_);
-
-/* ---- */
-
-#define DBLCAP_TYPE_OBJECT_MANAGER_CLIENT (dblcap_object_manager_client_get_type ())
-#define DBLCAP_OBJECT_MANAGER_CLIENT(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), DBLCAP_TYPE_OBJECT_MANAGER_CLIENT, DBLCapObjectManagerClient))
-#define DBLCAP_OBJECT_MANAGER_CLIENT_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), DBLCAP_TYPE_OBJECT_MANAGER_CLIENT, DBLCapObjectManagerClientClass))
-#define DBLCAP_OBJECT_MANAGER_CLIENT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), DBLCAP_TYPE_OBJECT_MANAGER_CLIENT, DBLCapObjectManagerClientClass))
-#define DBLCAP_IS_OBJECT_MANAGER_CLIENT(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), DBLCAP_TYPE_OBJECT_MANAGER_CLIENT))
-#define DBLCAP_IS_OBJECT_MANAGER_CLIENT_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), DBLCAP_TYPE_OBJECT_MANAGER_CLIENT))
-
-typedef struct _DBLCapObjectManagerClient DBLCapObjectManagerClient;
-typedef struct _DBLCapObjectManagerClientClass DBLCapObjectManagerClientClass;
-typedef struct _DBLCapObjectManagerClientPrivate DBLCapObjectManagerClientPrivate;
-
-struct _DBLCapObjectManagerClient
-{
-  /*< private >*/
-  GDBusObjectManagerClient parent_instance;
-  DBLCapObjectManagerClientPrivate *priv;
-};
-
-struct _DBLCapObjectManagerClientClass
-{
-  GDBusObjectManagerClientClass parent_class;
-};
-
-#if GLIB_CHECK_VERSION(2, 44, 0)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (DBLCapObjectManagerClient, g_object_unref)
-#endif
-
-GType dblcap_object_manager_client_get_type (void) G_GNUC_CONST;
-
-GType dblcap_object_manager_client_get_proxy_type (GDBusObjectManagerClient *manager, const gchar *object_path, const gchar *interface_name, gpointer user_data);
-
-void dblcap_object_manager_client_new (
-    GDBusConnection        *connection,
-    GDBusObjectManagerClientFlags  flags,
-    const gchar            *name,
-    const gchar            *object_path,
-    GCancellable           *cancellable,
-    GAsyncReadyCallback     callback,
-    gpointer                user_data);
-GDBusObjectManager *dblcap_object_manager_client_new_finish (
-    GAsyncResult        *res,
-    GError             **error);
-GDBusObjectManager *dblcap_object_manager_client_new_sync (
-    GDBusConnection        *connection,
-    GDBusObjectManagerClientFlags  flags,
-    const gchar            *name,
-    const gchar            *object_path,
-    GCancellable           *cancellable,
-    GError                **error);
-
-void dblcap_object_manager_client_new_for_bus (
-    GBusType                bus_type,
-    GDBusObjectManagerClientFlags  flags,
-    const gchar            *name,
-    const gchar            *object_path,
-    GCancellable           *cancellable,
-    GAsyncReadyCallback     callback,
-    gpointer                user_data);
-GDBusObjectManager *dblcap_object_manager_client_new_for_bus_finish (
-    GAsyncResult        *res,
-    GError             **error);
-GDBusObjectManager *dblcap_object_manager_client_new_for_bus_sync (
-    GBusType                bus_type,
-    GDBusObjectManagerClientFlags  flags,
-    const gchar            *name,
-    const gchar            *object_path,
-    GCancellable           *cancellable,
-    GError                **error);
+DBLCapNetSapplesLiveCaptionsExternal *dblcap_net_sapples_live_captions_external_skeleton_new (void);
 
 
 G_END_DECLS
