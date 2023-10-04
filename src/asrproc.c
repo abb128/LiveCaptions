@@ -27,6 +27,7 @@
 #include <ctype.h>
 #include <sys/mman.h>
 #include <glib.h>
+#include <time.h>
 
 #include <stdbool.h>
 #include <april_api.h>
@@ -59,12 +60,34 @@ struct asr_thread_i {
     volatile bool text_stream_active;
     volatile bool pause;
 
+    volatile time_t last_silence_time;
+
+    volatile bool ending;
+
     bool errored;
 };
 
 
-static void *run_asr_thread(void *userdata) {
+static gboolean main_thread_update_label(void *userdata);
+
+static void *run_asr_thread(void *userdata){
     asr_thread data = (asr_thread)userdata;
+
+    while(!data->ending){
+        sleep(1);
+
+        if(data->last_silence_time == 0) continue;
+
+        time_t current_time = time(NULL);
+
+        if(difftime(current_time, data->last_silence_time) >= 6.0) {
+            g_mutex_lock(&data->text_mutex);
+            data->last_silence_time = 0;
+            for(int i=1; i<AC_LINE_COUNT; i++) line_generator_break(&data->line);
+            g_mutex_unlock(&data->text_mutex);
+            g_idle_add(main_thread_update_label, data);
+        }
+    }
 
     //sleep(40);
 
@@ -102,6 +125,7 @@ static void april_result_handler(void* userdata, AprilResultType result, size_t 
         case APRIL_RESULT_RECOGNITION_FINAL:
         {
             g_mutex_lock(&data->text_mutex);
+            data->last_silence_time = 0;
 
             if((data->layout_counter != data->window->font_layout_counter) || (data->line.layout == NULL)) {
                 if(data->line.layout != NULL) g_object_unref(data->line.layout);
@@ -130,6 +154,7 @@ static void april_result_handler(void* userdata, AprilResultType result, size_t 
 
         case APRIL_RESULT_SILENCE: {
             g_mutex_lock(&data->text_mutex);
+            data->last_silence_time = time(NULL);
 
             line_generator_break(&data->line);
             save_silence_to_history();
@@ -273,6 +298,7 @@ bool asr_thread_update_model(asr_thread data, const char *model_path) {
     data->session = new_session;
 
     data->errored = false;
+    data->ending = false;
     data->pause = false;
 
     line_generator_finalize(&data->line);
@@ -296,6 +322,8 @@ void asr_thread_flush(asr_thread thread) {
 }
 
 void free_asr_thread(asr_thread thread) {
+    thread->ending = true;
+
     g_mutex_lock(&thread->text_mutex);
 
     g_thread_join(thread->thread_id);
