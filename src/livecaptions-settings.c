@@ -226,7 +226,7 @@ static void model_load_failsafe(LiveCaptionsSettings *self, bool load_default);
 static void on_model_selected(GtkCheckButton* button, LiveCaptionsSettings *self){
     if(!gtk_check_button_get_active(button)) return;
 
-    const char *model = g_quark_to_string((GQuark)g_object_get_data(button, "lcap-model-path"));
+    const char *model = g_quark_to_string((GQuark)g_object_get_data(G_OBJECT(button), "lcap-model-path"));
     if(!asr_thread_update_model(self->application->asr, model)) {
         model_load_failsafe(self, false);
         return;
@@ -244,7 +244,7 @@ static void on_builtin_toggled(LiveCaptionsSettings *self) {
 }
 
 static void on_model_deleted(GtkButton *button, LiveCaptionsSettings *self) {
-    const char *model = g_quark_to_string((GQuark)g_object_get_data(button, "lcap-model-path"));
+    const char *model = g_quark_to_string((GQuark)g_object_get_data(G_OBJECT(button), "lcap-model-path"));
     if(g_str_equal(model, "/app/LiveCaptions/models/aprilv0_en-us.april")) return;
 
     char *active_model = g_settings_get_string(self->settings, "active-model");
@@ -265,14 +265,14 @@ static void on_model_deleted(GtkButton *button, LiveCaptionsSettings *self) {
 
     GStrv result = g_strv_builder_end(builder);
 
-    g_settings_set_strv(self->settings, "installed-models", result);
+    g_settings_set_strv(self->settings, "installed-models", (const gchar * const *)result);
 
     g_strfreev(result);
     g_strv_builder_unref(builder);
 
-    AdwActionRow *row = ADW_ACTION_ROW(gtk_widget_get_parent(gtk_widget_get_parent(gtk_widget_get_parent(button))));
+    AdwActionRow *row = ADW_ACTION_ROW(gtk_widget_get_parent(gtk_widget_get_parent(gtk_widget_get_parent(GTK_WIDGET(button)))));
 
-    adw_preferences_group_remove(self->models_list, row);
+    adw_preferences_group_remove(self->models_list, GTK_WIDGET(row));
 }
 
 static void insert_model_to_list(LiveCaptionsSettings *self, gchar *model) {
@@ -284,15 +284,15 @@ static void insert_model_to_list(LiveCaptionsSettings *self, gchar *model) {
     GtkCheckButton *button = g_object_new(GTK_TYPE_CHECK_BUTTON, NULL);
     gtk_widget_set_valign(GTK_WIDGET(button), GTK_ALIGN_CENTER);
 
-    GtkButton *delete_button = gtk_button_new_from_icon_name("delete-symbolic");
-    gtk_widget_add_css_class(GTK_WIDGET(delete_button), "flat");
-    gtk_widget_set_valign(GTK_WIDGET(delete_button), GTK_ALIGN_CENTER);
+    GtkWidget *delete_button = gtk_button_new_from_icon_name("delete-symbolic");
+    gtk_widget_add_css_class(delete_button, "flat");
+    gtk_widget_set_valign(delete_button, GTK_ALIGN_CENTER);
 
     gchar *name = g_utf8_strrchr(model, -1, (gunichar)('/')) + 1;
 
     adw_preferences_row_set_title(ADW_PREFERENCES_ROW(row), name);
-    adw_preferences_group_add(self->models_list, row);
-    adw_action_row_add_prefix(row, button);
+    adw_preferences_group_add(self->models_list, GTK_WIDGET(row));
+    adw_action_row_add_prefix(row, GTK_WIDGET(button));
     adw_action_row_add_suffix(row, delete_button);
 
     adw_action_row_set_activatable_widget(row, GTK_WIDGET(button));
@@ -308,10 +308,10 @@ static void insert_model_to_list(LiveCaptionsSettings *self, gchar *model) {
 
     gpointer quark = (gpointer)g_quark_from_string(model);
 
-    g_object_set_data(button, "lcap-model-path", quark);
+    g_object_set_data(G_OBJECT(button), "lcap-model-path", quark);
     g_signal_connect(button, "toggled", G_CALLBACK(on_model_selected), self);
 
-    g_object_set_data(delete_button, "lcap-model-path", quark);
+    g_object_set_data(G_OBJECT(delete_button), "lcap-model-path", quark);
     g_signal_connect(delete_button, "clicked", G_CALLBACK(on_model_deleted), self);
 }
 
@@ -329,15 +329,15 @@ static void init_models_page(LiveCaptionsSettings *self) {
 static void add_new_model(LiveCaptionsSettings *self, gchar *model) {
     gchar **existing_models = g_settings_get_strv(self->settings, "installed-models");
 
-    if(g_strv_contains(existing_models, model)) return;
+    if(g_strv_contains((const gchar * const *)existing_models, model)) return;
 
     GStrvBuilder *builder = g_strv_builder_new();
-    g_strv_builder_addv(builder, existing_models);
+    g_strv_builder_addv(builder, (const gchar **)existing_models);
     g_strv_builder_add(builder, model);
 
     GStrv result = g_strv_builder_end(builder);
 
-    g_settings_set_strv(self->settings, "installed-models", result);
+    g_settings_set_strv(self->settings, "installed-models", (const gchar * const *)result);
 
     g_strfreev(result);
     g_strv_builder_unref(builder);
@@ -345,7 +345,7 @@ static void add_new_model(LiveCaptionsSettings *self, gchar *model) {
 
 static void model_load_failsafe(LiveCaptionsSettings *self, bool load_default) {
     GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL;
-    GtkMessageDialog *dialog = gtk_message_dialog_new (self,
+    GtkWidget *dialog = gtk_message_dialog_new (GTK_WINDOW(self),
                                         flags,
                                         GTK_MESSAGE_ERROR,
                                         GTK_BUTTONS_CLOSE,
@@ -353,7 +353,7 @@ static void model_load_failsafe(LiveCaptionsSettings *self, bool load_default) {
     
     gtk_window_present(GTK_WINDOW(dialog));
 
-    g_signal_connect (dialog, "response",
+    g_signal_connect(dialog, "response",
                     G_CALLBACK (gtk_window_destroy),
                     NULL);
     
