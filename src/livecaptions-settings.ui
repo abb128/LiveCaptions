@@ -281,6 +281,37 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="AdwPreferencesGroup" id="openai">
+            <child>
+              <object class="AdwActionRow">
+                <property name="activatable_widget">openai_url_entry</property>
+                <property name="title" translatable="yes">OpenAI URL</property>
+                <child type="suffix">
+                  <object class="GtkEntry" id="openai_url_entry">
+                    <property name="valign">center</property>
+                    <property name="placeholder-text" translatable="yes">OpenAI Endpoint URL</property>
+                    <property name="width_chars">50</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="activatable_widget">openai_key_entry</property>
+                <property name="title" translatable="yes">OpenAI Key</property>
+                <child type="suffix">
+                  <object class="GtkEntry" id="openai_key_entry">
+                    <property name="valign">center</property>
+                    <property name="visibility">false</property>
+                    <property name="placeholder-text" translatable="yes">OpenAI Key</property>
+                    <property name="width_chars">50</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
 
         <child>
           <object class="AdwPreferencesGroup">
