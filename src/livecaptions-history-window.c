@@ -396,6 +396,7 @@ static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClas
     gtk_widget_class_bind_template_callback(widget_class, auto_refresh_toggled_cb);
 }
 
+// TODO: ctrl+f search
 static void livecaptions_history_window_init(LiveCaptionsHistoryWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
