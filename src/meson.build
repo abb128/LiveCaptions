@@ -13,7 +13,8 @@ livecaptions_sources = [
   'window-helper.c',
   'history.c',
   'livecaptions-history-window.c',
-  'dbus-interface.c'
+  'dbus-interface.c',
+  'openai.c'
 ]
 
 cc = meson.get_compiler('c')
@@ -23,6 +24,8 @@ livecaptions_deps = [
   #dependency('libpipewire-0.3', version: '>=0.3.41'),
   dependency('libpulse'),
   dependency('x11'),
+  dependency('libcurl'),
+  dependency('libcjson'),
 
   cc.find_library('m', required: false),
   april_lib

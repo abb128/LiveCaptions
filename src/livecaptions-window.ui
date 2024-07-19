@@ -22,6 +22,17 @@
       </object>
     </child>
 
+    <child>
+      <object class="GtkShortcutController">
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">&lt;Control&gt;H</property>
+            <property name="action">action(app.history)</property>
+          </object>
+        </child>
+      </object>
+    </child>
+
     <child type="titlebar">
       <object class="GtkWindowHandle" id="main">
         <style>
@@ -131,6 +142,23 @@
                 </child>
 
                 <child type="overlay">
+                  <object class="GtkButton">
+                    <property name="margin-start">4</property>
+                    <property name="margin-end">4</property>
+                    <property name="margin-top">4</property>
+                    <property name="margin-bottom">4</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="icon-name">history-symbolic</property>
+                    <property name="action-name">app.history</property>
+                    <property name="tooltip-text">View History</property>
+                    <style>
+                      <class name="flat"/>
+                    </style>
+                  </object>
+                </child>
+
+                <child type="overlay">
                   <object class="GtkImage" id="too_slow_warning">
                     <style>
                       <class name="warning-icon"/>
@@ -158,7 +186,7 @@
                     <property name="icon-name">slow-icon-symbolic</property>
                     <property name="tooltip-text">Processing can't keep up. Accuracy may be affected.</property>
                   </object>
-                </child>ild>
+                </child>
 
                 <child type="overlay">
                   <object class="GtkImage" id="slowest_warning">
@@ -191,6 +219,10 @@
       <item>
         <attribute name="label" translatable="yes">_Preferences</attribute>
         <attribute name="action">app.preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_History</attribute>
+        <attribute name="action">app.history</attribute>
       </item>
     </section>
   </menu>

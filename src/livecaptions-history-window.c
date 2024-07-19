@@ -26,6 +26,7 @@
 #include "common.h"
 #include "window-helper.h"
 #include "line-gen.h"
+#include "openai.h"
 
 G_DEFINE_TYPE(LiveCaptionsHistoryWindow, livecaptions_history_window, GTK_TYPE_WINDOW)
 
@@ -38,39 +39,6 @@ static gboolean close_self_window(gpointer userdata) {
 
     return G_SOURCE_REMOVE;
 }
-
-static void message_cb(AdwMessageDialog *dialog, gchar *response, gpointer userdata){
-    if(g_str_equal(response, "delete")){
-        erase_all_history();
-
-        g_idle_add(close_self_window, userdata);
-    }
-}
-
-static void warn_deletion_cb(LiveCaptionsHistoryWindow *self){
-    GtkWindow *parent = GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(self)));
-    GtkWidget *dialog;
-
-    dialog = adw_message_dialog_new(parent,
-                                    _("Erase History?"),
-                                    _("Everything in history will be erased. You may wish to export your history before erasing!"));
-
-    adw_message_dialog_add_responses(ADW_MESSAGE_DIALOG(dialog),
-                                    "cancel",  _("_Cancel"),
-                                    "delete", _("_Erase Everything"),
-                                    NULL);
-
-    adw_message_dialog_set_response_appearance(ADW_MESSAGE_DIALOG(dialog), "delete", ADW_RESPONSE_DESTRUCTIVE);
-
-    adw_message_dialog_set_default_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
-    adw_message_dialog_set_close_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
-
-    g_signal_connect(ADW_MESSAGE_DIALOG(dialog), "response", G_CALLBACK(message_cb), self);
-
-    gtk_window_present(GTK_WINDOW(dialog));
-}
-
-
 
 static gboolean force_bottom(gpointer userdata) {
     LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(userdata);
@@ -302,6 +270,113 @@ static void refresh_cb(LiveCaptionsHistoryWindow *self) {
     g_idle_add(force_bottom, self);
 }
 
+static void message_cb(AdwMessageDialog *dialog, gchar *response, gpointer userdata){
+    if(g_str_equal(response, "delete")){
+        erase_all_history();
+
+        LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(userdata);
+        refresh_cb(self);
+        //g_idle_add(close_self_window, userdata);
+    }
+}
+
+static void warn_deletion_cb(LiveCaptionsHistoryWindow *self){
+    GtkWindow *parent = GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(self)));
+    GtkWidget *dialog;
+
+    dialog = adw_message_dialog_new(parent,
+                                    _("Erase History?"),
+                                    _("Everything in history will be erased. You may wish to export your history before erasing!"));
+
+    adw_message_dialog_add_responses(ADW_MESSAGE_DIALOG(dialog),
+                                    "cancel",  _("_Cancel"),
+                                    "delete", _("_Erase Everything"),
+                                    NULL);
+
+    adw_message_dialog_set_response_appearance(ADW_MESSAGE_DIALOG(dialog), "delete", ADW_RESPONSE_DESTRUCTIVE);
+
+    adw_message_dialog_set_default_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
+    adw_message_dialog_set_close_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
+
+    g_signal_connect(ADW_MESSAGE_DIALOG(dialog), "response", G_CALLBACK(message_cb), self);
+
+    gtk_window_present(GTK_WINDOW(dialog));
+}
+
+char* get_full_conversation_history(void) {
+    const struct history_session *session;
+    GString *full_history = g_string_new(NULL);
+    size_t idx = 0;
+
+    // First, determine the total number of sessions
+    while (get_history_session(idx) != NULL) {
+        idx++;
+    }
+
+    // Now iterate over the sessions in forward order
+    for (size_t i = idx; i > 0; i--) {
+        session = get_history_session(i - 1);
+        for (size_t j = 0; j < session->entries_count; j++) {
+            const struct history_entry *entry = &session->entries[j];
+            for (size_t k = 0; k < entry->tokens_count; k++) {
+                g_string_append(full_history, entry->tokens[k].token);
+            }
+            g_string_append_c(full_history, '\n');
+        }
+    }
+
+    return g_string_free(full_history, FALSE); // FALSE means don't deallocate, return the data with a terminating null byte
+}
+
+
+static void send_message_cb(GtkButton *button, gpointer userdata) {
+    LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(userdata);
+
+    GtkLabel *response_label = GTK_LABEL(self->ai_response_label);
+    gtk_label_set_text(GTK_LABEL(self->ai_response_label), "Processing...");
+
+    OpenAI_Config config;
+    config.api_url = g_settings_get_string(self->settings, "openai-url");
+    config.api_key = g_settings_get_string(self->settings, "openai-key");
+
+    char *session_text = get_full_conversation_history();
+    char *system_text = g_strdup_printf("The user will ask questions relative the converation history: %s", session_text);
+
+    OpenAI_Message messages[] = {
+        {"system", system_text},
+        {"user", gtk_editable_get_text(GTK_EDITABLE(self->chat_input_entry))},
+    };
+
+    OpenAI_Response response;
+    if (openai_chat(&config, "gpt-4o-mini", messages, sizeof(messages) / sizeof(messages[0]), 0.7, &response)) {
+        gtk_label_set_text(GTK_LABEL(self->ai_response_label), response.message_content);
+    }
+
+    free_openai_response(&response);
+
+    gtk_editable_set_text(GTK_EDITABLE(self->chat_input_entry), "");
+}
+
+// This function will be called every second
+static gboolean refresh_history_callback(gpointer userdata) {
+    LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(userdata);
+
+    // Check if auto-refresh is enabled
+    if (g_settings_get_boolean(self->settings, "auto-refresh")) {
+        refresh_cb(self);
+    }
+
+    // Returning TRUE so the function gets called again
+    return G_SOURCE_CONTINUE;
+}
+
+// Callback function for when the checkbox is toggled
+static void auto_refresh_toggled_cb(GtkCheckButton *button, gpointer userdata) {
+    LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(userdata);
+    gboolean active = gtk_check_button_get_active(button);
+    g_settings_set_boolean(self->settings, "auto-refresh", active);
+}
+
 static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
@@ -309,24 +384,34 @@ static void livecaptions_history_window_class_init(LiveCaptionsHistoryWindowClas
 
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, scroll);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, main_box);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, ai_response_label);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, chat_input_entry);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsHistoryWindow, auto_refresh_checkbox);
 
     gtk_widget_class_bind_template_callback(widget_class, load_more_cb);
     gtk_widget_class_bind_template_callback(widget_class, export_cb);
     gtk_widget_class_bind_template_callback(widget_class, warn_deletion_cb);
     gtk_widget_class_bind_template_callback(widget_class, refresh_cb);
+    gtk_widget_class_bind_template_callback(widget_class, send_message_cb);
+    gtk_widget_class_bind_template_callback(widget_class, auto_refresh_toggled_cb);
 }
 
-// TODO: ctrl+f search
 static void livecaptions_history_window_init(LiveCaptionsHistoryWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
-
 
     self->session_load = 0;
     load_to(self, ++self->session_load);
 
     g_idle_add(force_bottom, self);
     g_idle_add(deferred_update_keep_above, self);
-}
 
+    // Bind the checkbox state to GSettings key
+    GtkCheckButton *check_button = GTK_CHECK_BUTTON(self->auto_refresh_checkbox);
+    gboolean active = g_settings_get_boolean(self->settings, "auto-refresh");
+    gtk_check_button_set_active(check_button, active);
+
+    // Add a timeout to call refresh_history_callback every second
+    g_timeout_add_seconds(1, refresh_history_callback, self);
+}

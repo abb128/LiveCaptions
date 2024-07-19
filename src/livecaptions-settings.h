@@ -53,6 +53,9 @@ struct _LiveCaptionsSettings {
     GtkCheckButton *radio_button_1;
 
     GtkFileFilter *file_filter;
+
+    GtkEntry *openai_url_entry;
+    GtkEntry *openai_key_entry;
 };
 
 G_BEGIN_DECLS
