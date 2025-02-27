@@ -1,7 +1,12 @@
 data/net.sapples.LiveCaptions.desktop.in
 data/net.sapples.LiveCaptions.appdata.xml.in
 data/net.sapples.LiveCaptions.gschema.xml
-src/livecaptions-window.ui
 src/main.c
+src/livecaptions-window.ui
 src/livecaptions-window.c
-
+src/livecaptions-history-window.ui
+src/livecaptions-history-window.c
+src/livecaptions-settings.ui
+src/livecaptions-settings.c
+src/livecaptions-welcome.ui
+src/livecaptions-welcome.c
