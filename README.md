@@ -99,14 +99,17 @@ and to stop it, just change `restart` for stop.
 
 To set up a build, run these commands:
 ```
-$ meson setup builddir
+$ meson setup builddir --buildtype release
 $ meson devenv -C builddir
 ```
 
 
 ### Build and run
 
-Now you can build the application by running `ninja`.
+Now you can build the application. Run the following:
+```
+$ ninja
+```
 
 Before being able to run the app, you must also download the model and export `APRIL_MODEL_PATH` to where the model is. For example:
 ```
@@ -114,6 +117,9 @@ $ wget https://april.sapples.net/april-english-dev-01110_en.april
 $ export APRIL_MODEL_PATH=`pwd`/april-english-dev-01110_en.april
 ```
 
-You should now be able to run the app with `src/livecaptions`
+You should now be able to run the app with:
+```
+$ src/livecaptions
+```
 
 If you're on MacOS, now, go to security settings and confirm the prompt which asks to allow `libonnxruntime`, then, the application should work as intended.
