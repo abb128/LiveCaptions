@@ -25,6 +25,14 @@
 #include <april_api.h>
 #include <stdio.h>
 #include <time.h>
+#include <sys/time.h>
+
+uint64_t get_time_us(void) {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec * 1000000 + tv.tv_usec;
+}
+
 
 static void benchmark_dummy_handler(G_GNUC_UNUSED void* _userdata,
                                     G_GNUC_UNUSED AprilResultType _result,
@@ -89,7 +97,7 @@ static void *run_benchmark_thread(void *userdata) {
     size_t sr = aam_get_sample_rate(model);
     g_assert(sr < 48000);
 
-    time_t begin = time(NULL);
+    uint64_t begin = get_time_us();
 
 
     int idx = 0;
@@ -100,9 +108,10 @@ static void *run_benchmark_thread(void *userdata) {
         self->benchmark_progress_v = ((double)sec) / 30.0;
 
 
-        time_t current = time(NULL);
-        if(difftime(current, begin) > 55.0) {
-            double speed = ((double)sec) / difftime(current, begin);
+        uint64_t current = get_time_us();
+        double time_diff = (current - begin) / 1000.0 / 1000.0;
+        if(time_diff > 55.0) {
+            double speed = ((double)sec) / time_diff;
             self->benchmark_result_v = speed;
             
             goto end;
@@ -111,9 +120,10 @@ static void *run_benchmark_thread(void *userdata) {
         g_idle_add(update_progress, self);
     }
 
-    time_t end = time(NULL);
+    uint64_t end = get_time_us();
+    double time_diff = (end - begin) / 1000.0 / 1000.0;
 
-    double speed = 30.0 / difftime(end, begin);
+    double speed = 30.0 / time_diff;
     self->benchmark_result_v = speed;
 
 end:
