@@ -186,6 +186,8 @@ void load_history_from(const char *path){
 
 static void export_session_into_text(FILE *f, const struct history_session *session) {
     char time_buff[512];
+    char date_buff[512];
+    char prev_date_buff[512];
 
     struct tm *tm = localtime(&session->timestamp);
     strftime(time_buff, 512, "%F | %H:%M", tm);
@@ -196,8 +198,14 @@ static void export_session_into_text(FILE *f, const struct history_session *sess
         struct history_entry *entry = &session->entries[i];
 
         tm = localtime_r(&entry->timestamp, tm);
-        strftime(time_buff, 512, "%T", tm);
+        strftime(time_buff, sizeof(time_buff), "%T", tm);
+        strftime(date_buff, sizeof(date_buff), "%F", tm);
 
+        if (strcmp(date_buff, prev_date_buff) != 0) {
+            fprintf(f, "    -[ %s ]-    ", date_buff);
+            strncpy(prev_date_buff, date_buff, sizeof(prev_date_buff));
+        }
+        
         fprintf(f, "\n(%s) - ", time_buff);
 
         for(size_t j=0; j<entry->tokens_count; j++){
