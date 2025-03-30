@@ -202,6 +202,9 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, models_list);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, radio_button_1);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, file_filter);
+    
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, openai_url_entry);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, openai_key_entry);
 
     gtk_widget_class_bind_template_callback (widget_class, report_cb);
     gtk_widget_class_bind_template_callback (widget_class, about_cb);
@@ -444,4 +447,7 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     }
 
     init_models_page(self);
+
+    g_settings_bind(self->settings, "openai-key", self->openai_key_entry, "text", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind(self->settings, "openai-url", self->openai_url_entry, "text", G_SETTINGS_BIND_DEFAULT);
 }

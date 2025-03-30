@@ -73,5 +73,20 @@
             <default>false</default>
             <summary>Enable DBus API for external applications to use caption output</summary>
         </key>
+
+        <key name="auto-refresh" type="b">
+            <default>false</default>
+            <summary>Auto-refresh history</summary>
+        </key>
+
+        <key name="openai-key" type="s">
+            <default>''</default>
+            <summary>OpenAI API Token</summary>
+        </key>
+
+        <key name="openai-url" type="s">
+            <default>''</default>
+            <summary>OpenAI API Token</summary>
+        </key>
     </schema>
 </schemalist>

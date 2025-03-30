@@ -10,6 +10,13 @@
 
     <property name="titlebar">
       <object class="GtkHeaderBar">
+        <child type="start">
+          <object class="GtkCheckButton" id="auto_refresh_checkbox">
+            <property name="label">Auto-refresh</property>
+            <property name="active">True</property>
+            <signal name="toggled" handler="auto_refresh_toggled_cb" swapped="no"/>
+          </object>
+        </child>
         <child type="end">
           <object class="GtkButton">
             <property name="icon-name">refresh-symbolic</property>
@@ -34,47 +41,94 @@
       </object>
     </property>
 
-
     <child>
-      <object class="GtkScrolledWindow" id="scroll">
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
         <property name="vexpand">True</property>
-        <child>
-          <object class="GtkBox">
-            <property name="orientation">vertical</property>
-            <property name="vexpand">True</property>
-            <property name="valign">end</property>
+        <property name="hexpand">True</property>
 
+        <child>
+          <object class="GtkScrolledWindow" id="scroll">
+            <property name="vexpand">True</property>
             <child>
-              <object class="GtkButton" id="load_more_button">
-                <property name="margin-top">8</property>
-                <property name="label">Load More</property>
-                <property name="halign">center</property>
-                <property name="valign">start</property>
-                
-                <signal name="clicked" handler="load_more_cb" swapped="yes"/>
-                <style>
-                  <class name="pill"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox" id="main_box">
-                <property name="hexpand">True</property>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
                 <property name="vexpand">True</property>
-                <property name="halign">start</property>
                 <property name="valign">end</property>
 
-                <property name="margin-start">18</property>
-                <property name="margin-end">36</property>
-                <property name="margin-top">12</property>
-                <property name="margin-bottom">12</property>
+                <child>
+                  <object class="GtkButton" id="load_more_button">
+                    <property name="margin-top">8</property>
+                    <property name="label">Load More</property>
+                    <property name="halign">center</property>
+                    <property name="valign">start</property>
 
-                <property name="orientation">vertical</property>
+                    <signal name="clicked" handler="load_more_cb" swapped="yes"/>
+                    <style>
+                      <class name="pill"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="main_box">
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="halign">start</property>
+                    <property name="valign">end</property>
 
+                    <property name="margin-start">18</property>
+                    <property name="margin-end">36</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
 
+                    <property name="orientation">vertical</property>
+                  </object>
+                </child>
               </object>
             </child>
+          </object>
+        </child>
 
+        <!-- AI Response and Chat Text Input -->
+        <child>
+          <object class="GtkFrame">
+            <property name="label">AI Response</property>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="vexpand">True</property>
+                <child>
+                  <object class="GtkLabel" id="ai_response_label">
+                    <property name="label">AI response will appear here...</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="halign">fill</property>
+                    <property name="valign">fill</property>
+                    <property name="wrap">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="hexpand">True</property>
+
+            <child>
+              <object class="GtkEntry" id="chat_input_entry">
+                <property name="hexpand">True</property>
+                <property name="placeholder-text">Type your message here...</property>
+                <signal name="activate" handler="send_message_cb" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label">Send</property>
+                <signal name="clicked" handler="send_message_cb" swapped="no"/>
+              </object>
+            </child>
           </object>
         </child>
       </object>

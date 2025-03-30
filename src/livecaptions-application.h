@@ -21,6 +21,7 @@
 #include <adwaita.h>
 #include "audiocap.h"
 #include "livecaptions-window.h"
+#include "livecaptions-history-window.h"
 #include "dbus-interface.h"
 
 struct _LiveCaptionsApplication {
@@ -31,6 +32,8 @@ struct _LiveCaptionsApplication {
     GSettings *settings;
     LiveCaptionsWindow *window;
     GtkWindow *welcome;
+
+    LiveCaptionsHistoryWindow *history_window;
 
     asr_thread asr;
     audio_thread audio;

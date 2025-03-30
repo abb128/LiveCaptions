@@ -26,9 +26,15 @@ struct _LiveCaptionsHistoryWindow {
 
     GSettings *settings;
 
+    GtkCheckButton *auto_refresh_checkbox;
+
     GtkBox *main_box;
 
     GtkScrolledWindow *scroll;
+
+    GtkLabel *ai_response_label;
+
+    GtkEntry *chat_input_entry;
 
     size_t session_load;
 };

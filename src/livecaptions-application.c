@@ -19,6 +19,7 @@
 #include "livecaptions-application.h"
 #include "livecaptions-settings.h"
 #include "livecaptions-window.h"
+#include "livecaptions-history-window.h"
 #include "livecaptions-welcome.h"
 #include "window-helper.h"
 #include "asrproc.h"
@@ -251,6 +252,46 @@ livecaptions_application_show_preferences(G_GNUC_UNUSED GSimpleAction *action,
 
 }
 
+static void history_window_destroy_cb(GtkWidget *widget, gpointer data)
+{
+    LiveCaptionsApplication *self = (LiveCaptionsApplication *)data;
+    self->history_window = NULL;
+}
+
+static void
+livecaptions_application_show_history(G_GNUC_UNUSED GSimpleAction *action,
+                                      G_GNUC_UNUSED GVariant     *parameter,
+                                      gpointer       user_data)
+{
+    LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
+    if (self->welcome != NULL) return;
+
+    if (self->history_window != NULL) {
+        // If history window already exists, just present it
+        gtk_window_present(GTK_WINDOW(self->history_window));
+        return;
+    }
+
+    // Get the active window
+    GtkWindow *window = gtk_application_get_active_window(GTK_APPLICATION(self));
+    if (!GTK_IS_WINDOW(window)) {
+        g_warning("No active window found or invalid active window.");
+        return;
+    }
+
+    // Create a new history window with the active window as its transient parent
+    self->history_window = g_object_new(LIVECAPTIONS_TYPE_HISTORY_WINDOW, "transient-for", window, NULL);
+    if (!LIVECAPTIONS_IS_HISTORY_WINDOW(self->history_window)) {
+        g_warning("Failed to create LiveCaptionsHistoryWindow.");
+        self->history_window = NULL;
+        return;
+    }
+
+    // Connect to the destroy signal to reset the reference when the window is closed
+    g_signal_connect(self->history_window, "destroy", G_CALLBACK(history_window_destroy_cb), self);
+
+    gtk_window_present(GTK_WINDOW(self->history_window));
+}
 
 static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
                                char      *key,
@@ -327,6 +368,10 @@ static void livecaptions_application_init(LiveCaptionsApplication *self) {
     g_autoptr(GSimpleAction) prefs_action = g_simple_action_new("preferences", NULL);
     g_signal_connect(prefs_action, "activate", G_CALLBACK(livecaptions_application_show_preferences), self);
     g_action_map_add_action(G_ACTION_MAP(self), G_ACTION(prefs_action));
+
+    g_autoptr(GSimpleAction) history_action = g_simple_action_new("history", NULL);
+    g_signal_connect(history_action, "activate", G_CALLBACK(livecaptions_application_show_history), self); // Corrected line
+    g_action_map_add_action(G_ACTION_MAP(self), G_ACTION(history_action));
 
     gboolean use_microphone = g_settings_get_boolean(self->settings, "microphone");
     g_autoptr(GSimpleAction) mic_action = g_simple_action_new_stateful("microphone", NULL, g_variant_new_boolean(use_microphone));
