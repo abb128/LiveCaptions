@@ -8,6 +8,17 @@ project('livecaptions', 'c',
 )
 
 cmake = import('cmake')
+
+onnx_root = run_command('printenv', 'ONNX_ROOT', check: true).stdout().strip()
+if onnx_root == ''
+  error('ONNX_ROOT environment variable is not set')
+endif
+
+add_global_arguments(
+  '-I' + join_paths(onnx_root, 'include'),
+  language: 'c',
+)
+
 april = cmake.subproject('april-asr')
 
 april_lib = april.dependency('aprilasr_static')
