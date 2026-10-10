@@ -39,7 +39,8 @@ static gboolean close_self_window(gpointer userdata) {
     return G_SOURCE_REMOVE;
 }
 
-static void message_cb(AdwMessageDialog *dialog, gchar *response, gpointer userdata){
+static void message_cb(AdwAlertDialog *dialog, gchar *response, gpointer userdata){
+    (void)dialog;
     if(g_str_equal(response, "delete")){
         erase_all_history();
 
@@ -48,26 +49,24 @@ static void message_cb(AdwMessageDialog *dialog, gchar *response, gpointer userd
 }
 
 static void warn_deletion_cb(LiveCaptionsHistoryWindow *self){
-    GtkWindow *parent = GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(self)));
-    GtkWidget *dialog;
+    AdwDialog *dialog;
 
-    dialog = adw_message_dialog_new(parent,
-                                    _("Erase History?"),
-                                    _("Everything in history will be erased. You may wish to export your history before erasing!"));
+    dialog = adw_alert_dialog_new(_("Erase History?"),
+                                  _("Everything in history will be erased. You may wish to export your history before erasing!"));
 
-    adw_message_dialog_add_responses(ADW_MESSAGE_DIALOG(dialog),
-                                    "cancel",  _("_Cancel"),
-                                    "delete", _("_Erase Everything"),
-                                    NULL);
+    adw_alert_dialog_add_responses(ADW_ALERT_DIALOG(dialog),
+                                   "cancel",  _("_Cancel"),
+                                   "delete", _("_Erase Everything"),
+                                   NULL);
 
-    adw_message_dialog_set_response_appearance(ADW_MESSAGE_DIALOG(dialog), "delete", ADW_RESPONSE_DESTRUCTIVE);
+    adw_alert_dialog_set_response_appearance(ADW_ALERT_DIALOG(dialog), "delete", ADW_RESPONSE_DESTRUCTIVE);
 
-    adw_message_dialog_set_default_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
-    adw_message_dialog_set_close_response(ADW_MESSAGE_DIALOG(dialog), "cancel");
+    adw_alert_dialog_set_default_response(ADW_ALERT_DIALOG(dialog), "cancel");
+    adw_alert_dialog_set_close_response(ADW_ALERT_DIALOG(dialog), "cancel");
 
-    g_signal_connect(ADW_MESSAGE_DIALOG(dialog), "response", G_CALLBACK(message_cb), self);
+    g_signal_connect(ADW_ALERT_DIALOG(dialog), "response", G_CALLBACK(message_cb), self);
 
-    gtk_window_present(GTK_WINDOW(dialog));
+    adw_dialog_present(dialog, GTK_WIDGET(self));
 }
 
 
@@ -232,50 +231,35 @@ static void load_more_cb(LiveCaptionsHistoryWindow *self) {
 }
 
 
-static void on_save_response(GtkNativeDialog *native,
-                             int        response,
-                             LiveCaptionsHistoryWindow *self)
+static void on_save_response(GObject      *source,
+                             GAsyncResult *result,
+                             gpointer      user_data)
 {
-    if(response == GTK_RESPONSE_ACCEPT){
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER(native);
+    LiveCaptionsHistoryWindow *self = LIVECAPTIONS_HISTORY_WINDOW(user_data);
 
-        g_autoptr(GFile) file = gtk_file_chooser_get_file(chooser);
-        
+    g_autoptr(GFile) file = gtk_file_dialog_save_finish(GTK_FILE_DIALOG(source), result, NULL);
+    if(file != NULL){
         char *path = g_file_get_path(file);
 
         export_history_as_text(path);
 
-        char *uri = g_file_get_uri(file);
-
-        gtk_show_uri(GTK_WINDOW(self), uri, GDK_CURRENT_TIME);
+        g_autoptr(GtkFileLauncher) launcher = gtk_file_launcher_new(file);
+        gtk_file_launcher_launch(launcher, GTK_WINDOW(self), NULL, NULL, NULL);
 
         g_free(path);
-        g_free(uri);
     }
 
-    g_object_unref(native);
+    g_object_unref(self);
 }
 
 static void export_cb(LiveCaptionsHistoryWindow *self) {
-    GtkFileChooserNative *native;
-    GtkFileChooser *chooser;
-    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+    g_autoptr(GtkFileDialog) dialog = gtk_file_dialog_new();
 
-    native = gtk_file_chooser_native_new("Export History",
-                                         GTK_WINDOW(self),
-                                         action,
-                                         _("_Export"),
-                                         _("_Cancel"));
+    gtk_file_dialog_set_title(dialog, "Export History");
+    gtk_file_dialog_set_accept_label(dialog, _("_Export"));
+    gtk_file_dialog_set_initial_name(dialog, _("Live Captions History.txt"));
 
-    chooser = GTK_FILE_CHOOSER(native);
-
-    gtk_file_chooser_set_current_name(chooser, _("Live Captions History.txt"));
-
-    gtk_native_dialog_show(GTK_NATIVE_DIALOG(native));
-
-    g_signal_connect(native, "response",
-                     G_CALLBACK (on_save_response),
-                     self);
+    gtk_file_dialog_save(dialog, GTK_WINDOW(self), NULL, on_save_response, g_object_ref(self));
 }
 
 // The window needs to be kept on top if the main window is kept on top,

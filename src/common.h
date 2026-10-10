@@ -20,7 +20,13 @@
 
 #define SWEAR_REPLACEMENT " [__]"
 
-#define LIVECAPTIONS_VERSION "0.4.1"
+#include "livecaptions-config.h"
+#define LIVECAPTIONS_VERSION PACKAGE_VERSION
 
-#define MINIMUM_BENCHMARK_RESULT (0.6)
+// Recognition runs without time compression (ASYNC_NO_RT), so anything below
+// 1.0x real time accumulates a backlog until audio is dropped. Require
+// headroom for the load of the rest of the desktop.
+#define MINIMUM_BENCHMARK_RESULT (1.2)
+// Below this, captions keep up only with little headroom
+#define GOOD_BENCHMARK_RESULT (1.5)
 #define GET_MODEL_PATH() (getenv("APRIL_MODEL_PATH") == NULL) ? "/app/LiveCaptions/models/aprilv0_en-us.april" : getenv("APRIL_MODEL_PATH")

@@ -55,6 +55,7 @@ static void stream_success_cb(pa_stream *stream, int success, void *userdata);
 static void stream_read_cb(pa_stream *stream, size_t nbytes, void *userdata);
 
 static void server_info_callback(pa_context *c, const pa_server_info *i, void *userdata){
+    (void)c;
     audio_thread_pa data = (audio_thread_pa)userdata;
 
     data->source_name = (char *)calloc(1, strlen(i->default_source_name) + 1);
@@ -154,11 +155,13 @@ void *run_audio_thread_pa(void *userdata) {
 }
 
 static void context_state_cb(pa_context* context, void* userdata) {
+    (void)context;
     audio_thread_pa data = userdata;
     pa_threaded_mainloop_signal(data->mainloop, 0);
 }
 
 static void stream_state_cb(pa_stream *s, void *userdata) {
+    (void)s;
     audio_thread_pa data = userdata;
     pa_threaded_mainloop_signal(data->mainloop, 0);
 }
@@ -196,6 +199,8 @@ static void stream_read_cb(pa_stream *stream, size_t nbytes, void *userdata) {
 }
 
 static void stream_success_cb(pa_stream *stream, int success, void *userdata) {
+    (void)stream;
+    (void)success;
     audio_thread_pa data = userdata;
     pa_threaded_mainloop_signal(data->mainloop, 0);
 }

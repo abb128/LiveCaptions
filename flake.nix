@@ -1,6 +1,8 @@
 {
   description = "LiveCaptions flake";
   inputs = {
+    # april-asr is a git submodule built by meson's cmake subproject
+    self.submodules = true;
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     april-asr = {
@@ -25,19 +27,23 @@
             nativeBuildInputs = with pkgs; [
               meson
               ninja
-              wrapGAppsHook
-            ];
-            buildInputs = with pkgs; [
               cmake
-              pkgconfig
+              pkg-config
+              wrapGAppsHook4
               appstream-glib # appstream-util
               desktop-file-utils # desktop-file-utils
               gettext # msgfmt
               glib # glib-compile-schemas
-              libadwaita # libadwaita-1
+            ];
+            buildInputs = with pkgs; [
+              gtk4 # gtk4 >= 4.12
+              libadwaita # libadwaita-1 >= 1.5
               libpulseaudio # libpulse
+              libx11 # x11
               onnxruntime
             ];
+            # cmake is only used for the april-asr meson subproject
+            dontUseCmakeConfigure = true;
             preFixup = ''
               gappsWrapperArgs+=(--prefix APRIL_MODEL_PATH : "${april-asr}")
             '';

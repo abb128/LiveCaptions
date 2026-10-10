@@ -25,14 +25,6 @@
 #include <april_api.h>
 #include <stdio.h>
 #include <time.h>
-#include <sys/time.h>
-
-uint64_t get_time_us(void) {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return tv.tv_sec * 1000000 + tv.tv_usec;
-}
-
 
 static void benchmark_dummy_handler(G_GNUC_UNUSED void* _userdata,
                                     G_GNUC_UNUSED AprilResultType _result,
@@ -43,17 +35,51 @@ static void benchmark_dummy_handler(G_GNUC_UNUSED void* _userdata,
 }
 
 
-static gboolean update_progress(gpointer userdata){
-    LiveCaptionsWelcome *self = userdata;
+// Amount of audio to transcribe, and the chunk size it is fed in
+#define BENCHMARK_AUDIO_SECONDS (30)
+#define BENCHMARK_CHUNKS_PER_SECOND (10)
 
-    gtk_progress_bar_set_fraction(self->benchmark_progress, self->benchmark_progress_v);
+typedef struct {
+    LiveCaptionsWelcome *self;
+    gdouble value;
+} BenchmarkUpdate;
+
+static void benchmark_update_free(gpointer data) {
+    BenchmarkUpdate *update = data;
+    g_object_unref(update->self);
+    g_free(update);
+}
+
+// Hands a value to the main thread; the update holds a ref so self outlives it
+static void post_benchmark_update(LiveCaptionsWelcome *self, GSourceFunc func, gdouble value) {
+    BenchmarkUpdate *update = g_new(BenchmarkUpdate, 1);
+    update->self = g_object_ref(self);
+    update->value = value;
+
+    g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, func, update, benchmark_update_free);
+}
+
+static gboolean update_progress(gpointer userdata){
+    BenchmarkUpdate *update = userdata;
+    LiveCaptionsWelcome *self = update->self;
+
+    if(g_atomic_int_get(&self->benchmark_cancelled)) return G_SOURCE_REMOVE;
+
+    gtk_progress_bar_set_fraction(self->benchmark_progress, update->value);
 
     return G_SOURCE_REMOVE;
 }
 
 
 static gboolean benchmark_finish(gpointer userdata){
-    LiveCaptionsWelcome *self = userdata;
+    BenchmarkUpdate *update = userdata;
+    LiveCaptionsWelcome *self = update->self;
+
+    if(g_atomic_int_get(&self->benchmark_cancelled)) return G_SOURCE_REMOVE;
+
+    self->benchmark_result_v = update->value;
+
+    gtk_progress_bar_set_fraction(self->benchmark_progress, 1.0);
 
     char result_txt[128];
     snprintf(result_txt, 128, "Result: %.2f", self->benchmark_result_v);
@@ -65,7 +91,7 @@ static gboolean benchmark_finish(gpointer userdata){
 
     if(self->benchmark_result_v < MINIMUM_BENCHMARK_RESULT) {
         gtk_stack_set_visible_child(self->stack, GTK_WIDGET(self->benchmark_result_bad));
-    } else if(self->benchmark_result_v < 1.1) {
+    } else if(self->benchmark_result_v < GOOD_BENCHMARK_RESULT) {
         gtk_stack_set_visible_child(self->stack, GTK_WIDGET(self->benchmark_result_q));
     } else {
         gtk_stack_set_visible_child(self->stack, GTK_WIDGET(self->benchmark_result_good));
@@ -74,11 +100,17 @@ static gboolean benchmark_finish(gpointer userdata){
     return G_SOURCE_REMOVE;
 }
 
+// Measures how many seconds of audio the model transcribes per second of
+// wall-clock time. Owns a ref on self, released by the final update.
 static void *run_benchmark_thread(void *userdata) {
     LiveCaptionsWelcome *self = userdata;
+    double speed = 0.0;
 
     AprilASRModel model = asr_thread_get_model(self->application->asr);
-    g_assert(model != NULL);
+    if(model == NULL) {
+        printf("Benchmark: no model is loaded\n");
+        goto done;
+    }
 
     AprilConfig config = {
         .handler = benchmark_dummy_handler,
@@ -87,57 +119,72 @@ static void *run_benchmark_thread(void *userdata) {
     };
 
     AprilASRSession session = aas_create_session(model, config);
-    g_assert(session != NULL);
-
-    short noise_data[48000];
-    for(int i=0; i<48000; i++){
-        noise_data[i] = rand();
+    if(session == NULL) {
+        printf("Benchmark: failed to create session\n");
+        goto done;
     }
 
     size_t sr = aam_get_sample_rate(model);
-    g_assert(sr < 48000);
+    size_t chunk = sr / BENCHMARK_CHUNKS_PER_SECOND;
 
-    uint64_t begin = get_time_us();
-
-
-    int idx = 0;
-    for(int sec=0; sec<30; sec++){
-        aas_feed_pcm16(session, &noise_data[idx], sr);
-
-        idx = (idx + sr) % 48000;
-        self->benchmark_progress_v = ((double)sec) / 30.0;
-
-
-        uint64_t current = get_time_us();
-        double time_diff = (current - begin) / 1000.0 / 1000.0;
-        if(time_diff > 55.0) {
-            double speed = ((double)sec) / time_diff;
-            self->benchmark_result_v = speed;
-            
-            goto end;
-        }
-
-        g_idle_add(update_progress, self);
+    // One second of noise, fed repeatedly
+    short *noise_data = g_new(short, sr);
+    for(size_t i=0; i<sr; i++){
+        noise_data[i] = (short)g_random_int_range(G_MINSHORT, G_MAXSHORT + 1);
     }
 
-    uint64_t end = get_time_us();
-    double time_diff = (end - begin) / 1000.0 / 1000.0;
+    // Warm up first so one-off initialization doesn't count against the result
+    aas_feed_pcm16(session, noise_data, sr);
+    aas_flush(session);
 
-    double speed = 30.0 / time_diff;
-    self->benchmark_result_v = speed;
+    // Past this point the result is below the minimum anyway, so stop early
+    // rather than make slow machines wait
+    const double time_limit = BENCHMARK_AUDIO_SECONDS / MINIMUM_BENCHMARK_RESULT;
+    const int total_chunks = BENCHMARK_AUDIO_SECONDS * BENCHMARK_CHUNKS_PER_SECOND;
 
-end:
+    gint64 begin = g_get_monotonic_time();
+    double elapsed = 0.0;
+    int fed = 0;
+
+    while(fed < total_chunks && !g_atomic_int_get(&self->benchmark_cancelled)){
+        aas_feed_pcm16(session, &noise_data[(fed % BENCHMARK_CHUNKS_PER_SECOND) * chunk], chunk);
+        fed++;
+
+        if(fed == total_chunks) aas_flush(session);
+
+        elapsed = (g_get_monotonic_time() - begin) / (double)G_USEC_PER_SEC;
+        if(elapsed > time_limit) break;
+
+        post_benchmark_update(self, update_progress, (double)fed / total_chunks);
+    }
+
     aas_free(session);
+    g_free(noise_data);
 
-    g_idle_add(benchmark_finish, self);
+    if(elapsed > 0.0) {
+        speed = ((double)fed / BENCHMARK_CHUNKS_PER_SECOND) / elapsed;
+    }
+
+done:
+    post_benchmark_update(self, benchmark_finish, speed);
+    g_object_unref(self);
 
     return NULL;
 }
 
 static void start_benchmark(LiveCaptionsWelcome *self){
-    self->benchmark_thread = g_thread_new("initial-benchmark", run_benchmark_thread, self);
+    g_atomic_int_set(&self->benchmark_cancelled, 0);
+    gtk_progress_bar_set_fraction(self->benchmark_progress, 0.0);
 
-    g_assert(self->benchmark_thread != NULL);
+    self->benchmark_thread = g_thread_new("initial-benchmark", run_benchmark_thread, g_object_ref(self));
+}
+
+static void stop_benchmark(LiveCaptionsWelcome *self){
+    if(self->benchmark_thread == NULL) return;
+
+    g_atomic_int_set(&self->benchmark_cancelled, 1);
+    g_thread_join(self->benchmark_thread);
+    self->benchmark_thread = NULL;
 }
 
 
@@ -173,11 +220,8 @@ static gboolean quit_after_1s(G_GNUC_UNUSED gpointer user_data) {
 
 const char perf_url[] = "https://github.com/abb128/LiveCaptions/issues/40";
 static void report_perf_cb(LiveCaptionsWelcome *self){
-    gtk_show_uri(
-        GTK_WINDOW(self),
-        perf_url,
-        GDK_CURRENT_TIME
-    );
+    g_autoptr(GtkUriLauncher) launcher = gtk_uri_launcher_new(perf_url);
+    gtk_uri_launcher_launch(launcher, GTK_WINDOW(self), NULL, NULL, NULL);
 
     // Quitting here quits before uri is shown, need to wait a moment
     self->quit_time = time(NULL);
@@ -188,8 +232,26 @@ static void cancel_cb(LiveCaptionsWelcome *self){
     livecaptions_application_finish_setup(self->application, -1.0);
 }
 
+// The benchmark thread holds a ref, so dispose won't run while it is alive;
+// stop it when the window goes away instead
+static void livecaptions_welcome_unrealize(GtkWidget *widget) {
+    stop_benchmark(LIVECAPTIONS_WELCOME(widget));
+
+    GTK_WIDGET_CLASS(livecaptions_welcome_parent_class)->unrealize(widget);
+}
+
+static void livecaptions_welcome_dispose(GObject *object) {
+    stop_benchmark(LIVECAPTIONS_WELCOME(object));
+
+    G_OBJECT_CLASS(livecaptions_welcome_parent_class)->dispose(object);
+}
+
 static void livecaptions_welcome_class_init (LiveCaptionsWelcomeClass *klass) {
+    GObjectClass *object_class = G_OBJECT_CLASS(klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+
+    object_class->dispose = livecaptions_welcome_dispose;
+    widget_class->unrealize = livecaptions_welcome_unrealize;
 
     gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-welcome.ui");
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWelcome, stack);

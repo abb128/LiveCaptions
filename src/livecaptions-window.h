@@ -43,7 +43,7 @@ struct _LiveCaptionsWindow {
     GtkWidget *slow_warning;
     GtkWidget *slowest_warning;
 
-    volatile PangoLayout *font_layout;
+    PangoLayout *font_layout;
     volatile size_t font_layout_counter;
     volatile int max_text_width;
 

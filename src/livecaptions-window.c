@@ -24,6 +24,11 @@
 #include "window-helper.h"
 #include "history.h"
 
+// Unprocessed audio thresholds for the slow warnings
+#define SLOW_BACKLOG_MS (500)
+#define SLOWEST_BACKLOG_MS (1200)
+#define TOO_SLOW_BACKLOG_MS (2000)
+
 
 G_DEFINE_TYPE(LiveCaptionsWindow, livecaptions_window, GTK_TYPE_APPLICATION_WINDOW)
 
@@ -59,7 +64,8 @@ static void update_line_width(LiveCaptionsWindow *self){
 
     int preferred_width = g_settings_get_int(self->settings, "line-width");
     size_t text_len = sizeof(LINE_WIDTH_TEXT_TEMPLATE);
-    if(preferred_width < text_len) text_len = preferred_width;
+    if (preferred_width >= 0 && (size_t)preferred_width < text_len)
+        text_len = (size_t)preferred_width;
 
     int width, height;
     PangoLayout *layout = gtk_label_get_layout(self->label);
@@ -108,7 +114,7 @@ static void update_window_transparency(LiveCaptionsWindow *self) {
 
         char css_data[256];
         snprintf(css_data, 256, ".transparent-mode {\nbackground-color: #000000%02X;\n}", transparency);
-        gtk_css_provider_load_from_data(self->css_provider, css_data, -1);
+        gtk_css_provider_load_from_string(self->css_provider, css_data);
     }else{
         gtk_widget_remove_css_class(GTK_WIDGET(self), "transparent-mode");
     }
@@ -166,24 +172,20 @@ static gboolean show_relevant_slow_warning(void *userdata) {
     AprilASRSession session = (AprilASRSession)asr_thread_get_session(asr);
     if(session == NULL) return G_SOURCE_CONTINUE;
 
-    float speedup = aas_realtime_get_speedup(session);
+    // Sessions run in ASYNC_NO_RT mode, where audio is never sped up, so the
+    // speedup is always 1.0. The unprocessed backlog shows falling behind;
+    // April drops audio once about 3 seconds are queued.
+    size_t backlog_ms = aas_get_backlog_ms(session);
 
-    if(speedup <= 1.1) {
-        gtk_widget_set_visible(GTK_WIDGET(self->slow_warning), false);
-        gtk_widget_set_visible(GTK_WIDGET(self->slowest_warning), false);
-        gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), false);
-    }else if(speedup <= 1.666) {
-        gtk_widget_set_visible(GTK_WIDGET(self->slow_warning), true);
-        gtk_widget_set_visible(GTK_WIDGET(self->slowest_warning), false);
-        gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), false);
-    }else if(speedup <= 2.33){
-        gtk_widget_set_visible(GTK_WIDGET(self->slow_warning), false);
-        gtk_widget_set_visible(GTK_WIDGET(self->slowest_warning), true);
-        gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), false);
-    }else{
-        gtk_widget_set_visible(GTK_WIDGET(self->slow_warning), false);
-        gtk_widget_set_visible(GTK_WIDGET(self->slowest_warning), false);
+    gtk_widget_set_visible(GTK_WIDGET(self->slow_warning), backlog_ms > SLOW_BACKLOG_MS && backlog_ms <= SLOWEST_BACKLOG_MS);
+    gtk_widget_set_visible(GTK_WIDGET(self->slowest_warning), backlog_ms > SLOWEST_BACKLOG_MS && backlog_ms <= TOO_SLOW_BACKLOG_MS);
+
+    // The too-slow warning is also raised by dropped-audio callbacks, which
+    // hide it themselves once they stop
+    if(backlog_ms > TOO_SLOW_BACKLOG_MS) {
         gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), true);
+    } else if(!self->slow_warning_shown) {
+        gtk_widget_set_visible(GTK_WIDGET(self->too_slow_warning), false);
     }
 
     return G_SOURCE_CONTINUE;
@@ -195,8 +197,9 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
     self->settings = g_settings_new("net.sapples.LiveCaptions");
 
     self->css_provider = gtk_css_provider_new();
-    GtkStyleContext *context = gtk_widget_get_style_context(GTK_WIDGET(self));
-    gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(self->css_provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    gtk_style_context_add_provider_for_display(gtk_widget_get_display(GTK_WIDGET(self)),
+                                               GTK_STYLE_PROVIDER(self->css_provider),
+                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
     g_signal_connect(self->settings, "changed", G_CALLBACK(on_settings_change), self);
     

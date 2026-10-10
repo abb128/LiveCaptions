@@ -130,7 +130,7 @@ size_t get_filter_skip_history(const struct history_token *tokens,
                                FilterMode mode)
 {
     // Construct a list of AprilToken * and copy data
-    AprilToken *a_tokens = calloc(sizeof(AprilToken), count);
+    AprilToken *a_tokens = calloc(count, sizeof(*a_tokens));
     for(size_t i=0; i<count; i++){
         a_tokens[i].token   = &tokens[i].token[0];
         a_tokens[i].flags   = tokens[i].flags;

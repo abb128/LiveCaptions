@@ -19,7 +19,8 @@ livecaptions_sources = [
 cc = meson.get_compiler('c')
 
 livecaptions_deps = [
-  dependency('libadwaita-1', version: '>= 1.0'),
+  dependency('libadwaita-1', version: '>= 1.5'),
+  dependency('gtk4', version: '>= 4.12'),
   #dependency('libpipewire-0.3', version: '>=0.3.41'),
   dependency('libpulse'),
   dependency('x11'),

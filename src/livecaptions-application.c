@@ -37,10 +37,13 @@ static void deinit_audio(LiveCaptionsApplication *self){
 static void init_audio(LiveCaptionsApplication *self) {
     deinit_audio(self);
 
+    // End the previous source's utterance while no capture thread is feeding,
+    // so the session keeps a single feeder and the boundary falls between
+    // the two sources.
+    asr_thread_flush(self->asr);
+
     gboolean use_microphone = g_settings_get_boolean(self->settings, "microphone");
     self->audio = create_audio_thread(use_microphone, self->asr);
-
-    asr_thread_flush(self->asr);
 }
 
 LiveCaptionsApplication *livecaptions_application_new (gchar *application_id, GApplicationFlags flags) {
@@ -119,7 +122,7 @@ static gboolean on_handle_allow_keep_above(DBLCapNetSapplesLiveCaptionsExternal 
                                            GDBusMethodInvocation *invocation,
                                            gpointer user_data)
 {
-    LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
+    (void)user_data;
 
     override_keep_above_system(true);
 
@@ -130,7 +133,7 @@ static gboolean on_handle_allow_keep_above(DBLCapNetSapplesLiveCaptionsExternal 
 static gboolean
 livecaptions_application_dbus_register(GApplication     *app,
                                        GDBusConnection  *connection,
-                                       const gchar      *object_path,
+                                       G_GNUC_UNUSED const gchar *object_path,
                                        GError          **error)
 {
     LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(app);
@@ -172,6 +175,8 @@ livecaptions_application_dbus_unregister(GApplication    *app,
                                          GDBusConnection *connection,
                                          const gchar     *object_path)
 {
+    (void)connection;
+    (void)object_path;
     LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(app);
 
     g_dbus_interface_skeleton_unexport(G_DBUS_INTERFACE_SKELETON(self->dbus_external));
@@ -242,12 +247,11 @@ livecaptions_application_show_preferences(G_GNUC_UNUSED GSimpleAction *action,
     LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
     if(self->welcome != NULL) return;
 
-    GtkApplication *app = GTK_APPLICATION(user_data);
-    GtkWindow *window = gtk_application_get_active_window (app);
-    LiveCaptionsSettings *preferences = g_object_new(LIVECAPTIONS_TYPE_SETTINGS, "application", GTK_APPLICATION(self), NULL);
+    LiveCaptionsSettings *preferences = g_object_new(LIVECAPTIONS_TYPE_SETTINGS, NULL);
     preferences->application = self;
 
-    gtk_window_present (GTK_WINDOW (preferences));
+    // No parent, so the preferences open in their own window instead of inside the captions bar
+    adw_dialog_present(ADW_DIALOG(preferences), NULL);
 
 }
 

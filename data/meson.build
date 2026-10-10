@@ -15,11 +15,11 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-  input: 'net.sapples.LiveCaptions.appdata.xml.in',
-  output: 'net.sapples.LiveCaptions.appdata.xml',
+  input: 'net.sapples.LiveCaptions.metainfo.xml.in',
+  output: 'net.sapples.LiveCaptions.metainfo.xml',
   po_dir: '../po',
   install: true,
-  install_dir: join_paths(get_option('datadir'), 'appdata')
+  install_dir: join_paths(get_option('datadir'), 'metainfo')
 )
 
 appstream_util = find_program('appstream-util', required: false)
@@ -31,7 +31,7 @@ endif
 
 gnome.compile_schemas(build_by_default: true, depend_files: 'net.sapples.LiveCaptions.gschema.xml')
 devenv = environment()
-devenv.set('GSETTINGS_SCHEMA_DIR', meson.current_build_dir() / 'data')
+devenv.set('GSETTINGS_SCHEMA_DIR', meson.current_build_dir())
 meson.add_devenv(devenv)
 
 install_data('net.sapples.LiveCaptions.gschema.xml',

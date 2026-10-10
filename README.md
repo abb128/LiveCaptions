@@ -52,74 +52,73 @@ If you forgot, you can initialize submodules like so:
 $ git submodule update --init --recursive
 ```
 
-## Option 1: Building with GNOME Builder (easy)
-You can build this easily with GNOME Builder. After cloning, open the project directory in GNOME Builder, download the SDK if it asks you, and click the play button to build and run.
+## Option 1: Building from the terminal (Linux)
+
+### 1. Install the dependencies
+You need GTK 4.12 or newer and libadwaita 1.5 or newer. Ubuntu 22.04 and other older releases are too old; use Nix (Option 2) there.
+
+Arch Linux:
+```
+$ sudo pacman -S --needed base-devel git meson ninja cmake pkgconf gtk4 libadwaita libpulse libx11 gettext glib2 desktop-file-utils curl pipewire-pulse
+```
+
+Ubuntu 24.04 or newer, Debian 13 or newer:
+```
+$ sudo apt install build-essential git meson ninja-build cmake pkg-config libgtk-4-dev libadwaita-1-dev libpulse-dev libx11-dev gettext libglib2.0-bin desktop-file-utils curl
+```
+
+Fedora:
+```
+$ sudo dnf install gcc gcc-c++ git meson ninja-build cmake pkgconf-pkg-config gtk4-devel libadwaita-devel pulseaudio-libs-devel libX11-devel gettext glib2-devel desktop-file-utils curl
+```
+
+Live Captions records audio through the PulseAudio interface. On PipeWire desktops this is provided by `pipewire-pulse`, which most distributions install by default.
+
+### 2. Build
+```
+$ ./setup.sh
+```
+
+This builds into `builddir/` and downloads the speech model (about 320 MB). If your distribution packages ONNX Runtime, the system copy is used; otherwise the official ONNX Runtime SDK is downloaded into `subprojects/april-asr/lib`. To use another SDK, set `ONNX_ROOT` to its directory before running `setup.sh`. Run `./setup.sh` again after `git pull`.
+
+### 3. Run
+```
+$ ./run.sh
+```
+
+On first launch, a short benchmark checks that your computer can caption in real time. It needs a result of at least 1.2.
+
+Recognition uses 2 CPU threads by default. To try another number, set `APRIL_ENCODER_THREADS`, for example `APRIL_ENCODER_THREADS=4 ./run.sh`, then re-run the benchmark from the settings window to compare. To use a different model, set `APRIL_MODEL_PATH` to its file.
+
+## Option 2: Building with Nix
+The flake pins a nixpkgs revision that provides GTK 4.22 and libadwaita 1.9, and downloads the default model. It builds the `april-asr` submodule from the checkout, which requires Nix 2.27 or newer:
+```
+$ nix build
+$ ./result/bin/livecaptions
+```
+
+## Option 3: Building a Flatpak
+With `flatpak-builder` installed and the Flathub remote added:
+```
+$ flatpak install --user flathub org.gnome.Sdk//50 org.gnome.Platform//50
+$ flatpak-builder --user --install --force-clean build-dir build-aux/flatpak/net.sapples.LiveCaptions.json
+$ flatpak run net.sapples.LiveCaptions
+```
+
+The manifest builds this checkout, and bundles ONNX Runtime and the default model.
+
+## Option 4: Building with GNOME Builder
+You can build this with GNOME Builder. After cloning, open the project directory in GNOME Builder, download the SDK if it asks you, and click the play button to build and run.
 
 If you are using Flatpak GNOME Builder and experience issues running this (for example, some cryptic X Window System error), please try using your distro's native packaged version of GNOME Builder instead of Flatpak (e.g. `sudo apt install gnome-builder`).
 
-## Option 2: Building from the terminal (not as easy)
-First you must [download ONNXRuntime v1.14.1 (Linux)](https://github.com/microsoft/onnxruntime/releases/download/v1.14.1/onnxruntime-linux-x64-1.14.1.tgz) or [ONNXRuntime v.1.14.1 (Mac OS x86)](https://github.com/microsoft/onnxruntime/releases/download/v1.14.1/onnxruntime-osx-x86_64-1.14.1.tgz), extract it somewhere, and set the environment variables to point to it.
-
-### Make ONNX available
-
-Linux:
+## macOS
+`setup.sh` downloads ONNX Runtime for Linux only. Download [ONNX Runtime for macOS](https://github.com/microsoft/onnxruntime/releases/tag/v1.30.0), extract it, and point `ONNX_ROOT` at it. Install the other dependencies with Homebrew (`gtk4 libadwaita pulseaudio meson ninja cmake pkg-config`) and register PulseAudio as a background service with `brew services restart pulseaudio`. Then:
 ```
-$ export ONNX_ROOT=/path/to/onnxruntime-linux-x64-1.14.1/
-$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/onnxruntime-linux-x64-1.14.1/lib
+$ export ONNX_ROOT=/path/to/onnxruntime-osx-arm64-1.30.0
+$ cp $ONNX_ROOT/lib/libonnxruntime*.dylib /usr/local/lib/
+$ ./setup.sh
+$ ./run.sh
 ```
 
-Alternatively you should also be able to locally build and install ONNXRuntime, in which case that step shouldn't be necessary.
-
-
-Mac OS:
-```
-$ export ONNX_ROOT=/path/to/onnxruntime-osx-x86_64-1.14.1/
-$ cp /path/to/onnxruntime-osx-x86_64-1.14.1/lib/libonnxruntime.1.14.1.dylib /usr/local/lib/libonnxruntime.1.14.1.dylib
-$ cp /path/to/onnxruntime-osx-x86_64-1.14.1/lib/libonnxruntime.dylib /usr/local/lib/libonnxruntime.dylib
-```
-
-### Other dependencies
-You will also need the following prerequisites:
-```
-pulseaudio
-libadwaita
-meson
-ninja
-```
-
-If you're on macOS, you may have to run the following command for Pulseaudio to be registered as a background service:
-```
-brew services restart pulseaudio
-```
-
-and to stop it, just change `restart` for stop.
-
-
-### Set up the build
-
-To set up a build, run these commands:
-```
-$ meson setup builddir --buildtype release
-$ meson devenv -C builddir
-```
-
-
-### Build and run
-
-Now you can build the application. Run the following:
-```
-$ ninja
-```
-
-Before being able to run the app, you must also download the model and export `APRIL_MODEL_PATH` to where the model is. For example:
-```
-$ wget https://april.sapples.net/april-english-dev-01110_en.april
-$ export APRIL_MODEL_PATH=`pwd`/april-english-dev-01110_en.april
-```
-
-You should now be able to run the app with:
-```
-$ src/livecaptions
-```
-
-If you're on MacOS, now, go to security settings and confirm the prompt which asks to allow `libonnxruntime`, then, the application should work as intended.
+The first time, confirm the security prompt that asks to allow `libonnxruntime`.

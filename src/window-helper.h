@@ -21,7 +21,7 @@
 
 void override_keep_above_system(bool override);
 
-bool is_keep_above_supported(GtkWindow *window);
+bool is_keep_above_supported(GtkWidget *widget);
 
 // Returns false if impossible to set keep above
 bool set_window_keep_above(GtkWindow *window, bool keep_above);

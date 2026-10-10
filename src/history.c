@@ -77,7 +77,7 @@ void commit_tokens_to_current_history(const AprilToken *tokens,
         struct history_token *token = &entry->tokens[i];
 
         if(strlen(tokens[i].token) >= HISTORY_TOKEN_MAX_CHARS){
-            printf("Token %s is too long! (%d)\n", tokens[i].token, strlen(tokens[i].token));
+            printf("Token %s is too long! (%zu)\n", tokens[i].token, strlen(tokens[i].token));
             g_assert(false);
         }
 

@@ -1,5 +1,5 @@
 data/net.sapples.LiveCaptions.desktop.in
-data/net.sapples.LiveCaptions.appdata.xml.in
+data/net.sapples.LiveCaptions.metainfo.xml.in
 data/net.sapples.LiveCaptions.gschema.xml
 src/main.c
 src/livecaptions-window.ui

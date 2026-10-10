@@ -22,7 +22,7 @@
 #include "livecaptions-application.h"
 
 struct _LiveCaptionsSettings {
-    AdwPreferencesWindow  parent_instance;
+    AdwPreferencesDialog  parent_instance;
 
     LiveCaptionsApplication *application;
 
@@ -59,6 +59,6 @@ G_BEGIN_DECLS
 
 #define LIVECAPTIONS_TYPE_SETTINGS (livecaptions_settings_get_type())
 
-G_DECLARE_FINAL_TYPE(LiveCaptionsSettings, livecaptions_settings, LIVECAPTIONS, SETTINGS, AdwPreferencesWindow)
+G_DECLARE_FINAL_TYPE(LiveCaptionsSettings, livecaptions_settings, LIVECAPTIONS, SETTINGS, AdwPreferencesDialog)
 
 G_END_DECLS

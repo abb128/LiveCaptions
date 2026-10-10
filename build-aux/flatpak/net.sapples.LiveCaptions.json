@@ -1,7 +1,7 @@
 {
-    "app-id" : "net.sapples.LiveCaptions",
+    "id" : "net.sapples.LiveCaptions",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "master",
+    "runtime-version" : "50",
     "sdk" : "org.gnome.Sdk",
     "command" : "livecaptions",
     "finish-args" : [
@@ -19,15 +19,13 @@
         "/share/gtk-doc",
         "/share/man",
         "/share/pkgconfig",
-        "/onnx_root",
+        "/onnxruntime/include",
+        "/onnxruntime/lib/cmake",
+        "/onnxruntime/lib/pkgconfig",
+        "/lib/libaprilasr.so*",
         "*.la",
         "*.a"
     ],
-    "build-options" : {
-        "env" : {
-            "ONNX_ROOT" : "/app/onnx_root"
-        }
-    },
     "modules" : [
         {
             "name" : "onnxruntime",
@@ -36,30 +34,23 @@
                 {
                     "type" : "archive",
                     "only-arches" : ["x86_64"],
-                    "dest" : "onnxruntime-1",
-                    "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.14.1/onnxruntime-linux-x64-1.14.1.tgz",
-                    "sha256" : "010585f534d822bf02d54c7cfc53b57aa3eb0cf34f8fb7503ee519ed18e25d29"
+                    "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.30.0/onnxruntime-linux-x64-1.30.0.tgz",
+                    "sha256" : "a5ed5a3cac51fbb2e90da632ae43d19212faaa20e76484e62bcb7c23ddb3b3fd"
                 },
-
                 {
                     "type" : "archive",
                     "only-arches" : ["aarch64"],
-                    "dest" : "onnxruntime-1",
-                    "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.14.1/onnxruntime-linux-aarch64-1.14.1.tgz",
-                    "sha256" : "20965e05d2da6a0e6acedda8aca1a8f75c3f4cb1d7932403a9977b753b1b2120"
+                    "url" : "https://github.com/microsoft/onnxruntime/releases/download/v1.30.0/onnxruntime-linux-aarch64-1.30.0.tgz",
+                    "sha256" : "e16a27a8ed330bbc698df7330b0cf56e722f354e3bcc92118682c74ef3c3e3da"
                 }
             ],
             "build-commands" : [
-                "mkdir -p $ONNX_ROOT",
-                "mv onnxruntime-1/* $ONNX_ROOT",
-
-                "mkdir -p $FLATPAK_DEST/lib",
-                "cp $ONNX_ROOT/lib/* $FLATPAK_DEST/lib"
+                "mkdir -p ${FLATPAK_DEST}/onnxruntime",
+                "cp -a include lib LICENSE ThirdPartyNotices.txt ${FLATPAK_DEST}/onnxruntime/"
             ]
         },
-
         {
-            "name": "aprilmodel",
+            "name" : "aprilmodel",
             "buildsystem" : "simple",
             "sources" : [
                 {
@@ -73,16 +64,28 @@
                 "install -Dm644 aprilv0_en-us.april -t ${FLATPAK_DEST}/LiveCaptions/models"
             ]
         },
-
         {
             "name" : "livecaptions",
             "builddir" : true,
             "buildsystem" : "meson",
+            "config-opts" : ["--buildtype=release"],
+            "build-options" : {
+                "env" : {
+                    "ONNX_ROOT" : "/app/onnxruntime"
+                }
+            },
             "sources" : [
                 {
-                    "type" : "git",
-                    "url" : "https://github.com/abb128/LiveCaptions",
-                    "branch" : "main"
+                    "type" : "dir",
+                    "path" : "../..",
+                    "skip" : [
+                        "builddir",
+                        "_build",
+                        "result",
+                        ".flatpak-builder",
+                        "subprojects/april-asr/lib",
+                        "april-english-dev-01110_en.april"
+                    ]
                 }
             ]
         }

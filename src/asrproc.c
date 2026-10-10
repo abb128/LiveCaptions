@@ -116,11 +116,22 @@ static gboolean main_thread_update_label(void *userdata){
     return G_SOURCE_REMOVE;
 }
 
+static gboolean main_thread_warn_slow(void *userdata){
+    asr_thread data = userdata;
+
+    if(data->window != NULL) livecaptions_window_warn_slow(data->window);
+
+    return G_SOURCE_REMOVE;
+}
+
 static void april_result_handler(void* userdata, AprilResultType result, size_t count, const AprilToken* tokens) {
     asr_thread data = userdata;
     if((data->window == NULL) || (data->pause)) return;
 
     switch(result) {
+        case APRIL_RESULT_UNKNOWN:
+            break;
+
         case APRIL_RESULT_RECOGNITION_PARTIAL:
         case APRIL_RESULT_RECOGNITION_FINAL:
         {
@@ -148,7 +159,8 @@ static void april_result_handler(void* userdata, AprilResultType result, size_t 
         }
 
         case APRIL_RESULT_ERROR_CANT_KEEP_UP: {
-            livecaptions_window_warn_slow(data->window);
+            // Called on April's worker thread; GTK must be used from the main one
+            g_idle_add(main_thread_warn_slow, data);
             break;
         }
 
@@ -183,6 +195,10 @@ void asr_thread_enqueue_audio(asr_thread thread, short *data, size_t num_shorts)
 
     if(thread->silence_counter >= 24000){
         thread->silence_counter = 24000;
+        // April queues the flush in order with the audio, so speech fed after
+        // this starts a new utterance even if recognition is still behind.
+        // Waiting here would block audio capture. Repeated flushes during the
+        // same silence are no-ops.
         return aas_flush(thread->session);
     }
     
@@ -257,7 +273,7 @@ bool asr_thread_update_model(asr_thread data, const char *model_path) {
 
     AprilConfig config = {
         .handler = april_result_handler,
-        .flags = APRIL_CONFIG_FLAG_ASYNC_RT_BIT,
+        .flags = APRIL_CONFIG_FLAG_ASYNC_NO_RT_BIT,
         .userdata = data
     };
 

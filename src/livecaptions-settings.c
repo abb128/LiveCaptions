@@ -27,19 +27,16 @@
 #include "livecaptions-history-window.h"
 #include "asrproc.h"
 
-G_DEFINE_TYPE(LiveCaptionsSettings, livecaptions_settings, ADW_TYPE_PREFERENCES_WINDOW)
+G_DEFINE_TYPE(LiveCaptionsSettings, livecaptions_settings, ADW_TYPE_PREFERENCES_DIALOG)
 
 static void rerun_benchmark_cb (LiveCaptionsSettings *self) {
-    gtk_window_close(GTK_WINDOW(self));
+    g_action_group_activate_action(G_ACTION_GROUP(self->application), "setup", NULL);
 
-    gtk_widget_activate_action(GTK_WIDGET(self), "app.setup", NULL);
-    
-    gtk_window_destroy(GTK_WINDOW(self));
+    adw_dialog_close(ADW_DIALOG(self));
 }
 
 static void about_cb(LiveCaptionsSettings *self) {
-    GtkRoot *root = gtk_widget_get_root (GTK_WIDGET (self));
-    GtkWidget *about;
+    AdwDialog *about;
 
     const char *developers[] = {
         "abb128",
@@ -52,8 +49,7 @@ static void about_cb(LiveCaptionsSettings *self) {
     };
 
     about =
-        g_object_new(ADW_TYPE_ABOUT_WINDOW,
-                    "transient-for", root,
+        g_object_new(ADW_TYPE_ABOUT_DIALOG,
                     "application-icon", "net.sapples.LiveCaptions",
                     "application-name", _("Live Captions"),
                     "developer-name", _("abb128"),
@@ -67,69 +63,67 @@ static void about_cb(LiveCaptionsSettings *self) {
                     "translator-credits", _("translator-credits"),
                     NULL);
 
-    adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
+    adw_about_dialog_add_legal_section(ADW_ABOUT_DIALOG(about),
                                        _("Model"),
                                        NULL,
                                        GTK_LICENSE_CUSTOM,
                                        "The ASR model was originally trained by Fangjun Kuang (@csukuangfj), and has been finetuned on extra data.");
 
-    adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
+    adw_about_dialog_add_legal_section(ADW_ABOUT_DIALOG(about),
                                        "april-asr",
                                        "Copyright © 2022 abb128",
                                        GTK_LICENSE_GPL_3_0_ONLY,
                                        NULL);
 
-    adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
+    adw_about_dialog_add_legal_section(ADW_ABOUT_DIALOG(about),
                                        "ONNXRuntime",
                                        "Copyright © 2021 Microsoft Corporation",
                                        GTK_LICENSE_MIT_X11,
                                        NULL);
 
-    adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
+    adw_about_dialog_add_legal_section(ADW_ABOUT_DIALOG(about),
                                        "pocketfft",
                                        "Copyright © 2010-2019 Max-Planck-Society",
                                        GTK_LICENSE_BSD_3,
                                        NULL);
 
-    adw_about_window_add_legal_section(ADW_ABOUT_WINDOW(about),
+    adw_about_dialog_add_legal_section(ADW_ABOUT_DIALOG(about),
                                        "sonic",
                                        "Copyright © 2010 Bill Cox",
                                        GTK_LICENSE_APACHE_2_0,
                                        NULL);
 
-    adw_about_window_add_acknowledgement_section(ADW_ABOUT_WINDOW(about),
+    adw_about_dialog_add_acknowledgement_section(ADW_ABOUT_DIALOG(about),
                                                  _("Special thanks to"),
                                                  special_thanks);
 
-    gtk_window_present(GTK_WINDOW(about));
+    adw_dialog_present(about, GTK_WIDGET(self));
 }
 
 
+static GtkWindow *get_parent_window(LiveCaptionsSettings *self) {
+    return GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(self)));
+}
+
+static void launch_uri(LiveCaptionsSettings *self, const char *uri) {
+    g_autoptr(GtkUriLauncher) launcher = gtk_uri_launcher_new(uri);
+    gtk_uri_launcher_launch(launcher, get_parent_window(self), NULL, NULL, NULL);
+}
+
 static void report_cb(LiveCaptionsSettings *self) {
-    gtk_show_uri(
-        GTK_WINDOW(self),
-        "https://github.com/abb128/LiveCaptions/issues/48",
-        GDK_CURRENT_TIME
-    );
+    launch_uri(self, "https://github.com/abb128/LiveCaptions/issues/48");
 }
 
 static void download_models_cb(LiveCaptionsSettings *self) {
-    gtk_show_uri(
-        GTK_WINDOW(self),
-        "https://abb128.github.io/april-asr/models.html",
-        GDK_CURRENT_TIME
-    );
+    launch_uri(self, "https://abb128.github.io/april-asr/models.html");
 }
 
 static void open_history(LiveCaptionsSettings *self) {
-    GtkRoot *root = gtk_widget_get_root(GTK_WIDGET(self));
-
-    LiveCaptionsHistoryWindow *window = g_object_new(LIVECAPTIONS_TYPE_HISTORY_WINDOW, "transient-for", root, NULL);
+    LiveCaptionsHistoryWindow *window = g_object_new(LIVECAPTIONS_TYPE_HISTORY_WINDOW, "application", self->application, NULL);
     
     gtk_window_present(GTK_WINDOW(window));
 
-    gtk_window_close(GTK_WINDOW(self));
-    gtk_window_destroy(GTK_WINDOW(self));
+    adw_dialog_close(ADW_DIALOG(self));
 }
 
 static const char *get_always_on_top_tip_text(){
@@ -146,29 +140,18 @@ static const char *get_always_on_top_tip_text(){
 }
 
 
-static void on_add_model_response(GtkNativeDialog *native,
-                                  int        response,
-                                  LiveCaptionsSettings *self);
+static void on_add_model_response(GObject      *source,
+                                  GAsyncResult *result,
+                                  gpointer      user_data);
 
 static void add_model_cb(LiveCaptionsSettings *self) {
-    GtkFileChooserNative *native;
-    GtkFileChooser *chooser;
-    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    g_autoptr(GtkFileDialog) dialog = gtk_file_dialog_new();
 
-    native = gtk_file_chooser_native_new("Load Model",
-                                         GTK_WINDOW(self),
-                                         action,
-                                         _("_Load"),
-                                         _("_Cancel"));
+    gtk_file_dialog_set_title(dialog, "Load Model");
+    gtk_file_dialog_set_accept_label(dialog, _("_Load"));
+    gtk_file_dialog_set_default_filter(dialog, self->file_filter);
 
-    chooser = GTK_FILE_CHOOSER(native);
-    gtk_file_chooser_add_filter(chooser, self->file_filter);
-
-    gtk_native_dialog_show(GTK_NATIVE_DIALOG(native));
-
-    g_signal_connect(native, "response",
-                     G_CALLBACK (on_add_model_response),
-                     self);
+    gtk_file_dialog_open(dialog, get_parent_window(self), NULL, on_add_model_response, g_object_ref(self));
 }
 
 static void on_builtin_toggled(LiveCaptionsSettings *self);
@@ -217,7 +200,7 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
 static gboolean deferred_update_keep_above(void *userdata) {
     LiveCaptionsSettings *self = userdata;
 
-    set_window_keep_above(GTK_WINDOW(self), g_settings_get_boolean(self->settings, "keep-on-top"));
+    set_window_keep_above(get_parent_window(self), g_settings_get_boolean(self->settings, "keep-on-top"));
 
     return G_SOURCE_REMOVE;
 }
@@ -226,7 +209,7 @@ static void model_load_failsafe(LiveCaptionsSettings *self, bool load_default);
 static void on_model_selected(GtkCheckButton* button, LiveCaptionsSettings *self){
     if(!gtk_check_button_get_active(button)) return;
 
-    const char *model = g_quark_to_string((GQuark)g_object_get_data(G_OBJECT(button), "lcap-model-path"));
+    const char *model = g_quark_to_string(GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(button), "lcap-model-path")));
     if(!asr_thread_update_model(self->application->asr, model)) {
         model_load_failsafe(self, false);
         return;
@@ -244,7 +227,7 @@ static void on_builtin_toggled(LiveCaptionsSettings *self) {
 }
 
 static void on_model_deleted(GtkButton *button, LiveCaptionsSettings *self) {
-    const char *model = g_quark_to_string((GQuark)g_object_get_data(G_OBJECT(button), "lcap-model-path"));
+    const char *model = g_quark_to_string(GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(button), "lcap-model-path")));
     if(g_str_equal(model, "/app/LiveCaptions/models/aprilv0_en-us.april")) return;
 
     char *active_model = g_settings_get_string(self->settings, "active-model");
@@ -306,7 +289,7 @@ static void insert_model_to_list(LiveCaptionsSettings *self, gchar *model) {
 
     g_free(active_model);
 
-    gpointer quark = (gpointer)g_quark_from_string(model);
+    gpointer quark = GUINT_TO_POINTER(g_quark_from_string(model));
 
     g_object_set_data(G_OBJECT(button), "lcap-model-path", quark);
     g_signal_connect(button, "toggled", G_CALLBACK(on_model_selected), self);
@@ -344,18 +327,10 @@ static void add_new_model(LiveCaptionsSettings *self, gchar *model) {
 }
 
 static void model_load_failsafe(LiveCaptionsSettings *self, bool load_default) {
-    GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL;
-    GtkWidget *dialog = gtk_message_dialog_new (GTK_WINDOW(self),
-                                        flags,
-                                        GTK_MESSAGE_ERROR,
-                                        GTK_BUTTONS_CLOSE,
-                                        "Failed to load model!");
-    
-    gtk_window_present(GTK_WINDOW(dialog));
+    AdwDialog *dialog = adw_alert_dialog_new("Failed to load model!", NULL);
+    adw_alert_dialog_add_response(ADW_ALERT_DIALOG(dialog), "close", _("_Close"));
 
-    g_signal_connect(dialog, "response",
-                    G_CALLBACK (gtk_window_destroy),
-                    NULL);
+    adw_dialog_present(dialog, GTK_WIDGET(self));
     
     char *prev_model;
     if(load_default) {
@@ -369,15 +344,14 @@ static void model_load_failsafe(LiveCaptionsSettings *self, bool load_default) {
     if(load_default) gtk_check_button_set_active(self->radio_button_1, true);
 }
 
-static void on_add_model_response(GtkNativeDialog *native,
-                                  int        response,
-                                  LiveCaptionsSettings *self)
+static void on_add_model_response(GObject      *source,
+                                  GAsyncResult *result,
+                                  gpointer      user_data)
 {
-    if(response == GTK_RESPONSE_ACCEPT){
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER(native);
+    LiveCaptionsSettings *self = LIVECAPTIONS_SETTINGS(user_data);
 
-        g_autoptr(GFile) file = gtk_file_chooser_get_file(chooser);
-        
+    g_autoptr(GFile) file = gtk_file_dialog_open_finish(GTK_FILE_DIALOG(source), result, NULL);
+    if(file != NULL){
         char *model = g_file_get_path(file);
 
 
@@ -385,7 +359,7 @@ static void on_add_model_response(GtkNativeDialog *native,
             model_load_failsafe(self, false);
 
             g_free(model);
-            g_object_unref(native);
+            g_object_unref(self);
             return;
         }
         
@@ -398,7 +372,7 @@ static void on_add_model_response(GtkNativeDialog *native,
         g_free(model);
     }
 
-    g_object_unref(native);
+    g_object_unref(self);
 }
 
 static void livecaptions_settings_init(LiveCaptionsSettings *self) {
@@ -427,7 +401,7 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     sprintf(benchmark_result, "%.2f", (float)benchmark_result_v);
     gtk_label_set_text(self->benchmark_label, benchmark_result);
 
-    if(is_keep_above_supported(GTK_WINDOW(self))) {
+    if(is_keep_above_supported(GTK_WIDGET(self))) {
         g_settings_bind(self->settings, "keep-on-top", self->keep_above_switch, "active", G_SETTINGS_BIND_DEFAULT);
         gtk_widget_set_sensitive(GTK_WIDGET(self->keep_above_switch), true);
 

@@ -238,7 +238,7 @@
 
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">Your device may be able to handle live captioning, but at a reduced accuracy. You may need to close background tasks, plug in your device and/or enable performance power mode for better results.</property>
+                        <property name="label">Your device can keep up with live captioning, but with little headroom. When other programs are busy, captions may fall behind and some audio may be skipped. You may need to close background tasks, plug in your device and/or enable performance power mode for better results.</property>
                         <property name="wrap">True</property>
                         <property name="margin-bottom">8</property>
                         <property name="justify">center</property>

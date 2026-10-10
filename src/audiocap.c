@@ -41,12 +41,6 @@ struct audio_thread_i {
 };
 
 
-static void *run_audio_thread(void *userdata) {
-    audio_thread data = (audio_thread)userdata;
-
-    return NULL;
-}
-
 audio_thread create_audio_thread(bool microphone, asr_thread asr){
     audio_thread data = calloc(1, sizeof(struct audio_thread_i));
     

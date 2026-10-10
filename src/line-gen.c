@@ -240,7 +240,7 @@ void line_generator_update(struct line_generator *lg, size_t num_tokens, const A
             // break line if too long
             if(i == lg->current_line){
                 curr->len += line_generator_get_text_width(lg, token);
-                if(curr->len >= lg->max_text_width) {
+                if (lg->max_text_width > 0 && curr->len >= (size_t)lg->max_text_width) {
                     size_t tgt_brk = j;
                     // find previous word boundary
                     while((!(tokens[tgt_brk].flags & APRIL_TOKEN_FLAG_WORD_BOUNDARY_BIT)) && (tgt_brk > start_of_line)) tgt_brk--;
@@ -342,7 +342,7 @@ const char *line_generator_get_plaintext(struct line_generator *lg) {
         } else {
             // HACK: We need to remove the <span...></span> tags
             bool inside_markup = false;
-            for(int j=0; j<curr->head; j++) {
+            for(size_t j=0; j<curr->head; j++) {
                 if(curr->text[j] == '<') {
                     inside_markup = true;
                     continue;

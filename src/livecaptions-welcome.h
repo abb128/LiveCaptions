@@ -50,9 +50,10 @@ struct _LiveCaptionsWelcome {
     GtkLabel *bad_label;
 
     GThread *benchmark_thread;
+    gint benchmark_cancelled;
 
-    volatile gdouble benchmark_progress_v;
-    volatile gdouble benchmark_result_v;
+    // Only touched on the main thread; the benchmark thread reports via idle callbacks
+    gdouble benchmark_result_v;
 
     time_t quit_time;
 };

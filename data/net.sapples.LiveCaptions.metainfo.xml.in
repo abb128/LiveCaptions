@@ -4,7 +4,9 @@
 
   <name>Live Captions</name>
   <summary>Live Captioning for the desktop</summary>
-  <developer_name translatable="no">abb128</developer_name>
+  <developer id="net.sapples">
+    <name translatable="no">abb128</name>
+  </developer>
 
   <description>
     <p>Live Captions is an application that provides realtime automatic subtitles for the Linux desktop.</p>
@@ -34,17 +36,32 @@
 
   <url type="homepage">https://github.com/abb128/LiveCaptions</url>
   <url type="bugtracker">https://github.com/abb128/LiveCaptions/issues</url>
+  <url type="vcs-browser">https://github.com/abb128/LiveCaptions</url>
 
   <screenshots>
     <screenshot type="default">
-      <image>https://github.com/abb128/LiveCaptions/blob/main/screenshots/0.png?raw=true</image>
+      <image>https://raw.githubusercontent.com/abb128/LiveCaptions/main/screenshots/0.png</image>
+      <caption>The caption window, with less confident words faded</caption>
     </screenshot>
     <screenshot>
-      <image>https://github.com/abb128/LiveCaptions/blob/main/screenshots/1.png?raw=true</image>
+      <image>https://raw.githubusercontent.com/abb128/LiveCaptions/main/screenshots/1.png</image>
+      <caption>Captioning a recorded talk over a video</caption>
     </screenshot>
   </screenshots>
 
   <releases>
+    <release date="2026-10-10" version="0.5.0">
+      <url>https://github.com/abb128/LiveCaptions/releases/tag/v0.5.0</url>
+      <description>
+        <p>Ported to current GTK 4 and libadwaita APIs, requiring libadwaita 1.5</p>
+        <p>Recognition no longer speeds up audio on slow computers, which reduced accuracy; the setup benchmark now requires a result of at least 1.2</p>
+        <p>Slow-processing warnings now show how far behind recognition is</p>
+        <p>Sentences are finalized after 1.2 seconds of silence instead of 2.2 seconds</p>
+        <p>Fixed recognition state carrying over between sentences</p>
+        <p>Recognition uses two CPU threads by default</p>
+        <p>Updated ONNX Runtime to 1.30.0</p>
+      </description>
+    </release>
     <release date="2023-09-22" version="0.4.1">
       <url>https://github.com/abb128/LiveCaptions/releases/tag/v0.4.1</url>
       <description>
@@ -97,4 +114,11 @@
   <launchable type="desktop-id">net.sapples.LiveCaptions.desktop</launchable>
   <project_license>GPL-3.0-or-later</project_license>
   <content_rating type="oars-1.1" />
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
 </component>
