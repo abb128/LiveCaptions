@@ -21,6 +21,7 @@
 #pragma once
 
 #include <gtk/gtk.h>
+#include "livecaptions-translation-view.h"
 
 struct _LiveCaptionsWindow {
     GtkApplicationWindow  parent_instance;
@@ -33,6 +34,11 @@ struct _LiveCaptionsWindow {
     GtkBox           *side_box_tiny;
     GtkToggleButton  *mic_button;
     GtkLabel         *label;
+    GtkSeparator     *translation_separator;
+    GtkBox           *translation_box;
+    GtkLabel         *translation_label_first;
+    GtkLabel         *translation_label_second;
+    LiveCaptionsTranslationView *translation_view;
 
     GtkCssProvider *css_provider;
 
@@ -57,5 +63,7 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (LiveCaptionsWindow, livecaptions_window, LIVECAPTIONS, WINDOW, GtkApplicationWindow);
 
 void livecaptions_window_warn_slow(LiveCaptionsWindow *self);
+void livecaptions_window_set_translation(LiveCaptionsWindow *self, const gchar *text);
+void livecaptions_window_set_hover_translation(LiveCaptionsWindow *self, const gchar *text);
 
 G_END_DECLS

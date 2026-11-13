@@ -1,0 +1,24 @@
+--- a/argostranslate/sbd.py
++++ b/argostranslate/sbd.py
+@@ -3,3 +3,4 @@
+ import os
++import re
+ from difflib import SequenceMatcher
+ from typing import List
+@@ -12,1 +13,4 @@
+-import stanza
++try:
++    import stanza
++except ImportError:
++    stanza = None
+@@ -158,4 +162,10 @@ class StanzaSentencizer(ISentenceBoundaryDetectionModel):
+     def split_sentences(self, text: str) -> List[str]:
+         info(f"Splitting sentences using SBD Model: ({self.pkg.from_code}) {str(self)}")
++        if stanza is None:
++            return [
++                sentence
++                for sentence in re.split(r"(?<=[.!?…])\s+", text.strip())
++                if sentence
++            ]
+         doc = self.lazy_pipeline()(text)
+         return [sent.text for sent in doc.sentences]

@@ -1,0 +1,10 @@
+# Core Argos runtime libraries for the integrated translation worker.
+# Argos Translate itself is installed separately with --no-deps so its
+# optional SpaCy/Stanza backends do not pull in large NLP frameworks.
+# The dependency manifest is generated with flatpak-pip-generator against
+# org.gnome.Sdk//50 so selected wheels match the Flatpak Python ABI.
+ctranslate2==4.9.0
+minisbd==0.9.5
+packaging==26.3
+sacremoses==0.1.1
+sentencepiece==0.2.3

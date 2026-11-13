@@ -22,6 +22,7 @@
 #include "audiocap.h"
 #include "livecaptions-window.h"
 #include "dbus-interface.h"
+#include "livecaptions-translation-service.h"
 
 struct _LiveCaptionsApplication {
     AdwApplication parent_instance;
@@ -36,6 +37,7 @@ struct _LiveCaptionsApplication {
     audio_thread audio;
 
     DBLCapNetSapplesLiveCaptionsExternal *dbus_external;
+    LiveCaptionsTranslationService *translation_service;
 };
 
 G_BEGIN_DECLS
@@ -51,5 +53,7 @@ LiveCaptionsApplication *livecaptions_application_new (gchar *application_id,
                                                        GApplicationFlags  flags);
 
 void livecaptions_application_stream_text(LiveCaptionsApplication *self, const char* text);
+void livecaptions_application_request_hover_translation(LiveCaptionsApplication *self,
+                                                         const gchar *word);
 
 G_END_DECLS

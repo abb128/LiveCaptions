@@ -21,6 +21,10 @@ Features:
 * Adjust font, font size, and text casing
 * Optional token-level confidence text fading
 
+## Optional translation
+
+Enable **Translation → Show Dual Subtitles** or **Translate Word on Hover** in LiveCaptions preferences. LiveCaptions starts its translation worker automatically; translated captions appear in the LiveCaptions window, and hovering a word opens an in-window translation popover. The **Translation** preferences page contains the target-language picker, package download action, caption settle delay, and minimum word count. Language models stay in the user's app data and are not part of the repository. The app runtime must include GTK 3/PyGObject and Argos Translate, and the Flatpak must have network access to refresh or download packages. Once installed, translation runs locally without sending caption text to an online service.
+
 Running this requires a somewhat-decent CPU that can perform realtime captioning, especially if you want to be doing other tasks (such as video decode) while running Live Captions. It has been tested working on:
 * Intel i7-2670QM (2011)
 * Intel i7-7820HQ (2017)

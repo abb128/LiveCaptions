@@ -1,0 +1,19 @@
+{
+  "name": "python3-argostranslate",
+  "buildsystem": "simple",
+  "build-commands": [
+    "pip3 install --disable-pip-version-check --no-input --no-index --no-deps --no-build-isolation --prefix=${FLATPAK_DEST} ./argostranslate-1.11.0-py3-none-any.whl",
+    "patch --batch --forward -d ${FLATPAK_DEST}/lib/python3.13/site-packages -p1 < argos-stanza-optional.patch"
+  ],
+  "sources": [
+    {
+      "type": "file",
+      "url": "https://files.pythonhosted.org/packages/85/16/aa4ddcbc3a3fe352ca3046ef90e612147e0604cbc84a2a70e48df4021bb9/argostranslate-1.11.0-py3-none-any.whl",
+      "sha256": "a89b42d82f40843900338f9ac60d4c82fda590b6898247f5d0c15d46731ca7df"
+    },
+    {
+      "type": "file",
+      "path": "argos-stanza-optional.patch"
+    }
+  ]
+}
