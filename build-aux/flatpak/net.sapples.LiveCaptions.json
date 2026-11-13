@@ -1,11 +1,12 @@
 {
     "app-id" : "net.sapples.LiveCaptions",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "master",
+    "runtime-version" : "50",
     "sdk" : "org.gnome.Sdk",
     "command" : "livecaptions",
     "finish-args" : [
         "--share=ipc",
+        "--share=network",
         "--device=dri",
         "--socket=wayland",
         "--socket=pulseaudio",
@@ -73,6 +74,9 @@
                 "install -Dm644 aprilv0_en-us.april -t ${FLATPAK_DEST}/LiveCaptions/models"
             ]
         },
+
+        "python3-argos-runtime-dependencies.json",
+        "python3-argostranslate.json",
 
         {
             "name" : "livecaptions",

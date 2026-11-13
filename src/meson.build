@@ -3,6 +3,9 @@ livecaptions_sources = [
   'livecaptions-window.c',
   'livecaptions-welcome.c',
   'livecaptions-settings.c',
+  'livecaptions-translation-settings.c',
+  'livecaptions-translation-service.c',
+  'livecaptions-translation-view.c',
   'livecaptions-application.c',
   'audiocap.c',
   'audiocap-pa.c',
@@ -38,4 +41,14 @@ livecaptions_sources += gnome.compile_resources('livecaptions-resources',
 executable('livecaptions', livecaptions_sources,
   dependencies: livecaptions_deps,
   install: true,
+)
+
+install_data('../extras/live-translate-overlay.py',
+  install_dir: get_option('bindir'),
+  rename: 'live-translate-overlay',
+  install_mode: 'rwxr-xr-x',
+)
+
+install_data('../extras/livecaptions_argos.py',
+  install_dir: get_option('bindir'),
 )

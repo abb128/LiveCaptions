@@ -20,6 +20,7 @@
 
 #include <adwaita.h>
 #include "livecaptions-application.h"
+#include "livecaptions-translation-settings.h"
 
 struct _LiveCaptionsSettings {
     AdwPreferencesWindow  parent_instance;
@@ -39,6 +40,19 @@ struct _LiveCaptionsSettings {
     AdwSwitchRow *save_history_switch;
     AdwSwitchRow *keep_above_switch;
     AdwActionRow *text_stream_switch;
+    AdwSwitchRow *show_dual_subtitles_switch;
+    AdwSwitchRow *translate_hover_switch;
+    AdwComboRow *target_language_row;
+    GtkButton *language_action_button;
+    GtkButton *language_refresh_button;
+    GtkLabel *translation_status_label;
+    GtkScale *translation_delay_scale;
+    GtkAdjustment *translation_delay_adjustment;
+    GtkScale *translation_min_words_scale;
+    GtkAdjustment *translation_min_words_adjustment;
+    GtkScale *translation_text_opacity_scale;
+    GtkAdjustment *translation_text_opacity_adjustment;
+    LiveCaptionsTranslationSettings *translation_settings;
 
     GtkScale *line_width_scale;
     GtkAdjustment *line_width_adjustment;

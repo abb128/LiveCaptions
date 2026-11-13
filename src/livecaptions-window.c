@@ -27,8 +27,55 @@
 
 G_DEFINE_TYPE(LiveCaptionsWindow, livecaptions_window, GTK_TYPE_APPLICATION_WINDOW)
 
+static void on_hover_word_changed(G_GNUC_UNUSED LiveCaptionsTranslationView *view,
+                                  const gchar *word,
+                                  gpointer user_data)
+{
+    LiveCaptionsWindow *self = LIVECAPTIONS_WINDOW(user_data);
+    GtkApplication *application = gtk_window_get_application(GTK_WINDOW(self));
+    if(application != NULL && LIVECAPTIONS_IS_APPLICATION(application)) {
+        livecaptions_application_request_hover_translation(
+            LIVECAPTIONS_APPLICATION(application),
+            word);
+    }
+}
+
+static gboolean on_window_close_request(GtkWindow *window,
+                                        G_GNUC_UNUSED gpointer user_data)
+{
+    GtkApplication *gtk_application = gtk_window_get_application(window);
+    if(gtk_application == NULL || !LIVECAPTIONS_IS_APPLICATION(gtk_application))
+        return FALSE;
+
+    LiveCaptionsApplication *application = LIVECAPTIONS_APPLICATION(gtk_application);
+    LiveCaptionsWindow *self = LIVECAPTIONS_WINDOW(window);
+    livecaptions_translation_view_clear(self->translation_view);
+    application->window = NULL;
+    g_application_quit(G_APPLICATION(application));
+    return FALSE;
+}
+
+static void livecaptions_window_dispose(GObject *object)
+{
+    LiveCaptionsWindow *self = LIVECAPTIONS_WINDOW(object);
+
+    GtkApplication *application = gtk_window_get_application(GTK_WINDOW(self));
+    if(application != NULL && LIVECAPTIONS_IS_APPLICATION(application)) {
+        LiveCaptionsApplication *livecaptions =
+            LIVECAPTIONS_APPLICATION(application);
+        if(livecaptions->window == self)
+            livecaptions->window = NULL;
+    }
+
+    g_clear_object(&self->translation_view);
+    G_OBJECT_CLASS(livecaptions_window_parent_class)->dispose(object);
+}
+
 static void livecaptions_window_class_init (LiveCaptionsWindowClass *klass) {
+    GObjectClass *object_class = G_OBJECT_CLASS(klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+
+    object_class->dispose = livecaptions_window_dispose;
 
     gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-window.ui");
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, main);
@@ -36,6 +83,10 @@ static void livecaptions_window_class_init (LiveCaptionsWindowClass *klass) {
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, side_box_tiny);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, mic_button);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, label);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, translation_separator);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, translation_box);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, translation_label_first);
+    gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, translation_label_second);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, too_slow_warning);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, slow_warning);
     gtk_widget_class_bind_template_child(widget_class, LiveCaptionsWindow, slowest_warning);
@@ -69,11 +120,25 @@ static void update_line_width(LiveCaptionsWindow *self){
     pango_layout_set_text(layout, LINE_WIDTH_TEXT_TEMPLATE, text_len);
     pango_layout_get_size(layout, &width, &height);
 
-    height = (height / PANGO_SCALE) * 2 + 2;
+    int text_line_height = height / PANGO_SCALE;
+    height = text_line_height * 2 + 2;
     width  = (width / PANGO_SCALE);
+    /* Keep a stable width so changing translations cannot resize the window. */
+    int translation_width = width + width / 3;
     change_button_layout(self, height);
 
     gtk_widget_set_size_request(GTK_WIDGET(self->label), width, height);
+    gtk_widget_set_size_request(GTK_WIDGET(self->translation_separator), translation_width, 2);
+    /* Reserve exactly one translated row for each source caption row. */
+    gtk_widget_set_size_request(GTK_WIDGET(self->translation_label_first),
+                                translation_width,
+                                text_line_height);
+    gtk_widget_set_size_request(GTK_WIDGET(self->translation_label_second),
+                                translation_width,
+                                text_line_height);
+    gtk_widget_set_size_request(GTK_WIDGET(self->translation_box),
+                                translation_width,
+                                text_line_height * 2);
 
     self->max_text_width = width;
     self->font_layout = layout;
@@ -81,21 +146,49 @@ static void update_line_width(LiveCaptionsWindow *self){
 }
 
 static void update_font(LiveCaptionsWindow *self) {
-    PangoFontDescription *desc = pango_font_description_from_string(g_settings_get_string(self->settings, "font-name"));
+    PangoFontDescription *desc = pango_font_description_from_string(
+        g_settings_get_string(self->settings, "font-name"));
 
     PangoAttribute *attr_font = pango_attr_font_desc_new(desc);
-
     PangoAttrList *attr = gtk_label_get_attributes(self->label);
-    if(attr == NULL){
+    if(attr == NULL)
         attr = pango_attr_list_new();
-    }
     pango_attr_list_change(attr, attr_font);
 
     gtk_label_set_attributes(self->label, attr);
-
+    /* Match the translated rows to the existing caption font. */
+    gtk_label_set_attributes(self->translation_label_first, attr);
+    gtk_label_set_attributes(self->translation_label_second, attr);
     pango_font_description_free(desc);
 
     update_line_width(self);
+}
+
+static void update_translation_visibility(LiveCaptionsWindow *self) {
+    gboolean enabled = g_settings_get_boolean(self->settings, "show-dual-subtitles");
+    const gchar *first = gtk_label_get_text(self->translation_label_first);
+    const gchar *second = gtk_label_get_text(self->translation_label_second);
+    gboolean has_first = first != NULL && first[0] != '\0';
+    gboolean has_second = second != NULL && second[0] != '\0';
+    gboolean has_text = has_first || has_second;
+
+    /* Keep both row slots allocated to prevent the window jumping as text changes. */
+    gtk_widget_set_visible(GTK_WIDGET(self->translation_separator), enabled);
+    gtk_widget_set_visible(GTK_WIDGET(self->translation_box), enabled);
+    gtk_widget_set_opacity(GTK_WIDGET(self->translation_separator), has_text ? 0.88 : 0.0);
+    gtk_widget_set_opacity(GTK_WIDGET(self->translation_label_first), has_first ? 1.0 : 0.0);
+    gtk_widget_set_opacity(GTK_WIDGET(self->translation_label_second), has_second ? 1.0 : 0.0);
+}
+
+static void update_translation_text_opacity(LiveCaptionsWindow *self) {
+    double opacity = CLAMP(
+        g_settings_get_double(self->settings, "translation-text-opacity"),
+        0.0,
+        1.0
+    );
+    gtk_widget_set_opacity(GTK_WIDGET(self->translation_box), opacity);
+    if(self->translation_view != NULL)
+        livecaptions_translation_view_set_opacity(self->translation_view, opacity);
 }
 
 static void update_window_transparency(LiveCaptionsWindow *self) {
@@ -134,6 +227,10 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
         update_window_transparency(self);
     }else if(g_str_equal(key, "keep-on-top")) {
         update_keep_above(self);
+    }else if(g_str_equal(key, "show-dual-subtitles")) {
+        update_translation_visibility(self);
+    }else if(g_str_equal(key, "translation-text-opacity")) {
+        update_translation_text_opacity(self);
     }
 }
 
@@ -193,6 +290,14 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
+    self->translation_view =
+        livecaptions_translation_view_new(self->label, self->settings);
+    g_signal_connect_object(self->translation_view,
+                            "hover-word-changed",
+                            G_CALLBACK(on_hover_word_changed),
+                            self,
+                            0);
+    g_signal_connect(self, "close-request", G_CALLBACK(on_window_close_request), NULL);
 
     self->css_provider = gtk_css_provider_new();
     GtkStyleContext *context = gtk_widget_get_style_context(GTK_WIDGET(self));
@@ -207,6 +312,8 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
 
     update_font(self);
     update_window_transparency(self);
+    update_translation_visibility(self);
+    update_translation_text_opacity(self);
 
     self->slow_warning_shown = false;
     self->was_errored = false;
@@ -217,6 +324,20 @@ static void livecaptions_window_init(LiveCaptionsWindow *self) {
     // GTK adds solid-csd class when the compositor does not support window shadows
     // This adds a very ugly thick border, so we remove it
     gtk_widget_remove_css_class(GTK_WIDGET(self), "solid-csd");
+}
+
+void livecaptions_window_set_translation(LiveCaptionsWindow *self, const gchar *text) {
+    g_return_if_fail(LIVECAPTIONS_IS_WINDOW(self));
+
+    g_auto(GStrv) lines = g_strsplit(text != NULL ? text : "", "\n", 3);
+    gtk_label_set_text(self->translation_label_first, lines[0] != NULL ? lines[0] : "");
+    gtk_label_set_text(self->translation_label_second, lines[1] != NULL ? lines[1] : "");
+    update_translation_visibility(self);
+}
+
+void livecaptions_window_set_hover_translation(LiveCaptionsWindow *self, const gchar *text) {
+    g_return_if_fail(LIVECAPTIONS_IS_WINDOW(self));
+    livecaptions_translation_view_set_translation(self->translation_view, text);
 }
 
 static gboolean hide_slow_warning_after_some_time(void *userdata) {

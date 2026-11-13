@@ -173,8 +173,20 @@ static void add_model_cb(LiveCaptionsSettings *self) {
 
 static void on_builtin_toggled(LiveCaptionsSettings *self);
 
+static void livecaptions_settings_finalize(GObject *object) {
+    LiveCaptionsSettings *self = LIVECAPTIONS_SETTINGS(object);
+
+    livecaptions_translation_settings_free(self->translation_settings);
+    g_clear_object(&self->settings);
+
+    G_OBJECT_CLASS(livecaptions_settings_parent_class)->finalize(object);
+}
+
 static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+    GObjectClass *object_class = G_OBJECT_CLASS(klass);
+
+    object_class->finalize = livecaptions_settings_finalize;
 
     gtk_widget_class_set_template_from_resource(widget_class, "/net/sapples/LiveCaptions/livecaptions-settings.ui");
 
@@ -189,6 +201,18 @@ static void livecaptions_settings_class_init(LiveCaptionsSettingsClass *klass) {
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, save_history_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, keep_above_switch);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, text_stream_switch);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, show_dual_subtitles_switch);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, translate_hover_switch);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, target_language_row);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, language_action_button);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, language_refresh_button);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, translation_status_label);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, translation_delay_scale);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, translation_delay_adjustment);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, translation_min_words_scale);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, translation_min_words_adjustment);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, translation_text_opacity_scale);
+    gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, translation_text_opacity_adjustment);
 
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_scale);
     gtk_widget_class_bind_template_child (widget_class, LiveCaptionsSettings, line_width_adjustment);
@@ -407,6 +431,19 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     adw_action_row_set_activatable_widget(self->font_button_ar, GTK_WIDGET(self->font_button));
 
     self->settings = g_settings_new("net.sapples.LiveCaptions");
+    self->translation_settings = livecaptions_translation_settings_new(
+        G_OBJECT(self),
+        self->settings,
+        self->show_dual_subtitles_switch,
+        self->translate_hover_switch,
+        self->target_language_row,
+        self->language_action_button,
+        self->language_refresh_button,
+        self->translation_status_label,
+        self->translation_delay_adjustment,
+        self->translation_min_words_adjustment,
+        self->translation_text_opacity_scale,
+        self->translation_text_opacity_adjustment);
 
     g_settings_bind(self->settings, "text-uppercase", self->text_upper_switch, "active", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "fade-text", self->fade_text_switch, "active", G_SETTINGS_BIND_DEFAULT);
@@ -416,7 +453,6 @@ static void livecaptions_settings_init(LiveCaptionsSettings *self) {
     g_settings_bind(self->settings, "line-width", self->line_width_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "window-transparency", self->window_transparency_adjustment, "value", G_SETTINGS_BIND_DEFAULT);
     g_settings_bind(self->settings, "text-stream-active", self->text_stream_switch, "active", G_SETTINGS_BIND_DEFAULT);
-
     g_settings_bind(self->settings, "font-name", self->font_button, "font", G_SETTINGS_BIND_DEFAULT);
 
     gtk_scale_add_mark(self->line_width_scale, 50.0, GTK_POS_TOP, NULL);

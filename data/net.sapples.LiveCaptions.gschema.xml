@@ -73,5 +73,47 @@
             <default>false</default>
             <summary>Enable DBus API for external applications to use caption output</summary>
         </key>
+
+        <key name="show-dual-subtitles" type="b">
+            <default>false</default>
+            <summary>Show the recognized caption and its translation</summary>
+        </key>
+
+        <key name="translate-on-hover" type="b">
+            <default>false</default>
+            <summary>Translate a caption word when the pointer rests over it</summary>
+        </key>
+
+        <key name="translation-target-language" type="s">
+            <default>'ru'</default>
+            <summary>Target language for offline translation</summary>
+        </key>
+
+        <key name="translation-packages-revision" type="i">
+            <range min="0" max="2147483647"/>
+            <default>0</default>
+            <summary>Revision of installed offline translation packages</summary>
+        </key>
+
+        <key name="translation-settle-ms" type="i">
+            <default>90</default>
+            <summary>Wait time before translating a changing caption</summary>
+        </key>
+
+        <key name="translation-min-words" type="i">
+            <default>2</default>
+            <summary>Minimum caption length before translation</summary>
+        </key>
+
+        <key name="translation-text-opacity" type="d">
+            <range min="0.0" max="1.0"/>
+            <default>1.0</default>
+            <summary>Opacity of translated text</summary>
+        </key>
+
+        <key name="translation-settings-migrated" type="b">
+            <default>false</default>
+            <summary>Whether legacy translation settings were copied to application settings</summary>
+        </key>
     </schema>
 </schemalist>

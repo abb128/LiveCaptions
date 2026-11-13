@@ -245,6 +245,150 @@
 
     <child>
       <object class="AdwPreferencesPage">
+        <property name="icon-name">net.sapples.LiveCaptions-translation-symbolic</property>
+        <property name="title" translatable="yes">Translation</property>
+
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Offline Translation</property>
+            <property name="description" translatable="yes">Translations appear in the Live Captions window. Downloaded language packages remain in your app data and are not included with LiveCaptions.</property>
+
+            <child>
+              <object class="AdwSwitchRow" id="show_dual_subtitles_switch">
+                <property name="title" translatable="yes">Show Dual Subtitles</property>
+                <property name="subtitle" translatable="yes">Show the recognized caption above its translation</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwSwitchRow" id="translate_hover_switch">
+                <property name="title" translatable="yes">Translate Word on Hover</property>
+                <property name="subtitle" translatable="yes">Show a translation when the pointer rests over a word</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwComboRow" id="target_language_row">
+                <property name="title" translatable="yes">Translate English captions to</property>
+                <property name="subtitle" translatable="yes">Choose an installed language or download one for offline use</property>
+                <property name="use-subtitle">True</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Language package</property>
+                <property name="subtitle" translatable="yes">Language packages are downloaded only when requested</property>
+                <child type="suffix">
+                  <object class="GtkButton" id="language_action_button">
+                    <property name="label" translatable="yes">Download and Use</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+                <child type="suffix">
+                  <object class="GtkButton" id="language_refresh_button">
+                    <property name="icon-name">view-refresh-symbolic</property>
+                    <property name="tooltip-text" translatable="yes">Refresh available languages</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Translation status</property>
+                <child type="suffix">
+                  <object class="GtkLabel" id="translation_status_label">
+                    <property name="label" translatable="yes">Loading available languages…</property>
+                    <property name="wrap">True</property>
+                    <property name="max-width-chars">36</property>
+                    <property name="xalign">1</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Wait for speech to settle (ms)</property>
+                <property name="subtitle" translatable="yes">Reduces repeated translations while a caption is changing</property>
+                <child type="suffix">
+                  <object class="GtkScale" id="translation_delay_scale">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <property name="width-request">220</property>
+                    <property name="draw-value">True</property>
+                    <property name="value-pos">right</property>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="translation_delay_adjustment">
+                        <property name="lower">0</property>
+                        <property name="upper">300</property>
+                        <property name="step-increment">5</property>
+                        <property name="page-increment">10</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Minimum words before translating</property>
+                <property name="subtitle" translatable="yes">Ignore shorter captions to reduce flicker</property>
+                <child type="suffix">
+                  <object class="GtkScale" id="translation_min_words_scale">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <property name="width-request">220</property>
+                    <property name="draw-value">True</property>
+                    <property name="value-pos">right</property>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="translation_min_words_adjustment">
+                        <property name="lower">1</property>
+                        <property name="upper">8</property>
+                        <property name="step-increment">1</property>
+                        <property name="page-increment">1</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Translation text opacity</property>
+                <property name="subtitle" translatable="yes">Applies to translated captions and word-hover translations</property>
+                <child type="suffix">
+                  <object class="GtkScale" id="translation_text_opacity_scale">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <property name="width-request">220</property>
+                    <property name="draw-value">True</property>
+                    <property name="value-pos">right</property>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="translation_text_opacity_adjustment">
+                        <property name="lower">0</property>
+                        <property name="upper">1</property>
+                        <property name="step-increment">0.05</property>
+                        <property name="page-increment">0.1</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+
+
+    <child>
+      <object class="AdwPreferencesPage">
         <property name="icon_name">computer-chip-symbolic</property>
         <property name="title">Model</property>
 

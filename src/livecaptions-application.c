@@ -27,6 +27,43 @@
 
 G_DEFINE_TYPE (LiveCaptionsApplication, livecaptions_application, ADW_TYPE_APPLICATION)
 
+static gboolean text_stream_should_be_active(LiveCaptionsApplication *self)
+{
+    return g_settings_get_boolean(self->settings, "text-stream-active") ||
+           (self->translation_service != NULL &&
+            livecaptions_translation_service_is_enabled(self->translation_service));
+}
+
+static void update_text_stream_state(LiveCaptionsApplication *self)
+{
+    if(self->dbus_external == NULL)
+        return;
+
+    gboolean active = text_stream_should_be_active(self);
+    dblcap_net_sapples_live_captions_external_set_text_stream_active(
+        self->dbus_external,
+        active);
+    asr_thread_set_text_stream_active(self->asr, active);
+}
+
+static void on_caption_translation(G_GNUC_UNUSED LiveCaptionsTranslationService *service,
+                                   const gchar *text,
+                                   gpointer user_data)
+{
+    LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
+    if(self->window != NULL)
+        livecaptions_window_set_translation(self->window, text);
+}
+
+static void on_hover_translation(G_GNUC_UNUSED LiveCaptionsTranslationService *service,
+                                 const gchar *text,
+                                 gpointer user_data)
+{
+    LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(user_data);
+    if(self->window != NULL)
+        livecaptions_window_set_hover_translation(self->window, text);
+}
+
 static void deinit_audio(LiveCaptionsApplication *self){
     if(self->audio != NULL) {
         free_audio_thread(self->audio);
@@ -52,6 +89,7 @@ LiveCaptionsApplication *livecaptions_application_new (gchar *application_id, GA
 
 static void livecaptions_application_finalize(GObject *object) {
     LiveCaptionsApplication *self = (LiveCaptionsApplication *)object;
+    g_clear_object(&self->translation_service);
     asr_thread_pause(self->asr, true);
 
     save_current_history(default_history_file);
@@ -97,12 +135,14 @@ static void livecaptions_application_activate(GApplication *app) {
         LiveCaptionsWindow *lc_window = LIVECAPTIONS_WINDOW(window);
         asr_thread_set_main_window(self->asr, lc_window);
 
-        asr_thread_set_text_stream_active(self->asr, g_settings_get_boolean(self->settings, "text-stream-active"));
+        asr_thread_set_text_stream_active(self->asr, text_stream_should_be_active(self));
         
         gtk_label_set_text(lc_window->label, " \n ");
 
         self->window = lc_window;
     }
+
+    livecaptions_translation_service_update(self->translation_service);
 
     gtk_window_present(window);
 
@@ -150,6 +190,14 @@ livecaptions_application_dbus_register(GApplication     *app,
         return false;
     }
 
+    if(!livecaptions_translation_service_register_dbus(self->translation_service,
+                                                       connection,
+                                                       error)) {
+        g_dbus_interface_skeleton_unexport(
+            G_DBUS_INTERFACE_SKELETON(self->dbus_external));
+        g_clear_object(&self->dbus_external);
+        return false;
+    }
 
     dblcap_net_sapples_live_captions_external_set_keep_above(
         self->dbus_external,
@@ -158,7 +206,7 @@ livecaptions_application_dbus_register(GApplication     *app,
 
     dblcap_net_sapples_live_captions_external_set_text_stream_active(
         self->dbus_external,
-        g_settings_get_boolean(self->settings, "text-stream-active")
+        text_stream_should_be_active(self)
     );
 
     g_signal_connect(self->dbus_external, "handle-allow-keep-above", G_CALLBACK(on_handle_allow_keep_above), self);
@@ -173,6 +221,9 @@ livecaptions_application_dbus_unregister(GApplication    *app,
                                          const gchar     *object_path)
 {
     LiveCaptionsApplication *self = LIVECAPTIONS_APPLICATION(app);
+
+    livecaptions_translation_service_unregister_dbus(self->translation_service,
+                                                     connection);
 
     g_dbus_interface_skeleton_unexport(G_DBUS_INTERFACE_SKELETON(self->dbus_external));
 
@@ -279,15 +330,11 @@ static void on_settings_change(G_GNUC_UNUSED GSettings *settings,
             );
         }
     }else if(g_str_equal(key, "text-stream-active")){
-        if(self->dbus_external) {
-            gboolean active = g_settings_get_boolean(self->settings, "text-stream-active");
-            dblcap_net_sapples_live_captions_external_set_text_stream_active(
-                self->dbus_external,
-                active
-            );
-
-            asr_thread_set_text_stream_active(self->asr, active);
-        }
+        update_text_stream_state(self);
+    }else if(g_str_equal(key, "show-dual-subtitles") ||
+             g_str_equal(key, "translate-on-hover")){
+        livecaptions_translation_service_update(self->translation_service);
+        update_text_stream_state(self);
     }
 }
 
@@ -311,6 +358,16 @@ livecaptions_application_toggle_microphone(GSimpleAction *action,
 
 static void livecaptions_application_init(LiveCaptionsApplication *self) {
     self->settings = g_settings_new("net.sapples.LiveCaptions");
+    self->translation_service =
+        livecaptions_translation_service_new(self->settings);
+    g_signal_connect(self->translation_service,
+                     "caption-translation",
+                     G_CALLBACK(on_caption_translation),
+                     self);
+    g_signal_connect(self->translation_service,
+                     "hover-translation",
+                     G_CALLBACK(on_hover_translation),
+                     self);
 
     g_autoptr(GSimpleAction) quit_action = g_simple_action_new("quit", NULL);
     g_signal_connect_swapped(quit_action, "activate", G_CALLBACK(g_application_quit), self);
@@ -372,4 +429,10 @@ void livecaptions_application_stream_text(LiveCaptionsApplication *self, const c
     if(self->dbus_external) {
         dblcap_net_sapples_live_captions_external_emit_text_stream(self->dbus_external, text);
     }
+}
+
+void livecaptions_application_request_hover_translation(LiveCaptionsApplication *self,
+                                                        const gchar *word) {
+    g_return_if_fail(LIVECAPTIONS_IS_APPLICATION(self));
+    livecaptions_translation_service_request_hover_word(self->translation_service, word);
 }
